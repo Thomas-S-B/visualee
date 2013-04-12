@@ -65,7 +65,7 @@ public class VisualEEMojo extends AbstractMojo {
       export("/js/", "d3.v3.min.js", outputdirectory.getAbsoluteFile());
       export("/js/", "jquery-1.8.3.min.js", outputdirectory.getAbsoluteFile());
       export("/js/", "classgraph.js", outputdirectory.getAbsoluteFile());
-      export("/html/", "index.html", outputdirectory.getAbsoluteFile());
+      export("/", "index.html", outputdirectory.getAbsoluteFile());
 
       for (String sourceFolder : compileSourceRoots) {
          sourceFolder = sourceFolder + "/";

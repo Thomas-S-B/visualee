@@ -18,15 +18,16 @@ import java.util.List;
 public class JavaFile {
 
    private File javaFile;
-   // private List<MyJavaFile> injected;
    private List<CDIDependency> injected;
-   private int id;   //wird benötigt für D3, da die Links auf "IDs" der Nodes losgehen mit 0 beginnend
-   private int group;   // Gruppennr., Nodes aus dem selben Package haben die selbe Gruppennr.
+   private int id;   // for D3.js, links need ids's form the nodes (id's start with 0)
+   private int group;   // Nodes form the same package have the same group-number
    private String packagePath;
+   private String sourceCode;
 
    public JavaFile(File javaClassFile) {
       this.javaFile = javaClassFile;
       injected = new ArrayList<>();
+      sourceCode = "";
    }
 
    public File getJavaFile() {
@@ -47,7 +48,7 @@ public class JavaFile {
 
    @Override
    public String toString() {
-      return this.getJavaFile().getName().substring(0, this.getJavaFile().getName().indexOf(".java")); //ohne Endung .java
+      return this.getJavaFile().getName().substring(0, this.getJavaFile().getName().indexOf(".java"));
    }
 
    public int getId() {
@@ -72,5 +73,13 @@ public class JavaFile {
 
    public void setPackagePath(String packagePath) {
       this.packagePath = packagePath;
+   }
+
+   public String getSourceCode() {
+      return sourceCode;
+   }
+
+   public void setSourceCode(String sourceCode) {
+      this.sourceCode = sourceCode;
    }
 }

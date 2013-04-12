@@ -113,7 +113,8 @@ public class CDIAnalyzer {
             if (!onlyCDIRelevantClasses || (onlyCDIRelevantClasses && classesCDIRelated.contains(myJavaClass))) {
                myJavaClass.setId(iNode);
                String description = JsonHelper.generateDescription(myJavaClass);
-               nodesJSON.append(JsonHelper.getJSONNode(myJavaClass.toString(), myJavaClass.getGroup(), description, iNode));
+               String sourcecode = JsonHelper.generateSourcecode(myJavaClass);
+               nodesJSON.append(JsonHelper.getJSONNode(myJavaClass.toString(), myJavaClass.getGroup(), description, sourcecode, iNode));
                if (iNode < javaFilesContainer.getMyJavaFiles().size() - 1) {
                   nodesJSON.append("    ,");
                }

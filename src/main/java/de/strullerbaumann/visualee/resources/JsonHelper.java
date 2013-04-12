@@ -21,12 +21,13 @@ import static de.strullerbaumann.visualee.cdi.CDIType.PRODUCES;
  */
 public class JsonHelper {
 
-   public static String getJSONNode(String name, int group, String description, int id) {
+   public static String getJSONNode(String name, int group, String description, String sourcecode, int id) {
       StringBuilder nodeJSON = new StringBuilder();
       nodeJSON.append("    {").append(System.lineSeparator());
       nodeJSON.append("        \"name\": \"").append(name).append("\",").append(System.lineSeparator());
       nodeJSON.append("        \"group\": ").append(group).append(",").append(System.lineSeparator());
       nodeJSON.append("        \"description\": ").append(description).append(",").append(System.lineSeparator());
+      nodeJSON.append("        \"sourcecode\": ").append(sourcecode).append(",").append(System.lineSeparator());
       nodeJSON.append("        \"id\": ").append(id).append(System.lineSeparator());
       nodeJSON.append("    }").append(System.lineSeparator());
       return nodeJSON.toString();
@@ -72,61 +73,126 @@ public class JsonHelper {
    public static String generateDescription(JavaFile myJavaClass) {
       StringBuilder description = new StringBuilder();
       description.append("\"");
-      description.append("<br/><nobr>Package: ");
+      description.append("<nobr>Package: ");
       description.append(myJavaClass.getPackagePath());
-      description.append("</nobr><br/>");
+      description.append("</nobr>");
+
+      StringBuilder descriptionEJB = new StringBuilder();
+      StringBuilder descriptionEvent = new StringBuilder();
+      StringBuilder descriptionInject = new StringBuilder();
+      StringBuilder descriptionObserves = new StringBuilder();
+      StringBuilder descriptionProduces = new StringBuilder();
+      StringBuilder descriptionInstance = new StringBuilder();
+      StringBuilder descriptionDefault = new StringBuilder();
+
       for (CDIDependency dependency : myJavaClass.getInjected()) {
          switch (dependency.getCdiType()) {
             case EJB:
-               description.append("<br/><nobr>");
-               description.append(dependency.getMyJavaFileTo());
-               description.append(" is injected as an EJB");
-               description.append("</nobr>");
+               descriptionEJB.append("<br/><nobr>");
+               descriptionEJB.append(dependency.getMyJavaFileTo());
+               descriptionEJB.append(" is injected as an EJB");
+               descriptionEJB.append("</nobr>");
                break;
             case EVENT:
-               description.append("<br/><nobr>");
-               description.append("Fires ");
-               description.append(dependency.getMyJavaFileTo());
-               description.append(" as an event");
-               description.append("</nobr>");
+               descriptionEvent.append("<br/><nobr>");
+               descriptionEvent.append("Fires ");
+               descriptionEvent.append(dependency.getMyJavaFileTo());
+               descriptionEvent.append(" as an event");
+               descriptionEvent.append("</nobr>");
                break;
             case INJECT:
-               description.append("<br/><nobr>");
-               description.append(dependency.getMyJavaFileTo());
-               description.append(" is injected");
-               description.append("</nobr>");
+               descriptionInject.append("<br/><nobr>");
+               descriptionInject.append(dependency.getMyJavaFileTo());
+               descriptionInject.append(" is injected");
+               descriptionInject.append("</nobr>");
                break;
             case OBSERVES:
-               description.append("<br/><nobr>");
-               description.append("Observes ");
-               description.append(dependency.getMyJavaFileTo());
-               description.append(" events");
-               description.append("</nobr>");
+               descriptionObserves.append("<br/><nobr>");
+               descriptionObserves.append("Observes ");
+               descriptionObserves.append(dependency.getMyJavaFileTo());
+               descriptionObserves.append(" events");
+               descriptionObserves.append("</nobr>");
                break;
             case PRODUCES:
-               description.append("<br/><nobr>");
-               description.append("Produces ");
-               description.append(dependency.getMyJavaFileTo());
-               description.append("</nobr>");
+               descriptionProduces.append("<br/><nobr>");
+               descriptionProduces.append("Produces ");
+               descriptionProduces.append(dependency.getMyJavaFileTo());
+               descriptionProduces.append("</nobr>");
                break;
             case INSTANCE:
-               description.append("<br/><nobr>");
-               description.append(dependency.getMyJavaFileTo());
-               description.append(" is injected as an instance");
-               description.append("</nobr>");
+               descriptionInstance.append("<br/><nobr>");
+               descriptionInstance.append(dependency.getMyJavaFileTo());
+               descriptionInstance.append(" is injected as an instance");
+               descriptionInstance.append("</nobr>");
                break;
             default:
-               description.append("<br/><nobr>");
-               description.append(dependency.getMyJavaFileTo());
-               description.append(" (");
-               description.append(dependency.getCdiType());
-               description.append(")");
-               description.append("</nobr>");
+               descriptionDefault.append("<br/><nobr>");
+               descriptionDefault.append(dependency.getMyJavaFileTo());
+               descriptionDefault.append(" (");
+               descriptionDefault.append(dependency.getCdiType());
+               descriptionDefault.append(")");
+               descriptionDefault.append("</nobr>");
                break;
          }
       }
+
+      if (descriptionEJB.length() > 0) {
+         description.append("<br/><br/>");
+         description.append("EJB:");
+         description.append(descriptionEJB);
+         description.append("</nobr>");
+      }
+      if (descriptionEvent.length() > 0) {
+         description.append("<br/><br/>");
+         description.append("Events:");
+         description.append(descriptionEvent);
+         description.append("</nobr>");
+      }
+      if (descriptionInject.length() > 0) {
+         description.append("<br/><br/>");
+         description.append("Injects:");
+         description.append(descriptionInject);
+         description.append("</nobr>");
+      }
+      if (descriptionObserves.length() > 0) {
+         description.append("<br/><br/>");
+         description.append("Observes:");
+         description.append(descriptionObserves);
+         description.append("</nobr>");
+      }
+      if (descriptionProduces.length() > 0) {
+         description.append("<br/><br/>");
+         description.append("Produces:");
+         description.append(descriptionProduces);
+         description.append("</nobr>");
+      }
+      if (descriptionInstance.length() > 0) {
+         description.append("<br/><br/>");
+         description.append("Instances:");
+         description.append(descriptionInstance);
+         description.append("</nobr>");
+      }
+      if (descriptionDefault.length() > 0) {
+         description.append("<br/><br/>");
+         description.append(descriptionDefault);
+         description.append("</nobr>");
+      }
+
       description.append("\"");
 
       return description.toString();
+   }
+
+   public static String escapeStringToJson(String input) {
+      // &lt; and &gt; are important, e.g. a sourcecode like "List<Scripts> ..." causes problems with the javascript in the ui
+      return input = input.replace("\\", "\\\\").replace("\"", "\\\"").replace("\r", "\\r").replace("\n", "\\n").replace("<", "&lt;").replace(">", "&gt;");
+   }
+
+   public static String generateSourcecode(JavaFile myJavaClass) {
+      StringBuilder sourcecodeJSON = new StringBuilder();
+      sourcecodeJSON.append("\"");
+      sourcecodeJSON.append(escapeStringToJson(myJavaClass.getSourceCode()));
+      sourcecodeJSON.append("\"");
+      return sourcecodeJSON.toString();
    }
 }

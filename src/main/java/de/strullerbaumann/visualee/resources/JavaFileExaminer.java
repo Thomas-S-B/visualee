@@ -8,6 +8,7 @@ package de.strullerbaumann.visualee.resources;
 
 import de.strullerbaumann.visualee.cdi.CDIType;
 import de.strullerbaumann.visualee.cdi.CDIDependency;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -63,7 +64,20 @@ public class JavaFileExaminer {
       return null;
    }
 
+   private void loadSourceCode(JavaFile myJavaClass) throws FileNotFoundException, IOException {
+      StringBuilder sourceCode = new StringBuilder();
+      try (BufferedReader br = new BufferedReader(new FileReader(myJavaClass.getJavaFile()))) {
+         String line;
+         while ((line = br.readLine()) != null) {
+            sourceCode.append(line).append('\n');
+         }
+      }
+      myJavaClass.setSourceCode(sourceCode.toString());
+   }
+
    public void findAndSetAttributes(JavaFile myJavaClass) throws FileNotFoundException, IOException {
+      loadSourceCode(myJavaClass);
+
       try (Scanner scanner = new Scanner(new FileReader(myJavaClass.getJavaFile()))) {
          scanner.useDelimiter("[ \t\r\n]+");
 
@@ -92,31 +106,22 @@ public class JavaFileExaminer {
             }
 
             if (cdiType != null) {
-               // if (line.indexOf("@Inject") > -1 || line.indexOf("@EJB") > -1 || line.indexOf("@Produces") > -1 || line.indexOf("@Observes") > -1) {
-               // Wir haben einen Inject
-               // nächste Zeile lesen
                line = scanner.next();
                while (line.indexOf("@") > - 1 || line.indexOf("private") > - 1 || line.indexOf("public") > - 1) {
                   line = scanner.next();
                }
-               // mögliche Tokens die jetzt in line stehen
-               // Principal
-               // Greeter(PhraseBuilder
-               // Event<Person>
-               // AsyncService
-               //
+               // possible tokens now in line are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
                if (line.indexOf("(") > - 1) {
-                  line = line.substring(line.indexOf("(") + 1);  // Greeter(PhraseBuilder wird zu PhraseBuilder
+                  line = line.substring(line.indexOf("(") + 1);  // Greeter(PhraseBuilder becomes to PhraseBuilder
                }
                if (line.indexOf("<") > - 1 && line.indexOf(">") > - 1) {
-                  if (line.startsWith("Event<")) { // z.B. Event<BrowserWindow> events;
-                     cdiType = CDIType.EVENT;   // der CDIType muss auf Event sein (kann vorher Inject sein)
+                  if (line.startsWith("Event<")) { // e.g. Event<BrowserWindow> events;
+                     cdiType = CDIType.EVENT;   // set CDIType to Event (it could be setted before as an Inject)
                   }
-                  if (line.startsWith("Instance<")) { // z.B. Instance<GlassfishAuthenticator> authenticator;
-                     cdiType = CDIType.INSTANCE;   // der CDIType muss auf Event sein (kann vorher Inject sein)
+                  if (line.startsWith("Instance<")) { // e.g. Instance<GlassfishAuthenticator> authenticator;
+                     cdiType = CDIType.INSTANCE;   // set CDIType to Event (it could be setted before as an Inject)
                   }
-
-                  line = line.substring(line.indexOf("<") + 1, line.indexOf(">"));  // Event<Person> wird zu Person
+                  line = line.substring(line.indexOf("<") + 1, line.indexOf(">"));  // Event<Person> becomes to Person
                }
                String className = line;
                JavaFile injectedFound = JavaFileExaminer.getInstance().getMyJavaClassByName(className);
@@ -133,20 +138,4 @@ public class JavaFileExaminer {
 
       private static final JavaFileExaminer INSTANCE = new JavaFileExaminer();
    }
-   // Beispiel:
-   // aus classFolder "/home/thomas/work/NetBeansProjects/wissen/target/wissen-1.0-SNAPSHOT/WEB-INF/classes"
-   // und javaClassFile "/home/thomas/work/NetBeansProjects/wissen/target/wissen-1.0-SNAPSHOT/WEB-INF/classes/de/strullerbaumann/wissen/presentation/MemoBean.class"
-   // liefert es dann "de.strullerbaumann.wissen.presentation.MemoBean"
-   /*
-    public String getPackageJavaName(File classFolder, File javaClassFile) {
-    String classFolderPath = classFolder.getAbsolutePath();
-    String classPath = javaClassFile.getAbsolutePath();
-      
-    String packageClassName = classPath.substring(classFolderPath.length()+1); //+1 wegen dem führenden /
-    packageClassName = packageClassName.substring(0, packageClassName.indexOf(".class"));  // .class am Ende entfernen
-    packageClassName = packageClassName.replace('/', '.'); // alle Delimiter mit . ersetzen
-      
-    return packageClassName;
-    }
-    */
 }

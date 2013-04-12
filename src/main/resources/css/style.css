@@ -2,7 +2,7 @@
     Document   : style
     Created on : 13.12.2012, 16:53:52
     Author     : Thomas Struller-Baumann <thomas at struller-baumann.de>
- */
+*/
 
 path.link {
    fill: none;
@@ -64,10 +64,11 @@ path.link.ejb {
 }
 
 div#pop-up {
+   font-family: Arial, sans-serif;
    display: none;
    position: absolute;
    color: white;
-   font-size: 14px;
+   font-size: 12px;
    text-shadow: 0.1em 0.1em 0.05em #333;
    background: rgba(0,0,0,0.4);
    padding: 5px 10px 5px 10px;
@@ -77,30 +78,46 @@ div#pop-up {
    box-shadow: 6px 6px 6px #666;
 }
 div#pop-up-title {
-   font-size: 15px;
+   font-size: 16px;
    width:100px;
    margin-bottom: 4px;
    font-weight: bolder;
 }
 div#pop-up-content {
+   font-size: 14px;
+}
+
+div#pop-description {
+   width: 400px;
    font-size: 12px;
+	background: rgba(0,0,0,0.3);
 }
-div#pop-desc {
-   width: 100px;
+
+div#pop-sourcecode-open:hover, div#pop-sourcecode-close:hover, div#pop-description-close:hover, div#pop-description-close:hover {
+   text-decoration:none;
+   color:#FFF;
+   text-shadow: 0.18em 0.18em 0.18em #999;
+   transition: color, text-shadow 0.3s;
+   cursor: default;
 }
-div#pop-img {
-   font-size: 30px;
-   font-weight: bolder;
+
+textarea#pop-sourcecode {
+   width: 500px;
+   height: 120px;
+   font-family:"Courier New";
+   font-size:11px;
+   background-color: rgba(255,255,255,0.8);
 }
+
 .table {
-    display:table;
+   display:table;
 }
 .table div {
-    display:table-row;
+   display:table-row;
 }
 .table div div {
-    display:table-cell;
-    width:50%;
+   display:table-cell;
+   width:50%;
 }
 
 text {
@@ -129,7 +146,7 @@ svg {
 /* for resize */
 html,
 body {
-  margin: 0;
+   margin: 0;
 }
 
 body {

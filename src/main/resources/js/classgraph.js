@@ -14,13 +14,13 @@ function initGraph(graphJSON, width, height, gravity) {
            .theta(0.8)
            .linkDistance(160);
 
-           
+
    d3.json(graphJSON, function(json) {
       force.nodes(json.nodes)
               .links(json.links)
               .on("tick", tick)
               .start();
-      
+
       var svg = d3.select("#canvasGraph").append("svg:svg")
               .attr("width", width)
               .attr("height", height);
@@ -60,33 +60,73 @@ function initGraph(graphJSON, width, height, gravity) {
               .enter().append("svg:circle")
               .attr("r", 7)
               .style("fill", function(d) {
-                  return fill(d.group);
-               })
-              .on("mouseover",  showNodeInfos)
-              .on("mouseout", hideNodeInfos)
+         return fill(d.group);
+      })
+              .on("mouseover", showNodeInfos)
               .on("mousedown", function(d) {
-                  d.fixed = true;
-              })
+         d.fixed = true;
+      })
               .call(force.drag);
+
+      // Hide NodeInfos when click outside
+      $("#canvasGraph").click(function(d) {
+         hideNodeInfos(d);
+      });
+
+      // Hide NodeInfos when ESC
+      $(document).ready(function() {
+         $(document).bind('keydown', function(e) {
+            if (e.which === 27) {
+               hideNodeInfos(e);
+            }
+         });
+      });
+
+      // Show/Hide description
+      $("#pop-description-open").fadeOut(0);
+      $("#pop-description-open").click(function(d) {
+         $("#pop-description-close").fadeIn(450);
+         $("#pop-description-open").fadeOut(0);
+         $("#pop-description").slideDown(250);
+      });
+      $("#pop-description-close").click(function(d) {
+         $("#pop-description-close").fadeOut(0);
+         $("#pop-description-open").fadeIn(450);
+         $("#pop-description").slideUp(250);
+      });
+
+      // Show/Hide sourcecode
+      $("#pop-sourcecode-open").fadeOut(0);
+      $("#pop-sourcecode-open").click(function(d) {
+         $("#pop-sourcecode-close").fadeIn(450);
+         $("#pop-sourcecode-open").fadeOut(0);
+         $("#pop-sourcecode").slideDown(250);
+      });
+      $("#pop-sourcecode-close").click(function(d) {
+         $("#pop-sourcecode-close").fadeOut(0);
+         $("#pop-sourcecode-open").fadeIn(450);
+         $("#pop-sourcecode").slideUp(250);
+      });
 
       function showNodeInfos(d) {
          highlight(0.1, d);
          poppadding = 50;
          $("#pop-up").fadeOut(150, function() {
             $("#pop-up-title").html(d.name);
-            $("#pop-desc").html(d.description);
-            if(d.x < $(window).width()/2) {
+            $("#pop-description").html(d.description);
+            $("#pop-sourcecode").html(d.sourcecode);
+            if (d.x < $(window).width() / 2) {
                popLeft = d.x + poppadding;
             } else {
                popLeft = d.x - $("#pop-up").width() - poppadding;
-            } 
-            if(popLeft < 0) {
+            }
+            if (popLeft < 0) {
                popLeft = poppadding;
             }
             popTop = d.y + 100;
-            if(popTop > $(window).height() - $("#pop-up").height()) {
+            if (popTop > $(window).height() - $("#pop-up").height()) {
                popTop = $(window).height() - $("#pop-up").height() - poppadding;
-            } 
+            }
             $("#pop-up").css({
                "left": popLeft,
                "top": popTop
@@ -135,6 +175,51 @@ function initGraph(graphJSON, width, height, gravity) {
          });
 
       }
+
+// Make pop-up draggable Begin
+      (function($) {
+         $.fn.drags = function(opt) {
+
+            opt = $.extend({handle: "", cursor: "move"}, opt);
+
+            if (opt.handle === "") {
+               var $el = this;
+            } else {
+               var $el = this.find(opt.handle);
+            }
+
+            return $el.css('cursor', opt.cursor).on("mousedown", function(e) {
+               if (opt.handle === "") {
+                  var $drag = $(this).addClass('draggable');
+               } else {
+                  var $drag = $(this).addClass('active-handle').parent().addClass('draggable');
+               }
+               var z_idx = $drag.css('z-index'),
+                       drg_h = $drag.outerHeight(),
+                       drg_w = $drag.outerWidth(),
+                       pos_y = $drag.offset().top + drg_h - e.pageY,
+                       pos_x = $drag.offset().left + drg_w - e.pageX;
+               $drag.css('z-index', 1000).parents().on("mousemove", function(e) {
+                  $('.draggable').offset({
+                     top: e.pageY + pos_y - drg_h,
+                     left: e.pageX + pos_x - drg_w
+                  }).on("mouseup", function() {
+                     $(this).removeClass('draggable').css('z-index', z_idx);
+                  });
+               });
+               e.preventDefault(); // disable selection
+            }).on("mouseup", function() {
+               if (opt.handle === "") {
+                  $(this).removeClass('draggable');
+               } else {
+                  $(this).removeClass('active-handle').parent().removeClass('draggable');
+               }
+            });
+
+         }
+      })(jQuery);
+      $('#pop-up').drags();
+// Make pop-up draggable End
 
       var text = svg.append("svg:g").selectAll("g")
               .data(force.nodes())
@@ -205,14 +290,14 @@ function initGraph(graphJSON, width, height, gravity) {
          var minWidth = 99999;
          var minHeight = 99999;
          force.nodes().forEach(function(d) {
-               if (d.x < minWidth) {
-                  minWidth = d.x;
-                  minXNode = d;
-               }
-               if (d.y < minHeight) {
-                  minHeight = d.y;
-                  minYNode = d;
-               }
+            if (d.x < minWidth) {
+               minWidth = d.x;
+               minXNode = d;
+            }
+            if (d.y < minHeight) {
+               minHeight = d.y;
+               minYNode = d;
+            }
          });
          // Node with the lowest x must be on the left border
          // Node with the lowest y must be on the top border

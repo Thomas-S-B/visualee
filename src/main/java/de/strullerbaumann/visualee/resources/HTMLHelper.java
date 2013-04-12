@@ -34,7 +34,9 @@ public class HTMLHelper {
          br = new BufferedReader(new InputStreamReader(graphTemplate));
          String line;
          while ((line = br.readLine()) != null) {
-            htmlTemplateBuilder.append(line.trim());
+            //htmlTemplateBuilder.append(line.trim());
+            htmlTemplateBuilder.append(line);
+            htmlTemplateBuilder.append(System.lineSeparator());
          }
       } catch (FileNotFoundException ex) {
          Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
