@@ -1,182 +1,187 @@
-/* 
+/*
     Document   : style
     Created on : 13.12.2012, 16:53:52
     Author     : Thomas Struller-Baumann <thomas at struller-baumann.de>
 */
 
 path.link {
-   fill: none;
-   stroke: #666;
-   stroke-width: 1.5px;
+    fill: none;
+    stroke: #666;
+    stroke-width: 1.5px;
 }
 
-marker#inject {
-   fill: #999;
+marker#INJECT {
+    fill: #999;
 }
 
-marker#event {
-   fill: blue;
+marker#EVENT {
+    fill: blue;
 }
 
-marker#produces {
-   fill: #EB9100;
+marker#PRODUCES {
+    fill: #EB9100;
 }
 
-marker#observes {
-   fill: blue;
+marker#OBSERVES {
+    fill: blue;
 }
 
-marker#instance {
-   fill: #0a0;
+marker#INSTANCE {
+    fill: #0a0;
 }
 
-marker#ejb {
-   fill: #999;
+marker#EJB {
+    fill: #999;
 }
 
-path.link.inject {
-   stroke: #555;
+path.link.INJECT {
+    stroke: #555;
 }
 
-path.link.event { 
-   stroke: blue;
-   stroke-dasharray: 0,1 1;
+path.link.EVENT {
+    stroke: blue;
+    stroke-dasharray: 0,1 1;
 }
 
-path.link.observes { 
-   stroke: blue;
-   stroke-dasharray: 0,4 2;
+path.link.OBSERVES {
+    stroke: blue;
+    stroke-dasharray: 0,4 2;
 }
 
-path.link.produces { 
-   stroke: #EB9100;
-   stroke-dasharray: 0,6 6;
+path.link.PRODUCES {
+    stroke: #EB9100;
+    stroke-dasharray: 0,6 6;
 }
 
-path.link.instance { 
-   stroke: #0a0;
-   stroke-dasharray: 2,4 1;
+path.link.INSTANCE {
+    stroke: #0a0;
+    stroke-dasharray: 2,4 1;
 }
 
-path.link.ejb { 
-   stroke: red;
-   stroke-dasharray: 0,8 8;
+path.link.EJB {
+    stroke: red;
+    stroke-dasharray: 0,8 8;
+}
+div#graphadjustment {
+    font-size: 12px;
+    color:#000;
+    padding: 5px 10px 5px 10px;
+}
+
+div#graphadjustment-open:hover, div#graphadjustment-close:hover {
+    text-decoration:none;
+    color:#222;
+    text-shadow: 0.18em 0.18em 0.18em #999;
+    transition: color, text-shadow 0.3s;
+    cursor: default;
 }
 
 div#pop-up {
-   font-family: Arial, sans-serif;
-   display: none;
-   position: absolute;
-   color: white;
-   font-size: 12px;
-   text-shadow: 0.1em 0.1em 0.05em #333;
-   background: rgba(0,0,0,0.4);
-   padding: 5px 10px 5px 10px;
-   border-radius: 8px 8px;
-   top: 100px;
-   left: 100px;
-   box-shadow: 6px 6px 6px #666;
+    font-family: Arial, sans-serif;
+    display: none;
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    text-shadow: 0.1em 0.1em 0.05em #333;
+    background: rgba(0,0,0,0.4);
+    padding: 5px 10px 5px 10px;
+    border-radius: 8px 8px;
+    top: 100px;
+    left: 100px;
+    box-shadow: 6px 6px 6px #666;
 }
 div#pop-up-title {
-   font-size: 16px;
-   width:100px;
-   margin-bottom: 4px;
-   font-weight: bolder;
+    font-size: 16px;
+    width:100px;
+    margin-bottom: 4px;
+    font-weight: bolder;
 }
 div#pop-up-content {
-   font-size: 14px;
+    font-size: 14px;
 }
 
 div#pop-description {
-   width: 400px;
-   font-size: 12px;
-	background: rgba(0,0,0,0.3);
-}
-
-div#pop-sourcecode-open:hover, div#pop-sourcecode-close:hover, div#pop-description-close:hover, div#pop-description-close:hover {
-   text-decoration:none;
-   color:#FFF;
-   text-shadow: 0.18em 0.18em 0.18em #999;
-   transition: color, text-shadow 0.3s;
-   cursor: default;
+    width: 400px;
+    font-size: 12px;
+    background: rgba(0,0,0,0.3);
 }
 
 textarea#pop-sourcecode {
-   width: 500px;
-   height: 120px;
-   font-family:"Courier New";
-   font-size:11px;
-   background-color: rgba(255,255,255,0.8);
+    width: 500px;
+    height: 120px;
+    font-family:"Courier New";
+    font-size:11px;
+    background-color: rgba(255,255,255,0.8);
 }
 
 .table {
-   display:table;
+    display:table;
 }
 .table div {
-   display:table-row;
+    display:table-row;
 }
 .table div div {
-   display:table-cell;
-   width:50%;
+    display:table-cell;
+    width:50%;
 }
 
 text {
-   font: 12px sans-serif;
-   pointer-events: none;
+    font: 12px sans-serif;
+    pointer-events: none;
 }
 
 svg {
-   border-right-style: solid;
-   border-left-style: solid;
-   border-bottom-style: solid;
-   border-top-style: solid;
-   border-right-width: 2px;
-   border-left-width: 2px;
-   border-bottom-width: 2px;
-   border-top-width: 2px;
-   border-right-color: #ccc;
-   border-left-color: #ccc;
-   border-bottom-color: #ccc;
-   border-top-color: #ccc;
+    border-right-style: solid;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    border-top-style: solid;
+    border-right-width: 2px;
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+    border-top-width: 2px;
+    border-right-color: #ccc;
+    border-left-color: #ccc;
+    border-bottom-color: #ccc;
+    border-top-color: #ccc;
 }
 .node {
-   cursor: pointer;
+    cursor: pointer;
 }
 
 /* for resize */
 html,
 body {
-   margin: 0;
+    margin: 0;
 }
 
 body {
-   font: 12px "Arial";
+    font: 12px "Arial";
 }
 
 h1 {
-   font-size: 22px;
-   text-shadow: 0.07em 0.07em 0.07em #999;
-   padding: 0px 0px 0px 5px;
+    font-size: 18px;
+    text-shadow: 0.07em 0.07em 0.07em #999;
+    padding: 0px 0px 0px 5px;
 }
 
 a {
-   font-size: 16px;
-   font-weight:bold;
-   color:#333;
-   text-shadow: 0.07em 0.07em 0.07em #999;
-   padding: 0px 0px 0px 25px;
-   text-decoration:none;
+    font-size: 16px;
+    font-weight:bold;
+    color:#333;
+    text-shadow: 0.07em 0.07em 0.07em #999;
+    padding: 0px 0px 0px 25px;
+    text-decoration:none;
 }
 a:hover {
-   text-decoration:none;
-   color:#555;
-   padding: 0px 0px 0px 24px;
-   text-shadow: 0.18em 0.18em 0.18em #999;
-   transition: color, text-shadow 0.3s;
+    text-decoration:none;
+    color:#555;
+    padding: 0px 0px 0px 24px;
+    text-shadow: 0.18em 0.18em 0.18em #999;
+    transition: color, text-shadow 0.3s;
 }
 
 .created {
-   font-size: 10px;
-   text-shadow: 0.05em 0.05em 0.05em #999;
-   padding: 0px 0px 0px 5px;
+    font-size: 10px;
+    text-shadow: 0.05em 0.05em 0.05em #999;
+    padding: 0px 0px 0px 5px;
 }

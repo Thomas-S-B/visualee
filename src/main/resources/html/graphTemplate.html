@@ -1,40 +1,85 @@
-<!--
-Created on 11.12.2012 - 10:46:22 
-
-Copyright(c) 2012 Thomas Struller-Baumann. All Rights Reserved.
-This software is the proprietary information of Thomas Struller-Baumann.
--->
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <title>CDI_TEMPLATE_TITLE</title>
-      <link type="text/css" rel="stylesheet" href="css/style.css"/>
-      <script type="text/javascript" src="js/d3.v3.min.js"></script>
-      <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
-      <script type="text/javascript" src="js/classgraph.js"></script>
-   </head>
-   <body>
-      <h1>CDI_TEMPLATE_TITLE</h1>
-      <script type="text/javascript">
-         initGraph("CDI_TEMPLATE_JSON_FILE", CDI_TEMPLATE_WIDTH, CDI_TEMPLATE_HEIGHT, CDI_TEMPLATE_GRAVITY);
-      </script>
-      <div id="pop-up">
-         <div id="pop-up-title"></div>
-         <div id="pop-up-content">
-            <div class="table">
-               <div id="pop-description-open"><br/>Description (click to show)</div>
-               <div id="pop-description-close"><br/>Description (click to hide)</div>
-               <div id="pop-description"></div>
+    <head>
+        <meta charset="utf-8">
+        <title>CDI_TEMPLATE_TITLE</title>
+        <link type="text/css" rel="stylesheet" href="css/style.css"/>
+        <link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />
 
-               <div id="pop-sourcecode-open"><br/>Sourcecode (click to show)</div>
-               <div id="pop-sourcecode-close"><br/>Sourcecode (click to hide)</div>
-               <textarea readonly id="pop-sourcecode" class="ui-corner-all ui-widget-content pop-sourcecode" >
-               </textarea>
+        <script type="text/javascript" src="js/d3.v3.min.js"></script>
+        <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.9.2.min.js"></script>
+        <script type="text/javascript" src="js/classgraph.js"></script>
+
+    </head>
+    <body>
+        <h1>CDI_TEMPLATE_TITLE</h1>
+
+        <script type="text/javascript">
+            initGraph("CDI_TEMPLATE_JSON_FILE", CDI_TEMPLATE_WIDTH, CDI_TEMPLATE_HEIGHT);
+        </script>
+
+
+        <script>
+            window.onload = function() {
+                printValue('sliderDistance', 'distanceValue');
+                printValue('sliderGravity', 'gravityValue');
+                printValue('sliderGraphSize', 'graphSizeValue');
+            }
+
+            function printValue(sliderID, label) {
+                var x = document.getElementById(label);
+                var y = document.getElementById(sliderID);
+                x.innerHTML = y.value;
+            }
+        </script>
+
+        <div id="graphadjustment">
+            <div id="graphadjustment-open">Graphadjustment (click here to show)</div>
+            <div id="graphadjustment-close">Graphadjustment (click here to hide)</div>
+            <div id="graphadjustment-sliders">
+                <table>
+                    <tr>
+                        <td>Distance:<label id="distanceValue"></label></td>
+                        <td>Gravity:<label id="gravityValue"></label></td>
+                        <td>Graphsize:<label id="graphSizeValue"></label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="sliderDistance" type ="range" min ="10" max="800" step ="5" value ="160"
+                                   onchange="setDistance(sliderDistance.value);
+                printValue('sliderDistance', 'distanceValue');"/>
+                        </td>
+                        <td>
+                            <input id="sliderGravity" type ="range" min ="1" max="100" step ="1" value ="3"
+                                   onchange="setGravity(sliderGravity.value);
+                printValue('sliderGravity', 'gravityValue');"/>
+                        </td>
+                        <td>
+                            <input id="sliderGraphSize" type ="range" min ="10" max="6000" step ="50" value ="800"
+                                   onchange="setGraphSize(sliderGraphSize.value);
+                printValue('sliderGraphSize', 'graphSizeValue');"/>
+                        </td>
+                    </tr>
+                </table>
+
             </div>
-         </div>
-      </div>
-      <div id="canvasGraph"></div>
-      <div id="created" class="created">CDI_TEMPLATE_CREATIONDATE</div>
-   </body>
+        </div>
+
+        <div id="pop-up">
+            <div id="pop-up-title"></div>
+            <div id="pop-up-content">
+                <div class="table">
+                    <div id="pop-description-header"><br/>Description</div>
+                    <div id="pop-description"></div>
+
+                    <div id="pop-sourcecode-header"><br/>Sourcecode</div>
+                    <textarea readonly id="pop-sourcecode" class="ui-corner-all ui-widget-content pop-sourcecode" >
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div id="canvasGraph"></div>
+        <div id="created" class="created">CDI_TEMPLATE_CREATIONDATE</div>
+    </body>
 </html>

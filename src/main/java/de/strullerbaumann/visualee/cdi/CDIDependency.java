@@ -1,12 +1,21 @@
 /*
- * Created on 05.04.2013 - 12:58:18 
- * 
- * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
- * This software is the proprietary information of Thomas Struller-Baumann.
+ Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
 package de.strullerbaumann.visualee.cdi;
 
-import de.strullerbaumann.visualee.resources.JavaFile;
+import de.strullerbaumann.visualee.resources.JavaSource;
 
 /**
  *
@@ -14,40 +23,40 @@ import de.strullerbaumann.visualee.resources.JavaFile;
  */
 public class CDIDependency {
 
-   private CDIType cdiType;
-   private JavaFile myJavaFileFrom;
-   private JavaFile myJavaFileTo;
+    private CDIType cdiType;
+    private JavaSource javaSourceFrom;
+    private JavaSource javaSourceTo;
 
-   public CDIDependency() {
-   }
+    public CDIDependency() {
+    }
 
-   public CDIDependency(CDIType cdiType, JavaFile myJavaFileFrom, JavaFile myJavaFileTo) {
-      this.cdiType = cdiType;
-      this.myJavaFileFrom = myJavaFileFrom;
-      this.myJavaFileTo = myJavaFileTo;
-   }
+    public CDIDependency(CDIType cdiType, JavaSource javaSourceFrom, JavaSource javaSourceTo) {
+        this.cdiType = cdiType;
+        this.javaSourceFrom = javaSourceFrom;
+        this.javaSourceTo = javaSourceTo;
+    }
 
-   public CDIType getCdiType() {
-      return cdiType;
-   }
+    public CDIType getCdiType() {
+        return cdiType;
+    }
 
-   public void setCdiType(CDIType cdiType) {
-      this.cdiType = cdiType;
-   }
+    public void setCdiType(CDIType cdiType) {
+        this.cdiType = cdiType;
+    }
 
-   public JavaFile getMyJavaFileFrom() {
-      return myJavaFileFrom;
-   }
+    public JavaSource getJavaSourceFrom() {
+        return javaSourceFrom;
+    }
 
-   public void setMyJavaFileFrom(JavaFile myJavaFileFrom) {
-      this.myJavaFileFrom = myJavaFileFrom;
-   }
+    public void setJavaSourceFrom(JavaSource javaSourceFrom) {
+        this.javaSourceFrom = javaSourceFrom;
+    }
 
-   public JavaFile getMyJavaFileTo() {
-      return myJavaFileTo;
-   }
+    public JavaSource getJavaSourceTo() {
+        return javaSourceTo;
+    }
 
-   public void setMyJavaFileTo(JavaFile myJavaFileTo) {
-      this.myJavaFileTo = myJavaFileTo;
-   }
+    public void setJavaSourceTo(JavaSource javaSourceTo) {
+        this.javaSourceTo = javaSourceTo;
+    }
 }

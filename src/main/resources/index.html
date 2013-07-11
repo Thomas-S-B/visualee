@@ -1,23 +1,63 @@
 <!--
-Created on 11.12.2012 - 10:46:22 
+ Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
 
-Copyright(c) 2012 Thomas Struller-Baumann. All Rights Reserved.
-This software is the proprietary information of Thomas Struller-Baumann.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 -->
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <title>Visualized CDI</title>
-      <link type="text/css" rel="stylesheet" href="css/style.css"/>
-   </head>
-   <body>
-      <h1>Visualized CDI</h1>
-         <a href="graphOnlyCDI.html" target="_blank">Only CDI relevant classes</a>
-         <br/>
-         <a href="graphEventObserverClasses.html" target="_blank">Only Event/Observer classes</a>
-         <br/>
-         <a href="graphAllClasses.html" target="_blank">All classes</a>
-         <br/>
-   </body>
+    <head>
+        <meta charset="utf-8">
+        <title>VisualEE - Visualized CDI</title>
+        <link type="text/css" rel="stylesheet" href="css/style.css"/>
+        <link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />
+
+        <script type="text/javascript" src="js/d3.v3.min.js"></script>
+        <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-1.9.2.min.js"></script>
+    </head>
+    <body>
+        <h1>VisualEE - Visualized CDI</h1>
+        <a href="graphEventObserverClasses.html" target="_blank">Only Event/Observer classes</a>
+        <br/>
+        <a href="graphOnlyCDI.html" target="_blank">Only CDI relevant classes</a>
+        <br/>
+        <a href="graphAllClasses.html" target="_blank">All classes</a>
+        <br/>
+        <a href="graphInjectClasses.html" target="_blank">Only Inject classes</a>
+        <br/>
+        <a href="graphInstanceClasses.html" target="_blank">Only Instance classes</a>
+        <br/>
+        <a href="graphProducesClasses.html" target="_blank">Only Produces classes</a>
+        <br/>
+        <br/>
+        <label id="help">Help</label>
+        <div id="help-content">
+            Open information of a class = > Doubleclick on a class
+            <br/>
+            Move a class to a fixed position => Click and hold left mousebutton and drag the class
+            <br/>
+            Free a class with a fixed postion => Click left mousebutton on a class
+            <br/>
+        </div>
+
+        <script>
+            window.onload = function() {
+                $("#help-content").toggle();
+            };
+            $("#help").click(function(d) {
+                $("#help-content").fadeToggle("fast", "linear");
+            });
+        </script>
+
+    </body>
 </html>

@@ -1,22 +1,29 @@
 /*
- * Created on 08.04.2013 - 14:40:17 
- * 
- * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
- * This software is the proprietary information of Thomas Struller-Baumann.
+ Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
 package de.strullerbaumann.visualee.cdi;
 
-import de.strullerbaumann.visualee.resources.FileHelper;
-import de.strullerbaumann.visualee.resources.HTMLHelper;
-import de.strullerbaumann.visualee.resources.JavaFile;
-import de.strullerbaumann.visualee.resources.JavaFileExaminer;
-import de.strullerbaumann.visualee.resources.JavaFilesContainer;
-import de.strullerbaumann.visualee.resources.JsonHelper;
+import de.strullerbaumann.visualee.resources.FileManager;
+import de.strullerbaumann.visualee.resources.HTMLManager;
+import de.strullerbaumann.visualee.resources.JavaSource;
+import de.strullerbaumann.visualee.resources.JavaSourceContainer;
+import de.strullerbaumann.visualee.resources.JavaSourceExaminer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,137 +34,72 @@ import java.util.logging.Logger;
  */
 public class CDIAnalyzer {
 
-   private static JavaFilesContainer javaFilesContainer;
-   private static InputStream htmlTemplateIS;
-   private static String htmlTemplate;
+    private static JavaSourceContainer javaSourceContainer;
+    private static String htmlTemplate;
 
-   public static void analyze(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
-      CDIAnalyzer.htmlTemplateIS = htmlTemplateIS;
+    public static void analyze(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
+        // 1. Load Javafiles
+        final List<File> javaFiles = FileManager.searchFiles(rootFolder, ".java");
+        javaSourceContainer = new JavaSourceContainer();
+        for (File javaFile : javaFiles) {
+            JavaSource javaSource = new JavaSource(javaFile);
+            javaSourceContainer.add(javaSource);
+        }
+        // 2. Examine Javafiles
+        try {
+            JavaSourceExaminer.getInstance().examine(javaSourceContainer);
+        }
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IOException ex) {
+            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        // 3. Load HTML-Template
+        htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS);
+        // 4. Prepare outputdirectory
+        if (!outputdirectory.exists()) {
+            outputdirectory.mkdir();
+        }
+        // 5. Generate Graphs
+        // GRAPH - only CDI-relevant classes
+        CDIGraph graphOnlyCDI = CDIGraphCreator.generateCDIGraph("graphOnlyCDI", outputdirectory, null, true, htmlTemplateIS, javaSourceContainer);
+        graphOnlyCDI.setTitle("Only CDI relevant classes of " + rootFolder.getPath());
+        graphOnlyCDI.calculateDimensions();
+        HTMLManager.generateHTML(graphOnlyCDI, htmlTemplate);
 
-      // 1. Load Javafiles
-      final List<File> javaFiles = FileHelper.searchFiles(rootFolder, ".java");
-      javaFilesContainer = new JavaFilesContainer();
-      for (File javaFile : javaFiles) {
-         JavaFile myJavaFile = new JavaFile(javaFile);
-         javaFilesContainer.add(myJavaFile);
-      }
-      // 2. Examine Javafiles
-      try {
-         JavaFileExaminer.getInstance().examine(javaFilesContainer);
-      } catch (FileNotFoundException ex) {
-         Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-      } catch (IOException ex) {
-         Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      // 3. Load HTML-Template
-      htmlTemplate = HTMLHelper.loadHTMLTemplate(htmlTemplateIS);
-      // 4. Prepare outputdirectory
-      if (!outputdirectory.exists()) {
-         outputdirectory.mkdir();
-      }
-      // 5. Generate Graphs
-      // GRAPH - only CDI-relevant classes
-      CDIGraph graphOnlyCDI = generateCDIGraph("graphOnlyCDI", outputdirectory, null, true);
-      graphOnlyCDI.setTitle("Only CDI relevant classes of " + rootFolder.getPath());
-      graphOnlyCDI.calculateDimensions();
-      HTMLHelper.generateHTML(graphOnlyCDI, htmlTemplate);
+        // GRAPH - all classes
+        CDIGraph graphAllClasses = CDIGraphCreator.generateCDIGraph("graphAllClasses", outputdirectory, null, false, htmlTemplateIS, javaSourceContainer);
+        graphAllClasses.setTitle("All classes of " + rootFolder.getPath());
+        graphAllClasses.calculateDimensions();
+        HTMLManager.generateHTML(graphAllClasses, htmlTemplate);
 
-      // GRAPH - all classes
-      CDIGraph graphAllClasses = generateCDIGraph("graphAllClasses", outputdirectory, null, false);
-      graphAllClasses.setTitle("All classes of " + rootFolder.getPath());
-      graphAllClasses.calculateDimensions();
-      HTMLHelper.generateHTML(graphAllClasses, htmlTemplate);
+        // GRAPH - only Event/Observer classes
+        CDIFilter cdiFilterEventObserver = new CDIFilter().addCDIType(CDIType.EVENT).addCDIType(CDIType.OBSERVES);
+        CDIGraph graphEventObserverClasses = CDIGraphCreator.generateCDIGraph("graphEventObserverClasses", outputdirectory, cdiFilterEventObserver, true, htmlTemplateIS, javaSourceContainer);
+        graphEventObserverClasses.setTitle("Event/Observer classes of " + rootFolder.getPath());
+        graphEventObserverClasses.calculateDimensions();
+        HTMLManager.generateHTML(graphEventObserverClasses, htmlTemplate);
 
-      // GRAPH - only Event/Observer classes
-      CDIFilter cdiFilter = new CDIFilter().addCDIType(CDIType.EVENT).addCDIType(CDIType.OBSERVES);
-      CDIGraph graphEventObserverClasses = generateCDIGraph("graphEventObserverClasses", outputdirectory, cdiFilter, true);
-      graphEventObserverClasses.setTitle("Event/Observer classes of " + rootFolder.getPath());
-      graphEventObserverClasses.calculateDimensions();
-      HTMLHelper.generateHTML(graphEventObserverClasses, htmlTemplate);
-   }
+        // GRAPH - only Instance classes
+        CDIFilter cdiFilterInstance = new CDIFilter().addCDIType(CDIType.INSTANCE);
+        CDIGraph graphInstanceClasses = CDIGraphCreator.generateCDIGraph("graphInstanceClasses", outputdirectory, cdiFilterInstance, true, htmlTemplateIS, javaSourceContainer);
+        graphInstanceClasses.setTitle("Only Instance classes of " + rootFolder.getPath());
+        graphInstanceClasses.calculateDimensions();
+        HTMLManager.generateHTML(graphInstanceClasses, htmlTemplate);
 
-   private static CDIGraph generateCDIGraph(String fileName, File outputdirectory, CDIFilter cdiFilter, boolean onlyCDIRelevantClasses) {
-      CDIGraph graph = new CDIGraph();
-      File jsonFile = new File(outputdirectory + "/" + fileName + ".json");
-      graph.setJsonFile(jsonFile);
-      File htmlFile = new File(outputdirectory + "/" + fileName + ".html");
-      graph.setHtmlFile(htmlFile);
-      graph.setHtmlTemplateIS(htmlTemplateIS);
-      if (onlyCDIRelevantClasses) {
-         graph.setGravity("0.01");
-      } else {
-         graph.setGravity("0.06");
-      }
+        // GRAPH - only Inject classes
+        CDIFilter cdiFilterInject = new CDIFilter().addCDIType(CDIType.INJECT);
+        CDIGraph graphInjectClasses = CDIGraphCreator.generateCDIGraph("graphInjectClasses", outputdirectory, cdiFilterInject, true, htmlTemplateIS, javaSourceContainer);
+        graphInjectClasses.setTitle("Only Inject classes of " + rootFolder.getPath());
+        graphInjectClasses.calculateDimensions();
+        HTMLManager.generateHTML(graphInjectClasses, htmlTemplate);
 
-      // 3. Graphen für die Javaklassen erstellen
-      // JSON erzeugen
-      int countClasses = 0;
-      // CDI relevante Klassen ermitteln, also alle welche CDI haben oder für CDI hergenommen werden
-      // und nur Event oder Observer haben
-      List<JavaFile> classesCDIRelated = javaFilesContainer.getCDIRelevantClasses(cdiFilter);
-      try (PrintStream ps = new PrintStream(jsonFile)) {
-         // TODO schöner coden
-         if (classesCDIRelated.isEmpty()) {  // Was gefunden?
-            ps.println("{");
-            ps.println("    \"nodes\":      []");
-            ps.println("}");
-            return graph;
-         }
-         // Nodes ausgeben
-         int iNode = 0;
-         ps.println("{");
-         ps.println("    \"nodes\":      [");
-         StringBuilder nodesJSON = new StringBuilder();
-         for (JavaFile myJavaClass : javaFilesContainer.getMyJavaFiles()) {
-            // if (classesCDIRelated.contains(myJavaClass)) {  // nur CDI-relevante
-            if (!onlyCDIRelevantClasses || (onlyCDIRelevantClasses && classesCDIRelated.contains(myJavaClass))) {
-               myJavaClass.setId(iNode);
-               String description = JsonHelper.generateDescription(myJavaClass);
-               String sourcecode = JsonHelper.generateSourcecode(myJavaClass);
-               nodesJSON.append(JsonHelper.getJSONNode(myJavaClass.toString(), myJavaClass.getGroup(), description, sourcecode, iNode));
-               if (iNode < javaFilesContainer.getMyJavaFiles().size() - 1) {
-                  nodesJSON.append("    ,");
-               }
-               iNode++;
-            }
-         }
-
-         if (nodesJSON.length() > 0) { // Was gefunden?
-            countClasses = iNode + 1; //+1 da iNode mit 0 beginnt
-            nodesJSON.deleteCharAt(nodesJSON.length() - 1);   //das letzte , löschen
-            ps.println(nodesJSON.toString());
-            ps.println("    ],");
-            // Links ausgeben
-            ps.println("    \"links\":      [");
-            StringBuilder linksJSON = new StringBuilder();
-            final String linkSeparator = "    ," + System.lineSeparator();
-            boolean hasLinks = false;
-            for (JavaFile myJavaClass : javaFilesContainer.getMyJavaFiles()) {
-               int target = myJavaClass.getId();
-               int value = 1;
-               for (CDIDependency dependency : myJavaClass.getInjected()) {
-                  if (cdiFilter == null || cdiFilter.contains(dependency.getCdiType())) {
-                     int source = dependency.getMyJavaFileTo().getId();
-                     CDIType cdiType = dependency.getCdiType();
-                     linksJSON.append(JsonHelper.getJSONLink(source, target, value, cdiType));
-                     linksJSON.append(linkSeparator);
-                     hasLinks = true;
-                  }
-               }
-            }
-            if (hasLinks) {
-               String strLinks = linksJSON.substring(0, linksJSON.lastIndexOf(linkSeparator));  //letztes Komma abschneiden
-               ps.println(strLinks);
-            }
-            ps.println("    ]");
-            ps.println("}");
-         }
-      } catch (FileNotFoundException ex) {
-         Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      graph.setCountClasses(countClasses);
-      graph.setCountCDIClasses(countClasses);
-
-      return graph;
-   }
+        // GRAPH - only Produces classes
+        CDIFilter cdiFilterProduces = new CDIFilter().addCDIType(CDIType.PRODUCES);
+        CDIGraph graphProducesClasses = CDIGraphCreator.generateCDIGraph("graphProducesClasses", outputdirectory, cdiFilterProduces, true, htmlTemplateIS, javaSourceContainer);
+        graphProducesClasses.setTitle("Only Produces classes of " + rootFolder.getPath());
+        graphProducesClasses.calculateDimensions();
+        HTMLManager.generateHTML(graphProducesClasses, htmlTemplate);
+    }
 }
