@@ -147,7 +147,8 @@ public class JavaSourceExaminer {
         findAndSetPackage(javaSource);
 
         // Examine class body
-        try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCode()))) {
+        //try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCode()))) {
+        try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
             while (scanner.hasNext()) {
                 String line = scanner.next();
                 CDIType cdiType = getCDITypeFromLine(line);
@@ -217,6 +218,16 @@ public class JavaSourceExaminer {
                             }
                             line = line.substring(line.indexOf("<") + 1, line.indexOf(">")); // Event<Person> becomes to Person
                         }
+
+                        // START Für @Inject setter Methoden siehe Testcase testFindAndSetAttributesSetInject()
+                        while (lineIsAJavaToken(line)) {
+                            line = scanner.next();
+                        }
+                        if (line.indexOf("(") > - 1) {
+                            line = line.substring(line.indexOf("(") + 1);
+                        }
+                        // END Für @Inject setter Methoden siehe Testcase testFindAndSetAttributesSetInject()
+
                         String className = line;
                         JavaSource injectedFound = JavaSourceExaminer.getInstance().getJavaSourceByName(className);
                         // Da die Klasse nicht gefunden wurde, ist diese nicht aus den Projektsourcen, sondern extern oder vom JDK
@@ -226,6 +237,7 @@ public class JavaSourceExaminer {
                             javaSource.getInjected().add(dependency);
                         } else {
                             // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String, double etc.)
+                            // Logger.getLogger(JavaSourceExaminer.class.getName()).log(Level.INFO, "### added new javasource: {0}", className);
                             JavaSource newJavaSource = new JavaSource(className);
                             this.javaSourceContainer.add(newJavaSource);
                             CDIDependency dependency = new CDIDependency(cdiType, javaSource, newJavaSource);
@@ -235,6 +247,16 @@ public class JavaSourceExaminer {
                 }
             }
         }
+    }
+
+    // TODO Unittest
+    protected boolean lineIsAJavaToken(String line) {
+        if (line.indexOf("void") > - 1
+                || line.indexOf("static") > - 1) {
+            return true;
+        }
+
+        return false;
     }
 
     protected int countChar(String str, char char2Find) {

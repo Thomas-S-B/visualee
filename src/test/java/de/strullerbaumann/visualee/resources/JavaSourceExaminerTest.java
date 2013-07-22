@@ -1,4 +1,4 @@
-/*
+ /*
  * Created on 11.07.2013 - 11:19:01
  *
  * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
@@ -208,7 +208,7 @@ public class JavaSourceExaminerTest {
         assertEquals("Snapshot", dependency.getJavaSourceTo().getName());
     }
 
-    //@Test
+    @Test
     public void testFindAndSetAttributesSetInject() {
         JavaSource javaSource;
         String sourceCode;
@@ -234,7 +234,7 @@ public class JavaSourceExaminerTest {
         assertEquals("EntityManager", dependency.getJavaSourceTo().getName());
     }
 
-    //@Test
+    @Test
     public void testFindAndSetAttributesStaticInject() {
         JavaSource javaSource;
         String sourceCode;
@@ -267,7 +267,7 @@ public class JavaSourceExaminerTest {
         assertEquals("Log", dependency.getJavaSourceTo().getName());
     }
 
-    //@Test
+    @Test
     public void testFindAndSetAttributesIgnoreComments() {
         JavaSource javaSource;
         String sourceCode;
@@ -296,7 +296,7 @@ public class JavaSourceExaminerTest {
         assertEquals(0, javaSource.getInjected().size());
     }
 
-    //@Test
+    @Test
     public void testFindAndSetAttributesIgnoreCommentBlocks() {
         JavaSource javaSource;
         String sourceCode;

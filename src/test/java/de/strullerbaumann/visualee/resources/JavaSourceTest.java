@@ -19,9 +19,6 @@ public class JavaSourceTest {
     public JavaSourceTest() {
     }
 
-    /**
-     * Test constructor
-     */
     @Test
     public void testConstructor() {
         String expected = "test2myTestJavaFile";
@@ -30,9 +27,6 @@ public class JavaSourceTest {
         assertEquals(expected, javaSource.getName());
     }
 
-    /**
-     * Test of getEscapedSourceCode method, of class JavaSource.
-     */
     @Test
     public void testGetEscapedSourceCode() {
 
@@ -47,5 +41,27 @@ public class JavaSourceTest {
         javaSource.setSourceCode(testSource);
 
         assertEquals(expected, javaSource.getEscapedSourceCode());
+    }
+
+    @Test
+    public void testGetSourceCodeWithoutComments() {
+
+        String testSource = "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
+                + "      // this is a comment\n"
+                + "      List<Script> scripts = this.scripting.activeScripts();\n"
+                + "      /* commentblock\n"
+                + "      * \n"
+                + "      * commentblock\n"
+                + "      */\n"
+                + "      //this is also a comment\n"
+                + "      try {";
+        String expected = "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
+                + "      List<Script> scripts = this.scripting.activeScripts();\n"
+                + "      try {\n";
+
+        JavaSource javaSource = new JavaSource("TestSource");
+        javaSource.setSourceCode(testSource);
+
+        assertEquals(expected, javaSource.getSourceCodeWithoutComments());
     }
 }

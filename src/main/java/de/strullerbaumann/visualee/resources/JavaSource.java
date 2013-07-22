@@ -19,6 +19,7 @@ import de.strullerbaumann.visualee.cdi.CDIDependency;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  *
@@ -89,6 +90,28 @@ public class JavaSource {
 
     public String getSourceCode() {
         return sourceCode;
+    }
+
+    public String getSourceCodeWithoutComments() {
+        Scanner scanner = new Scanner(sourceCode);
+        scanner.useDelimiter("[\n]+");
+        StringBuilder sourceCodeWithoutComments = new StringBuilder();
+        boolean isInCommentBlock = false;
+        while (scanner.hasNext()) {
+            String line = scanner.next();
+            if (line.trim().startsWith("/*")) {
+                isInCommentBlock = true;
+            }
+            if (!line.trim().startsWith("//") && !isInCommentBlock) {
+                sourceCodeWithoutComments.append(line);
+                sourceCodeWithoutComments.append("\n");
+            }
+            if (line.trim().startsWith("*/")) {
+                isInCommentBlock = false;
+            }
+        }
+
+        return sourceCodeWithoutComments.toString();
     }
 
     public String getEscapedSourceCode() {

@@ -69,8 +69,8 @@ public class VisualEEMojo extends AbstractMojo {
         export("/js/", "jquery-ui-1.9.2.min.js", outputdirectory.getAbsoluteFile());
         export("/js/", "classgraph.js", outputdirectory.getAbsoluteFile());
         export("/js/", "LICENSE", outputdirectory.getAbsoluteFile());
-        // export("/", "index.html", outputdirectory.getAbsoluteFile());
 
+        // Only inspect src-folder, and not e.g. target-folder
         String sourceFolder = getSourceFolder();
         if (sourceFolder != null) {
             HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
@@ -87,7 +87,6 @@ public class VisualEEMojo extends AbstractMojo {
 
     private String getSourceFolder() {
         for (String sourceFolder : compileSourceRoots) {
-            // Only inspect src-folder, and not e.g. target-folder
             if (sourceFolder.indexOf(File.separatorChar + "src" + File.separatorChar) > -1) {
                 return sourceFolder + File.separatorChar;
             }
