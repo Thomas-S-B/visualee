@@ -16,6 +16,7 @@ package de.strullerbaumann.visualee;
  limitations under the License.
  */
 import de.strullerbaumann.visualee.cdi.CDIAnalyzer;
+import de.strullerbaumann.visualee.resources.HTMLManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -56,12 +57,11 @@ public class VisualEEMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException {
         getLog().info("#######################################################");
-        getLog().info("###           VisualEE-Plugin                    ");
+        getLog().info("### VisualEE-Plugin");
 
-        // HTML-Template als InputStream breitstellen
+        InputStream indexIS = getClass().getResourceAsStream("/html/index.html");
         InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
 
-        // js, html und css in das Ausgabeverzeichnis kopieren
         export("/css/", "style.css", outputdirectory.getAbsoluteFile());
         export("/css/", "jquery-ui.css", outputdirectory.getAbsoluteFile());
         export("/js/", "d3.v3.min.js", outputdirectory.getAbsoluteFile());
@@ -69,16 +69,30 @@ public class VisualEEMojo extends AbstractMojo {
         export("/js/", "jquery-ui-1.9.2.min.js", outputdirectory.getAbsoluteFile());
         export("/js/", "classgraph.js", outputdirectory.getAbsoluteFile());
         export("/js/", "LICENSE", outputdirectory.getAbsoluteFile());
-        export("/", "index.html", outputdirectory.getAbsoluteFile());
+        // export("/", "index.html", outputdirectory.getAbsoluteFile());
 
-        for (String sourceFolder : compileSourceRoots) {
-            sourceFolder = sourceFolder + "/";
+        String sourceFolder = getSourceFolder();
+        if (sourceFolder != null) {
+            HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
             getLog().info("### Analyzing sourcefolder: " + sourceFolder);
             CDIAnalyzer.analyze(new File(sourceFolder), outputdirectory, graphTemplateIS);
+            getLog().info("### Done, visualization can be found in");
+            getLog().info("### " + outputdirectory + File.separatorChar + "index.html");
+            getLog().info("#######################################################");
+        } else {
+            getLog().error("### Cannot find src-folder");
         }
-        getLog().info("### Done, visualization can be found under                                               ");
-        getLog().info("### " + outputdirectory + File.pathSeparatorChar + "index.html");
-        getLog().info("#######################################################");
+
+    }
+
+    private String getSourceFolder() {
+        for (String sourceFolder : compileSourceRoots) {
+            // Only inspect src-folder, and not e.g. target-folder
+            if (sourceFolder.indexOf(File.separatorChar + "src" + File.separatorChar) > -1) {
+                return sourceFolder + File.separatorChar;
+            }
+        }
+        return null;
     }
 
     //Exports Files from jar to a given directory
@@ -87,7 +101,7 @@ public class VisualEEMojo extends AbstractMojo {
             if (!targetFolder.exists()) {
                 targetFolder.mkdir();
             }
-            File dstResourceFolder = new File(targetFolder + sourceFolder + "/");
+            File dstResourceFolder = new File(targetFolder + sourceFolder + File.separatorChar);
             if (!dstResourceFolder.exists()) {
                 dstResourceFolder.mkdir();
             }

@@ -70,8 +70,14 @@ public class CDIGraphCreator {
                     int source = dependency.getJavaSourceTo().getId();
                     CDIType cdiType = dependency.getCdiType();
                     JsonObjectBuilder linksBuilder = Json.createObjectBuilder();
-                    if (cdiType == CDIType.EVENT || cdiType == CDIType.PRODUCES || cdiType == CDIType.OBSERVES) {
-                        // Bei Events, Produces und Observers gerade andersrum, s. d. der Pfeil zum Observer bzw. zur Produces Klasse gehen soll
+                    if (cdiType == CDIType.EVENT
+                            || cdiType == CDIType.PRODUCES
+                            || cdiType == CDIType.OBSERVES
+                            || cdiType == CDIType.ONE_TO_MANY
+                            || cdiType == CDIType.ONE_TO_ONE
+                            || cdiType == CDIType.MANY_TO_ONE
+                            || cdiType == CDIType.MANY_TO_MANY) {
+                        // Bei Events, Produces, OneToMany und Observers gerade andersrum, s. d. der Pfeil zum Observer bzw. zur Produces Klasse gehen soll
                         linksBuilder.add("source", target);
                         linksBuilder.add("target", source);
                     } else {

@@ -18,6 +18,7 @@ package de.strullerbaumann.visualee.resources;
 import de.strullerbaumann.visualee.cdi.CDIAnalyzer;
 import de.strullerbaumann.visualee.cdi.CDIGraph;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class HTMLManager {
 
-    public static String loadHTMLTemplate(InputStream graphTemplate) {
+    public static String loadHTMLTemplate(InputStream graphTemplate, String htmlName) {
         // So spart man sich mehrfaches laden des Templates und auch umständliche reopen des InputStreams
         // InputStream, da im Plugin per getResource auf das html im jar zugegriffen wird)
         StringBuilder htmlTemplateBuilder = new StringBuilder();
@@ -49,10 +50,10 @@ public class HTMLManager {
             }
         }
         catch (FileNotFoundException ex) {
-            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
         }
         catch (IOException ex) {
-            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
         }
         finally {
             if (br != null) {
@@ -60,11 +61,27 @@ public class HTMLManager {
                     br.close();
                 }
                 catch (IOException ex) {
-                    Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, "can not close " + htmlName, ex);
                 }
             }
         }
         return htmlTemplateBuilder.toString();
+    }
+
+    public static void generateIndexHTML(File outputdirectory, InputStream indexHtmlIS, String title) {
+        String indexHtml = loadHTMLTemplate(indexHtmlIS, "index.html");
+        indexHtml = indexHtml.replaceAll("INDEX_PROJECT_TITLE", title);
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
+        indexHtml = indexHtml.replaceAll("INDEX_CREATIONDATE", "Created " + sdf.format(new Date()));
+
+        File htmlFile = new File(outputdirectory.getAbsolutePath() + "/index.html");
+        try (PrintStream ps = new PrintStream(htmlFile)) {
+            ps.println(indexHtml);
+        }
+        catch (FileNotFoundException ex) {
+            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static void generateHTML(CDIGraph graph, String htmlTemplate) {

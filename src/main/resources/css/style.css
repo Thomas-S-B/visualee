@@ -13,62 +13,73 @@ path.link {
 marker#INJECT {
     fill: #999;
 }
-
-marker#EVENT {
-    fill: blue;
-}
-
-marker#PRODUCES {
-    fill: #EB9100;
-}
-
-marker#OBSERVES {
-    fill: blue;
-}
-
-marker#INSTANCE {
-    fill: #0a0;
-}
-
-marker#EJB {
-    fill: #999;
-}
-
 path.link.INJECT {
     stroke: #555;
 }
 
+marker#EVENT {
+    fill: blue;
+}
 path.link.EVENT {
     stroke: blue;
     stroke-dasharray: 0,1 1;
 }
 
-path.link.OBSERVES {
-    stroke: blue;
-    stroke-dasharray: 0,4 2;
+marker#PRODUCES {
+    fill: #EB9100;
 }
-
 path.link.PRODUCES {
     stroke: #EB9100;
     stroke-dasharray: 0,6 6;
 }
 
+marker#OBSERVES {
+    fill: blue;
+}
+path.link.OBSERVES {
+    stroke: blue;
+    stroke-dasharray: 0,4 2;
+}
+
+marker#INSTANCE {
+    fill: #0a0;
+}
 path.link.INSTANCE {
     stroke: #0a0;
     stroke-dasharray: 2,4 1;
 }
 
+marker#EJB {
+    fill: #999;
+}
 path.link.EJB {
     stroke: red;
     stroke-dasharray: 0,8 8;
 }
-div#graphadjustment {
+
+marker#ONE_TO_ONE, marker#ONE_TO_MANY, marker#MANY_TO_ONE, marker#MANY_TO_MANY,{
+    fill: #005;
+}
+path.link.ONE_TO_ONE {
+    stroke: #005;
+}
+path.link.ONE_TO_MANY {
+    stroke: #008;
+}
+path.link.MANY_TO_ONE {
+    stroke: #00a;
+}
+path.link.MANY_TO_MANY {
+    stroke: #00f;
+}
+
+div#tweakgraph {
     font-size: 12px;
     color:#000;
     padding: 5px 10px 5px 10px;
 }
 
-div#graphadjustment-open:hover, div#graphadjustment-close:hover {
+div#tweakgraph-open:hover, div#tweakgraph-close:hover {
     text-decoration:none;
     color:#222;
     text-shadow: 0.18em 0.18em 0.18em #999;

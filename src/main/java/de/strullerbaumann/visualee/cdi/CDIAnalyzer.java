@@ -55,8 +55,10 @@ public class CDIAnalyzer {
         catch (IOException ex) {
             Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // 3. Load HTML-Template
-        htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS);
+        // 3. Load HTML-Template, if not already done (Maven modules)
+        if (htmlTemplate == null) {
+            htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
+        }
         // 4. Prepare outputdirectory
         if (!outputdirectory.exists()) {
             outputdirectory.mkdir();
@@ -101,5 +103,12 @@ public class CDIAnalyzer {
         graphProducesClasses.setTitle("Only Produces classes of " + rootFolder.getPath());
         graphProducesClasses.calculateDimensions();
         HTMLManager.generateHTML(graphProducesClasses, htmlTemplate);
+
+        // GRAPH - only JPA classes
+        CDIFilter cdiFilterJPA = new CDIFilter().addCDIType(CDIType.ONE_TO_ONE).addCDIType(CDIType.ONE_TO_MANY).addCDIType(CDIType.MANY_TO_ONE).addCDIType(CDIType.MANY_TO_MANY);
+        CDIGraph graphJPAClasses = CDIGraphCreator.generateCDIGraph("graphJPAClasses", outputdirectory, cdiFilterJPA, true, htmlTemplateIS, javaSourceContainer);
+        graphJPAClasses.setTitle("Only JPA classes of " + rootFolder.getPath());
+        graphJPAClasses.calculateDimensions();
+        HTMLManager.generateHTML(graphJPAClasses, htmlTemplate);
     }
 }

@@ -16,6 +16,18 @@
 
 var force;
 var svg;
+var cdiTypeKeys = [];
+var cdiTypes = new Array();
+cdiTypes["INJECT"] = "Is injected in";
+cdiTypes["EVENT"] = "Fires event";
+cdiTypes['OBSERVES'] = "Observes for";
+cdiTypes['INSTANCE'] = "Injected instance";
+cdiTypes['PRODUCES'] = "Produces";
+cdiTypes['EJB'] = "EJB";
+cdiTypes['ONE_TO_MANY'] = "One to many >>";
+cdiTypes['ONE_TO_ONE'] = "One to one >>";
+cdiTypes['MANY_TO_ONE'] = "Many to one >>";
+cdiTypes['MANY_TO_MANY'] = "Many to many >>";
 
 function setDistance(newDistance) {
     force.distance(newDistance)
@@ -32,6 +44,14 @@ function setGraphSize(newSize) {
     svg.attr("width", newSize).attr("height", newSize);
 }
 
+function initCDITypeKeys() {
+    var cdiTypeKeyIndex = 0;
+    for (key in cdiTypes) {
+        cdiTypeKeys[cdiTypeKeyIndex] = key;
+        cdiTypeKeyIndex++;
+    }
+}
+
 function initGraph(graphJSON, width, height) {
     force = d3.layout.force()
             .size([width, height])
@@ -40,6 +60,7 @@ function initGraph(graphJSON, width, height) {
             .charge(-height / 2)
             .linkDistance(160);
 
+    initCDITypeKeys();
 
     d3.json(graphJSON, function(json) {
         force.nodes(json.nodes)
@@ -52,7 +73,7 @@ function initGraph(graphJSON, width, height) {
                 .attr("height", height);
 
         svg.append("svg:defs").selectAll("marker")
-                .data(["INJECT", "EVENT", "PRODUCES", "EJB", "INSTANCE", "OBSERVES"])
+                .data(cdiTypeKeys)
                 .enter().append("svg:marker")
                 .attr("id", String)
                 .attr("viewBox", "0 -5 10 10")
@@ -97,17 +118,17 @@ function initGraph(graphJSON, width, height) {
         })
                 .call(force.drag);
 
-        // Show/Hide graphadjustment
-        $("#graphadjustment-open").fadeOut(0);
-        $("#graphadjustment-open").click(function(d) {
-            $("#graphadjustment-close").fadeIn(450);
-            $("#graphadjustment-open").fadeOut(0);
-            $("#graphadjustment-sliders").slideDown(250);
+        // Show/Hide tweak graph
+        $("#tweakgraph-open").fadeOut(0);
+        $("#tweakgraph-open").click(function(d) {
+            $("#tweakgraph-close").fadeIn(450);
+            $("#tweakgraph-open").fadeOut(0);
+            $("#tweakgraph-sliders").slideDown(250);
         });
-        $("#graphadjustment-close").click(function(d) {
-            $("#graphadjustment-close").fadeOut(0);
-            $("#graphadjustment-open").fadeIn(450);
-            $("#graphadjustment-sliders").slideUp(250);
+        $("#tweakgraph-close").click(function(d) {
+            $("#tweakgraph-close").fadeOut(0);
+            $("#tweakgraph-open").fadeIn(450);
+            $("#tweakgraph-sliders").slideUp(250);
         });
 
 
@@ -230,22 +251,33 @@ function initGraph(graphJSON, width, height) {
                 .attr("y", ".31em")
                 .style("font-size", "80%")
                 .text(function(d) {
-            // return d.source.name + " - " + d.target.name;
-            return d.type;
+            return cdiTypes[d.type];
         });
 
+
+
         function tick() {
+            var dx;
+            var dy;
+            var dr;
             path.attr("d", function(d) {
-                var dx = d.target.x - d.source.x;
-                var dy = d.target.y - d.source.y;
-                var dr = Math.sqrt(dx * dx + dy * dy) * 3;  //*3 for a flatter curve
+                dx = d.target.x - d.source.x;
+                dy = d.target.y - d.source.y;
+                dr = Math.sqrt(dx * dx + dy * dy) * 3;  //*3 for a flatter curve
                 return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
             });
 
             label.attr("transform", function(d) {
                 var dx;
                 var dy;
-                var offsetDivider = 5;
+                var offsetDivider = 8;
+
+                if (d.type === 'ONE_TO_ONE') {
+                    offsetDivider = 5;
+                }
+                if (d.type === 'ONE_TO_MANY') {
+                    offsetDivider = 3;
+                }
 
                 if (d.source.x < d.target.x) {
                     dx = d.source.x + (d.target.x - d.source.x) / offsetDivider;
@@ -259,7 +291,24 @@ function initGraph(graphJSON, width, height) {
                     dy = d.source.y - (d.source.y - d.target.y) / offsetDivider;
                 }
 
-                var rotate = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x) * 180 / Math.PI;
+
+                // Move label closer to the curve
+                if (d.source.x < d.target.x) {
+                    dy = dy - 10;
+                } else {
+                    dy = dy + 10;
+                }
+
+                // Rotate label closer to the curve
+                var rotateCloserToCurve = 26;
+                var rotate;
+                if (d.source.x < d.target.x) {
+                    rotate = Math.atan2(d.target.y - d.source.y - rotateCloserToCurve, d.target.x - d.source.x) * 180 / Math.PI;
+                } else {
+                    rotate = Math.atan2(d.target.y - d.source.y + rotateCloserToCurve, d.target.x - d.source.x) * 180 / Math.PI;
+                }
+
+
                 return "translate(" + dx + "," + dy + ") rotate(" + rotate + ")";
             });
 

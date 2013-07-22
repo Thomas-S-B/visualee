@@ -21,5 +21,5 @@ package de.strullerbaumann.visualee.cdi;
  */
 public enum CDIType {
 
-    INJECT, EVENT, PRODUCES, EJB, OBSERVES, INSTANCE
+    INJECT, EVENT, PRODUCES, EJB, OBSERVES, INSTANCE, ONE_TO_ONE, ONE_TO_MANY, MANY_TO_ONE, MANY_TO_MANY
 }

@@ -75,6 +75,26 @@ public class Description {
                     descriptionPart.append(dependency.getJavaSourceTo())
                             .append(" is injected as an instance");
                     break;
+                case ONE_TO_ONE:
+                    descriptionPart
+                            .append("One to one relation to ")
+                            .append(dependency.getJavaSourceTo());
+                    break;
+                case ONE_TO_MANY:
+                    descriptionPart
+                            .append("One to many relation to ")
+                            .append(dependency.getJavaSourceTo());
+                    break;
+                case MANY_TO_ONE:
+                    descriptionPart
+                            .append("Many to one relation to ")
+                            .append(dependency.getJavaSourceTo());
+                    break;
+                case MANY_TO_MANY:
+                    descriptionPart
+                            .append("Many to many relation to ")
+                            .append(dependency.getJavaSourceTo());
+                    break;
             }
             descriptionPart.append("</nobr>");
         }
@@ -100,6 +120,14 @@ public class Description {
                 return "Produces:";
             case INSTANCE:
                 return "Instances:";
+            case ONE_TO_ONE:
+                return "One to one relations:";
+            case ONE_TO_MANY:
+                return "One to many relations:";
+            case MANY_TO_ONE:
+                return "Many to one relations:";
+            case MANY_TO_MANY:
+                return "Many to many relations:";
         }
 
         return null;

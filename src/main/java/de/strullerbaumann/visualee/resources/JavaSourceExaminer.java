@@ -21,9 +21,13 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,7 +35,7 @@ import java.util.Scanner;
  */
 public class JavaSourceExaminer {
 
-    private JavaSourceContainer javaSourceContainer;
+    protected JavaSourceContainer javaSourceContainer;
 
     private static class JavaSourceExaminerHolder {
 
@@ -52,7 +56,7 @@ public class JavaSourceExaminer {
         }
 
         // Group durchnumerieren/setzen aus packagePaths (diese sind ja jetzt alle belegt)
-        // alles aus dem sleben Package haben die selbe griup
+        // alle aus demselben Package haben die selbe groupNr
         Map<String, Integer> packagePaths = new HashMap<>();
         int groupNr = 1;
         for (JavaSource javaSource : javaSourceContainer.getJavaSources()) {
@@ -70,65 +74,105 @@ public class JavaSourceExaminer {
 
     public JavaSource getJavaSourceByName(String className) {
         for (JavaSource javaSource : javaSourceContainer.getJavaSources()) {
-            if (javaSource.getJavaFile() == null) {
-                if (className.equals(javaSource.getName())) {
-                    return javaSource;
-                }
-            } else {
-                if (javaSource.getJavaFile().getName().endsWith(className + ".java")) {
-                    return javaSource;
-                }
+            if (className.equals(javaSource.getName())) {
+                return javaSource;
             }
         }
         return null;
     }
 
-    private void loadSourceCode(JavaSource javaSource) throws FileNotFoundException, IOException {
+    private void loadSourceCode(JavaSource javaSource) {
+        if (javaSource.getJavaFile() == null) {
+            return;
+        }
         StringBuilder sourceCode = new StringBuilder();
         if (javaSource.getJavaFile() != null) {
-            try (BufferedReader br = new BufferedReader(new FileReader(javaSource.getJavaFile()))) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(javaSource.getJavaFile()));
                 String line;
                 while ((line = br.readLine()) != null) {
                     sourceCode.append(line).append('\n');
                 }
             }
+            catch (IOException ex) {
+                Logger.getLogger(JavaSourceExaminer.class.getName()).log(Level.SEVERE, "Problems while reading " + javaSource.getJavaFile(), ex);
+            }
         }
         javaSource.setSourceCode(sourceCode.toString());
     }
 
-    public void findAndSetAttributes(JavaSource javaSource) throws FileNotFoundException, IOException {
-        if (javaSource.getJavaFile() == null) {
-            return;
+    protected Scanner getSourceCodeScanner(String sourceCode) {
+        Scanner scanner = new Scanner(sourceCode);
+        // scanner.useDelimiter("[ \t\r\n\\(\\)]+");
+        scanner.useDelimiter("[ \t\r\n]+");
+        return scanner;
+    }
+
+    protected void findAndSetPackage(JavaSource javaSource) {
+        Scanner scanner = getSourceCodeScanner(javaSource.getSourceCode());
+        while (scanner.hasNext()) {
+            String line = scanner.next();
+            if (javaSource.getPackagePath() == null && line.equals("package")) {
+                line = scanner.next();
+                String packagePath = line.substring(0, line.indexOf(';'));  //without ; at the end
+                javaSource.setPackagePath(packagePath);
+            }
         }
-        loadSourceCode(javaSource);
-        // try (Scanner scanner = new Scanner(new FileReader(javaSource.getJavaFile()))) {
-        boolean inBody = false;
-        try (Scanner scanner = new Scanner(javaSource.getJavaFile())) {
-            scanner.useDelimiter("[ \t\r\n]+");
+    }
+
+    protected String getClassBody(String sourceCode) {
+        // todo evtl doch interface class abstract abfragen kann ja ein produces mit { sein
+        StringBuilder classBody = new StringBuilder();
+        boolean isInBodyNow = false;
+        try (Scanner scanner = new Scanner(sourceCode)) {
+            scanner.useDelimiter("[\n]+");
             while (scanner.hasNext()) {
                 String line = scanner.next();
-                // Find and set package
-                if (line.equals("package")) {
-                    line = scanner.next();
-                    String packagePath = line.substring(0, line.indexOf(';'));  //delete ; at the end
-                    javaSource.setPackagePath(packagePath);
+                if (!isInBodyNow) {
+                    if (line.indexOf("{") > -1) {    // In Class/Interface-Body?
+                        isInBodyNow = true;
+                    }
+                } else {
+                    classBody.append(line).append("\n");
                 }
+            }
+        }
 
-                if (!inBody && line.indexOf("{") > -1) {    // In Class/Interface-Body?
-                    inBody = true;
-                }
+        return classBody.toString();
+    }
 
-                if (inBody) {
-                    CDIType cdiType = getCDITypeFromLine(line);
+    public void findAndSetAttributes(JavaSource javaSource) {
+        // Init javaSource
+        loadSourceCode(javaSource);
+        findAndSetPackage(javaSource);
 
-                    if (cdiType != null) {
-                        line = scanner.next();
-                        while (line.indexOf("@") > - 1 || line.indexOf("private") > - 1 || line.indexOf("protected") > - 1 || line.indexOf("transient") > - 1 || line.indexOf("public") > - 1) {
-                            line = scanner.next();
-                        }
-                        // possible tokens now in line are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+        // Examine class body
+        try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCode()))) {
+            while (scanner.hasNext()) {
+                String line = scanner.next();
+                CDIType cdiType = getCDITypeFromLine(line);
+                if (cdiType != null) {
+                    // JPA
+                    if (cdiType == CDIType.ONE_TO_ONE
+                            || cdiType == CDIType.ONE_TO_MANY
+                            || cdiType == CDIType.MANY_TO_ONE
+                            || cdiType == CDIType.MANY_TO_MANY) {
+
+                        // Find the associated Class
                         if (line.indexOf("(") > - 1) {
-                            line = line.substring(line.indexOf("(") + 1);  // Greeter(PhraseBuilder becomes to PhraseBuilder
+                            line = scanAfterClosedParenthesis(line, scanner);
+                        }
+                        while (scanner.hasNext() && (line.indexOf("@") > - 1
+                                || line.indexOf("private") > - 1
+                                || line.indexOf("protected") > - 1
+                                || line.indexOf("transient") > - 1
+                                || line.indexOf("public") > - 1)) {
+                            // possible tokens now in line are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+                            if (line.indexOf("(") > - 1) {
+                                line = scanAfterClosedParenthesis(line, scanner);
+                            } else {
+                                line = scanner.next();
+                            }
                         }
                         if (line.indexOf("<") > - 1 && line.indexOf(">") > - 1) {
                             if (line.startsWith("Event<")) { // e.g. Event<BrowserWindow> events;
@@ -139,19 +183,51 @@ public class JavaSourceExaminer {
                             }
                             line = line.substring(line.indexOf("<") + 1, line.indexOf(">"));  // Event<Person> becomes to Person
                         }
+
+                        // Create the dependency
+                        String className = line;
+                        JavaSource injectedJavaSource = JavaSourceExaminer.getInstance().getJavaSourceByName(className);
+                        if (injectedJavaSource == null) {
+                            // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
+                            injectedJavaSource = new JavaSource(className);
+                            this.javaSourceContainer.add(injectedJavaSource);
+                        }
+                        CDIDependency dependency = new CDIDependency(cdiType, javaSource, injectedJavaSource);
+                        javaSource.getInjected().add(dependency);
+                    } else {
+                        // CDI
+                        line = scanner.next();
+                        while (line.indexOf("@") > - 1
+                                || line.indexOf("private") > - 1
+                                || line.indexOf("protected") > - 1
+                                || line.indexOf("transient") > - 1
+                                || line.indexOf("public") > - 1) {
+                            line = scanner.next();
+                        }
+                        // possible tokens now in line are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+                        if (line.indexOf("(") > - 1) {
+                            line = line.substring(line.indexOf("(") + 1); // Greeter(PhraseBuilder becomes to PhraseBuilder
+                        }
+                        if (line.indexOf("<") > - 1 && line.indexOf(">") > - 1) {
+                            if (line.startsWith("Event<")) { // e.g. Event<BrowserWindow> events;
+                                cdiType = CDIType.EVENT; // set CDIType to Event (it could be setted before as an Inject)
+                            }
+                            if (line.startsWith("Instance<")) { // e.g. Instance<GlassfishAuthenticator> authenticator;
+                                cdiType = CDIType.INSTANCE; // set CDIType to Event (it could be setted before as an Inject)
+                            }
+                            line = line.substring(line.indexOf("<") + 1, line.indexOf(">")); // Event<Person> becomes to Person
+                        }
                         String className = line;
                         JavaSource injectedFound = JavaSourceExaminer.getInstance().getJavaSourceByName(className);
-                        //if (injectedFound == null) {
-                        // Da die Klasse nicht gefunden wurde, ist diese nicht aus den Projektsourcen, sondern extern
+                        // Da die Klasse nicht gefunden wurde, ist diese nicht aus den Projektsourcen, sondern extern oder vom JDK
                         // Für diese wird dann ein neues JavaSource angelegt
                         if (injectedFound != null) {
                             CDIDependency dependency = new CDIDependency(cdiType, javaSource, injectedFound);
                             javaSource.getInjected().add(dependency);
                         } else {
-                            // Genrate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
+                            // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String, double etc.)
                             JavaSource newJavaSource = new JavaSource(className);
                             this.javaSourceContainer.add(newJavaSource);
-                            // Logger.getLogger(JavaSourceExaminer.class.getName()).log(Level.INFO, "### keine Klasse in den Sourcen gefunden zu: {0} in {1}", new Object[]{className, javaSource.getName()});
                             CDIDependency dependency = new CDIDependency(cdiType, javaSource, newJavaSource);
                             javaSource.getInjected().add(dependency);
                         }
@@ -159,11 +235,58 @@ public class JavaSourceExaminer {
                 }
             }
         }
+    }
 
+    protected int countChar(String str, char char2Find) {
+        str = str.toLowerCase();
+        char2Find = Character.toLowerCase(char2Find);
+        int count = 0;
+        for (int pos = -1; (pos = str.indexOf(char2Find, pos + 1)) != -1; count++);
+        return count;
+    }
+
+    protected String scanAfterClosedParenthesis(String currentToken, Scanner scanner) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int iStack = 1;
+
+        int countParenthesis = countChar(currentToken, '(');
+        for (int iCount = 0; iCount < countParenthesis; iCount++) {
+            stack.push(iStack);
+            iStack++;
+        }
+        String line = currentToken;
+        line = scanner.next();
+        boolean bEnd = false;
+        while (stack.size() > 0 && !bEnd) {
+            if (getCDITypeFromLine(line) != null) {
+                break;
+            };
+            if (line.indexOf("(") > -1) {
+                int countOpenParenthesis = countChar(line, '(');
+                for (int iCount = 0; iCount < countOpenParenthesis; iCount++) {
+                    stack.push(iStack);
+                    iStack++;
+                }
+            }
+            if (line.indexOf(")") > -1) {
+                int countClosedParenthesis = countChar(line, ')');
+                for (int iCount = 0; iCount < countClosedParenthesis; iCount++) {
+                    stack.pop();
+                    iStack++;
+                }
+            }
+            if (scanner.hasNext()) {
+                line = scanner.next();
+            } else {
+                bEnd = true;
+            }
+            iStack++;
+        }
+
+        return line;
     }
 
     protected CDIType getCDITypeFromLine(String line) {
-        // Find and set CDI-Dependencies
         CDIType cdiType = null;
         if (line.indexOf("@EJB") > -1) {
             cdiType = CDIType.EJB;
@@ -179,6 +302,18 @@ public class JavaSourceExaminer {
         // WS: http://docs.oracle.com/javaee/6/api/javax/ws/rs/Produces.html
         if (line.indexOf("@Produces") > -1 && line.indexOf("@Produces(") < 0) {
             cdiType = CDIType.PRODUCES;
+        }
+        if (line.indexOf("@OneToOne") > -1) {
+            cdiType = CDIType.ONE_TO_ONE;
+        }
+        if (line.indexOf("@OneToMany") > -1) {
+            cdiType = CDIType.ONE_TO_MANY;
+        }
+        if (line.indexOf("@ManyToOne") > -1) {
+            cdiType = CDIType.MANY_TO_ONE;
+        }
+        if (line.indexOf("@ManyToMany") > -1) {
+            cdiType = CDIType.MANY_TO_MANY;
         }
         return cdiType;
     }
