@@ -15,8 +15,8 @@
  */
 package de.strullerbaumann.visualee.resources;
 
-import de.strullerbaumann.visualee.cdi.CDIAnalyzer;
-import de.strullerbaumann.visualee.cdi.CDIGraph;
+import de.strullerbaumann.visualee.dependency.DependencyAnalyzer;
+import de.strullerbaumann.visualee.ui.Graph;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,71 +33,67 @@ import java.util.logging.Logger;
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class HTMLManager {
+public final class HTMLManager {
 
-    public static String loadHTMLTemplate(InputStream graphTemplate, String htmlName) {
-        // So spart man sich mehrfaches laden des Templates und auch umständliche reopen des InputStreams
-        // InputStream, da im Plugin per getResource auf das html im jar zugegriffen wird)
-        StringBuilder htmlTemplateBuilder = new StringBuilder();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(graphTemplate));
-            String line;
-            while ((line = br.readLine()) != null) {
-                //htmlTemplateBuilder.append(line.trim());
-                htmlTemplateBuilder.append(line);
-                htmlTemplateBuilder.append(System.lineSeparator());
+   private HTMLManager() {
+   }
+
+   public static String loadHTMLTemplate(InputStream graphTemplate, String htmlName) {
+      // So spart man sich mehrfaches laden des Templates und auch umständliche reopen des InputStreams
+      // InputStream, da im Plugin per getResource auf das html im jar zugegriffen wird)
+      StringBuilder htmlTemplateBuilder = new StringBuilder();
+      BufferedReader br = null;
+      try {
+         br = new BufferedReader(new InputStreamReader(graphTemplate));
+         String line;
+         while ((line = br.readLine()) != null) {
+            htmlTemplateBuilder.append(line);
+            htmlTemplateBuilder.append(System.lineSeparator());
+         }
+      } catch (FileNotFoundException ex) {
+         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
+      } catch (IOException ex) {
+         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
+      } finally {
+         if (br != null) {
+            try {
+               br.close();
+            } catch (IOException ex) {
+               Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, "can not close " + htmlName, ex);
             }
-        }
-        catch (FileNotFoundException ex) {
-            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
-        }
-        catch (IOException ex) {
-            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
-        }
-        finally {
-            if (br != null) {
-                try {
-                    br.close();
-                }
-                catch (IOException ex) {
-                    Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, "can not close " + htmlName, ex);
-                }
-            }
-        }
-        return htmlTemplateBuilder.toString();
-    }
+         }
+      }
+      return htmlTemplateBuilder.toString();
+   }
 
-    public static void generateIndexHTML(File outputdirectory, InputStream indexHtmlIS, String title) {
-        String indexHtml = loadHTMLTemplate(indexHtmlIS, "index.html");
-        indexHtml = indexHtml.replaceAll("INDEX_PROJECT_TITLE", title);
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
-        indexHtml = indexHtml.replaceAll("INDEX_CREATIONDATE", "Created " + sdf.format(new Date()));
+   public static void generateIndexHTML(File outputdirectory, InputStream indexHtmlIS, String title) {
+      String indexHtml = loadHTMLTemplate(indexHtmlIS, "index.html");
+      indexHtml = indexHtml.replaceAll("INDEX_PROJECT_TITLE", title);
+      SimpleDateFormat sdf = new SimpleDateFormat();
+      sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
+      indexHtml = indexHtml.replaceAll("INDEX_CREATIONDATE", "Created " + sdf.format(new Date()));
 
-        File htmlFile = new File(outputdirectory.getAbsolutePath() + "/index.html");
-        try (PrintStream ps = new PrintStream(htmlFile)) {
-            ps.println(indexHtml);
-        }
-        catch (FileNotFoundException ex) {
-            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+      File htmlFile = new File(outputdirectory.getAbsolutePath() + "/index.html");
+      try (PrintStream ps = new PrintStream(htmlFile)) {
+         ps.println(indexHtml);
+      } catch (FileNotFoundException ex) {
+         Logger.getLogger(DependencyAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+      }
+   }
 
-    public static void generateHTML(CDIGraph graph, String htmlTemplate) {
-        String html = htmlTemplate;
-        html = html.replaceAll("CDI_TEMPLATE_JSON_FILE", graph.getJsonFile().getName());
-        html = html.replaceAll("CDI_TEMPLATE_WIDTH", graph.getWidthString());
-        html = html.replaceAll("CDI_TEMPLATE_HEIGHT", graph.getHeightString());
-        html = html.replaceAll("CDI_TEMPLATE_TITLE", graph.getTitle());
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
-        html = html.replaceAll("CDI_TEMPLATE_CREATIONDATE", "Created " + sdf.format(new Date()));
-        try (PrintStream ps = new PrintStream(graph.getHtmlFile())) {
-            ps.println(html);
-        }
-        catch (FileNotFoundException ex) {
-            Logger.getLogger(CDIAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+   public static void generateHTML(Graph graph, String htmlTemplate) {
+      String html = htmlTemplate;
+      html = html.replaceAll("DI_TEMPLATE_JSON_FILE", graph.getJsonFile().getName());
+      html = html.replaceAll("DI_TEMPLATE_WIDTH", graph.getWidthString());
+      html = html.replaceAll("DI_TEMPLATE_HEIGHT", graph.getHeightString());
+      html = html.replaceAll("DI_TEMPLATE_TITLE", graph.getTitle());
+      SimpleDateFormat sdf = new SimpleDateFormat();
+      sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
+      html = html.replaceAll("DI_TEMPLATE_CREATIONDATE", "Created " + sdf.format(new Date()));
+      try (PrintStream ps = new PrintStream(graph.getHtmlFile())) {
+         ps.println(html);
+      } catch (FileNotFoundException ex) {
+         Logger.getLogger(DependencyAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+      }
+   }
 }

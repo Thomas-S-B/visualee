@@ -15,8 +15,8 @@
  */
 package de.strullerbaumann.visualee.resources;
 
-import de.strullerbaumann.visualee.cdi.CDIDependency;
-import de.strullerbaumann.visualee.cdi.CDIFilter;
+import de.strullerbaumann.visualee.dependency.Dependency;
+import de.strullerbaumann.visualee.dependency.DependencyFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,50 +27,62 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class JavaSourceContainer {
+public final class JavaSourceContainer {
 
-    private Map<String, JavaSource> javaSources;
+   private Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
 
-    public JavaSourceContainer() {
-        javaSources = new ConcurrentHashMap<>();
-    }
+   private static class JavaSourceContainerHolder {
 
-    public Collection<JavaSource> getJavaSources() {
-        return javaSources.values();
-    }
+      private static final JavaSourceContainer INSTANCE = new JavaSourceContainer();
+   }
 
-    public void add(JavaSource javaSource) {
-        if (javaSource == null) {
-            return;
-        }
-        if (javaSource.getJavaFile() != null) {
-            javaSources.put(javaSource.getJavaFile().getName(), javaSource);
-        } else {
-            javaSources.put(javaSource.getName(), javaSource);
-        }
-    }
+   private JavaSourceContainer() {
+   }
 
-    public JavaSource getJavaSourceByName(String n) {
-        return javaSources.get(n);
-    }
+   public static JavaSourceContainer getInstance() {
+      return JavaSourceContainer.JavaSourceContainerHolder.INSTANCE;
+   }
 
-    public List<JavaSource> getCDIRelevantClasses() {
-        return getCDIRelevantClasses(null);
-    }
+   public Collection<JavaSource> getJavaSources() {
+      return javaSources.values();
+   }
 
-    public List<JavaSource> getCDIRelevantClasses(CDIFilter cdiFilter) {
-        List<JavaSource> classesCDIRelated = new ArrayList<>();
-        for (JavaSource javaSource : getJavaSources()) {
-            if (javaSource.getInjected().size() > 0) {
-                for (CDIDependency dependency : javaSource.getInjected()) {
-                    if (cdiFilter == null || cdiFilter.contains(dependency.getCdiType())) {
-                        classesCDIRelated.add(dependency.getJavaSourceFrom());
-                        classesCDIRelated.add(dependency.getJavaSourceTo());
-                    }
-                }
+   public void clear() {
+      javaSources = new ConcurrentHashMap<>();
+   }
+
+   public void add(JavaSource javaSource) {
+      if (javaSource == null) {
+         return;
+      }
+      if (javaSource.getJavaFile() != null) {
+         javaSources.put(javaSource.getJavaFile().getName(), javaSource);
+      } else {
+         javaSources.put(javaSource.getName(), javaSource);
+      }
+   }
+
+   public JavaSource getJavaSourceByName(String n) {
+      return javaSources.get(n);
+   }
+
+   public List<JavaSource> getRelevantClasses() {
+      return getRelevantClasses(null);
+   }
+
+   public List<JavaSource> getRelevantClasses(DependencyFilter filter) {
+      List<JavaSource> relevantClasses = new ArrayList<>();
+      for (JavaSource javaSource : getJavaSources()) {
+         if (javaSource.getInjected().size() > 0) {
+            for (Dependency dependency : javaSource.getInjected()) {
+               if (filter == null || filter.contains(dependency.getDependencyType())) {
+                  relevantClasses.add(dependency.getJavaSourceFrom());
+                  relevantClasses.add(dependency.getJavaSourceTo());
+               }
             }
-        }
+         }
+      }
 
-        return classesCDIRelated;
-    }
+      return relevantClasses;
+   }
 }

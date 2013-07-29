@@ -13,13 +13,34 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.cdi;
+package de.strullerbaumann.visualee.dependency;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public enum CDIType {
+public class DependencyFilter {
 
-    INJECT, EVENT, PRODUCES, EJB, OBSERVES, INSTANCE, ONE_TO_ONE, ONE_TO_MANY, MANY_TO_ONE, MANY_TO_MANY
+   private List<DependenciyType> filterTypes = new ArrayList<>();
+
+   public DependencyFilter addType(DependenciyType dependencyType) {
+      filterTypes.add(dependencyType);
+      return this;
+   }
+
+   public List<DependenciyType> getFilterTypes() {
+      return filterTypes;
+   }
+
+   public boolean contains(DependenciyType dependencyType) {
+      return filterTypes.contains(dependencyType);
+   }
+
+   public DependencyFilter clearFilter() {
+      filterTypes.clear();
+      return this;
+   }
 }
