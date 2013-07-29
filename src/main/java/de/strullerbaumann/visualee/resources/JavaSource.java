@@ -15,14 +15,15 @@
  */
 package de.strullerbaumann.visualee.resources;
 
-import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
 import de.strullerbaumann.visualee.dependency.Dependency;
+import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,7 @@ public class JavaSource {
 
    private File javaFile;
    private List<Dependency> injected;
-   // for D3.js, links need ids's form the nodes (id's start with 0)
+   // for D3.js, links need id's from the nodes (id's start with 0)
    private int id;
    // Nodes form the same package have the same group-number
    private int group;
@@ -58,10 +59,6 @@ public class JavaSource {
 
    public File getJavaFile() {
       return javaFile;
-   }
-
-   public void setJavaFile(File javaFile) {
-      this.javaFile = javaFile;
    }
 
    public List<Dependency> getInjected() {
@@ -106,15 +103,15 @@ public class JavaSource {
       StringBuilder sourceCodeWithoutComments = new StringBuilder();
       boolean isInCommentBlock = false;
       while (scanner.hasNext()) {
-         String line = scanner.next();
-         if (line.trim().startsWith("/*")) {
+         String token = scanner.next();
+         if (token.trim().startsWith("/*")) {
             isInCommentBlock = true;
          }
-         if (!line.trim().startsWith("//") && !isInCommentBlock) {
-            sourceCodeWithoutComments.append(line);
+         if (!token.trim().startsWith("//") && !isInCommentBlock) {
+            sourceCodeWithoutComments.append(token);
             sourceCodeWithoutComments.append("\n");
          }
-         if (line.trim().startsWith("*/")) {
+         if (token.trim().startsWith("*/")) {
             isInCommentBlock = false;
          }
       }
@@ -151,13 +148,35 @@ public class JavaSource {
       StringBuilder loadedSourceCode = new StringBuilder();
       try {
          BufferedReader br = new BufferedReader(new FileReader(this.getJavaFile()));
-         String line;
-         while ((line = br.readLine()) != null) {
-            loadedSourceCode.append(line).append('\n');
+         String inputLine;
+         while ((inputLine = br.readLine()) != null) {
+            loadedSourceCode.append(inputLine).append('\n');
          }
       } catch (IOException ex) {
          Logger.getLogger(JavaSourceExaminer.class.getName()).log(Level.SEVERE, "Problems while reading " + this.getJavaFile(), ex);
       }
-      this.sourceCode = loadedSourceCode.toString();
+      setSourceCode(loadedSourceCode.toString());
+   }
+
+   @Override
+   public int hashCode() {
+      int hash = 7;
+      hash = 13 * hash + Objects.hashCode(this.name);
+      return hash;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      final JavaSource other = (JavaSource) obj;
+      if (!Objects.equals(this.name, other.name)) {
+         return false;
+      }
+      return true;
    }
 }

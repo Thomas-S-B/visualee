@@ -21,38 +21,38 @@ public class CDIExaminer extends Examiner {
    public void examine(JavaSource javaSource) {
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
-            String line = scanner.next();
-            DependenciyType type = getTypeFromLine(line);
+            String token = scanner.next();
+            DependenciyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
-               line = scanner.next();
-               line = jumpOverJavaToken(line, scanner);
+               token = scanner.next();
+               token = jumpOverJavaToken(token, scanner);
 
-               // possible tokens now in line are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
-               if (line.indexOf('(') > - 1) {
+               // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+               if (token.indexOf('(') > - 1) {
                   // Greeter(PhraseBuilder becomes PhraseBuilder
-                  line = line.substring(line.indexOf('(') + 1);
+                  token = token.substring(token.indexOf('(') + 1);
                }
-               if (line.indexOf('<') > - 1 && line.indexOf('>') > - 1) {
+               if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
                   // e.g. the token is now e.g. Event<BrowserWindow>
-                  if (line.startsWith("Event<")) {
+                  if (token.startsWith("Event<")) {
                      // set type to Event (it could be setted before as an Inject)
                      type = DependenciyType.EVENT;
                   }
                   // e.g. the token is now e.g. Instance<GlassfishAuthenticator>
-                  if (line.startsWith("Instance<")) {
+                  if (token.startsWith("Instance<")) {
                      // set type to Event (it could be setted before as an Inject)
                      type = DependenciyType.INSTANCE;
                   }
                   // e.g. Event<Person> becomes to Person
-                  line = line.substring(line.indexOf('<') + 1, line.indexOf('>'));
+                  token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
                }
-               line = jumpOverJavaToken(line, scanner);
-               if (line.indexOf('(') > - 1) {
-                  line = line.substring(line.indexOf('(') + 1);
+               token = jumpOverJavaToken(token, scanner);
+               if (token.indexOf('(') > - 1) {
+                  token = token.substring(token.indexOf('(') + 1);
                }
-               line = jumpOverJavaToken(line, scanner);
+               String className = jumpOverJavaToken(token, scanner);
 
-               createDependency(line, type, javaSource);
+               createDependency(className, type, javaSource);
             }
          }
       }

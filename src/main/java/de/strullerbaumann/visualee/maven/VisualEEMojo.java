@@ -16,7 +16,7 @@ package de.strullerbaumann.visualee.maven;
  limitations under the License.
  */
 import de.strullerbaumann.visualee.dependency.DependencyAnalyzer;
-import de.strullerbaumann.visualee.resources.HTMLManager;
+import de.strullerbaumann.visualee.ui.HTMLManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;

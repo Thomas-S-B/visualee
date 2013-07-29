@@ -68,31 +68,31 @@ public class ExaminerTest {
       DependenciyType actual;
 
       sourceLine = "My test desciption";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(null, actual);
 
       sourceLine = "@EJB";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(DependenciyType.EJB, actual);
 
       sourceLine = "@EJB(name = \"java:global/test/test-ejb/TestService\", beanInterface = TestService.class)";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(DependenciyType.EJB, actual);
 
       sourceLine = "@Inject TestCalss myTestClass;";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(DependenciyType.INJECT, actual);
 
       sourceLine = "public void onEscalationBrowserRequest(@Observes Escalation escalation) {";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(DependenciyType.OBSERVES, actual);
 
       sourceLine = "@Produces";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(DependenciyType.PRODUCES, actual);
 
       sourceLine = "@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})";
-      actual = ExaminerImpl.getTypeFromLine(sourceLine);
+      actual = ExaminerImpl.getTypeFromToken(sourceLine);
       assertEquals(null, actual);
    }
 
@@ -127,7 +127,7 @@ public class ExaminerTest {
       sourceCode = "@NotNull(groups = PersistenceConstraint.class)\n"
               + "private Album album;\n";
       javaSource.setSourceCode(sourceCode);
-      scanner = JavaSourceExaminer.getSourceCodeScanner(javaSource.getSourceCode());
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
       currentToken = scanner.next(); // now @NotNull((groups
       ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
       expected = "Album";
@@ -138,7 +138,7 @@ public class ExaminerTest {
       sourceCode = "@NotNull((groups = PersistenceConstraint.class) saddas)\n"
               + "private Album2 album;\n";
       javaSource.setSourceCode(sourceCode);
-      scanner = JavaSourceExaminer.getSourceCodeScanner(javaSource.getSourceCode());
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
       currentToken = scanner.next(); // now @NotNull((groups
       ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
       expected = "Album2";

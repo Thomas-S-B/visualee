@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.resources;
+package de.strullerbaumann.visualee.ui;
 
 import de.strullerbaumann.visualee.dependency.DependencyAnalyzer;
 import de.strullerbaumann.visualee.ui.Graph;

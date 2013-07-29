@@ -13,8 +13,6 @@ import de.strullerbaumann.visualee.resources.JavaSourceContainer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -32,11 +30,11 @@ public abstract class Examiner {
       return scanner;
    }
 
-   protected static boolean isAJavaToken(String line) {
+   protected static boolean isAJavaToken(String token) {
       String[] javaTokens = {"void", "private", "protected", "transient", "public", "static", "@"};
 
       for (String javaToken : javaTokens) {
-         if (line.indexOf(javaToken) > - 1) {
+         if (token.indexOf(javaToken) > - 1) {
             return true;
          }
       }
@@ -51,14 +49,14 @@ public abstract class Examiner {
       try (Scanner scanner = new Scanner(sourceCode)) {
          scanner.useDelimiter("[\n]+");
          while (scanner.hasNext()) {
-            String line = scanner.next();
+            String token = scanner.next();
             if (!isInBodyNow) {
                // In Class/Interface-Body?
-               if (line.indexOf('{') > -1) {
+               if (token.indexOf('{') > -1) {
                   isInBodyNow = true;
                }
             } else {
-               classBody.append(line).append("\n");
+               classBody.append(token).append("\n");
             }
          }
       }
@@ -66,33 +64,33 @@ public abstract class Examiner {
       return classBody.toString();
    }
 
-   protected static DependenciyType getTypeFromLine(String line) {
+   protected static DependenciyType getTypeFromToken(String token) {
       DependenciyType type = null;
-      if (line.indexOf("@EJB") > -1) {
+      if (token.indexOf("@EJB") > -1) {
          type = DependenciyType.EJB;
       }
-      if (line.indexOf("@Inject") > -1) {
+      if (token.indexOf("@Inject") > -1) {
          type = DependenciyType.INJECT;
       }
-      if (line.indexOf("@Observes") > -1) {
+      if (token.indexOf("@Observes") > -1) {
          type = DependenciyType.OBSERVES;
       }
       // Identify @Produces form Inject (@Produces form WS is @Produces(...)
       // Inject: http://docs.oracle.com/javaee/6/api/javax/enterprise/inject/Produces.html
       // WS: http://docs.oracle.com/javaee/6/api/javax/ws/rs/Produces.html
-      if (line.indexOf("@Produces") > -1 && line.indexOf("@Produces(") < 0) {
+      if (token.indexOf("@Produces") > -1 && token.indexOf("@Produces(") < 0) {
          type = DependenciyType.PRODUCES;
       }
-      if (line.indexOf("@OneToOne") > -1) {
+      if (token.indexOf("@OneToOne") > -1) {
          type = DependenciyType.ONE_TO_ONE;
       }
-      if (line.indexOf("@OneToMany") > -1) {
+      if (token.indexOf("@OneToMany") > -1) {
          type = DependenciyType.ONE_TO_MANY;
       }
-      if (line.indexOf("@ManyToOne") > -1) {
+      if (token.indexOf("@ManyToOne") > -1) {
          type = DependenciyType.MANY_TO_ONE;
       }
-      if (line.indexOf("@ManyToMany") > -1) {
+      if (token.indexOf("@ManyToMany") > -1) {
          type = DependenciyType.MANY_TO_MANY;
       }
       return type;
@@ -117,35 +115,35 @@ public abstract class Examiner {
          stack.push(iStack);
          iStack++;
       }
-      String line = scanner.next();
+      String token = scanner.next();
       boolean bEnd = false;
       while (stack.size() > 0 && !bEnd) {
-         if (getTypeFromLine(line) != null) {
+         if (getTypeFromToken(token) != null) {
             break;
          }
-         if (line.indexOf('(') > -1) {
-            int countOpenParenthesis = countChar(line, '(');
+         if (token.indexOf('(') > -1) {
+            int countOpenParenthesis = countChar(token, '(');
             for (int iCount = 0; iCount < countOpenParenthesis; iCount++) {
                stack.push(iStack);
                iStack++;
             }
          }
-         if (line.indexOf(')') > -1) {
-            int countClosedParenthesis = countChar(line, ')');
+         if (token.indexOf(')') > -1) {
+            int countClosedParenthesis = countChar(token, ')');
             for (int iCount = 0; iCount < countClosedParenthesis; iCount++) {
                stack.pop();
                iStack++;
             }
          }
          if (scanner.hasNext()) {
-            line = scanner.next();
+            token = scanner.next();
          } else {
             bEnd = true;
          }
          iStack++;
       }
 
-      return line;
+      return token;
    }
 
    protected void createDependency(String className, DependenciyType type, JavaSource javaSource) {
@@ -155,18 +153,17 @@ public abstract class Examiner {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
          injectedJavaSource = new JavaSource(className);
          JavaSourceContainer.getInstance().add(injectedJavaSource);
-         Logger.getLogger(Examiner.class.getName()).log(Level.INFO, "+++ generated new javasource: {0}", className);
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
       javaSource.getInjected().add(dependency);
    }
 
    // TODO Unittest
-   protected String jumpOverJavaToken(String line, Scanner scanner) {
-      String token = line;
-      while (isAJavaToken(token)) {
-         token = scanner.next();
+   protected String jumpOverJavaToken(String token, Scanner scanner) {
+      String nextToken = token;
+      while (isAJavaToken(nextToken)) {
+         nextToken = scanner.next();
       }
-      return token;
+      return nextToken;
    }
 }

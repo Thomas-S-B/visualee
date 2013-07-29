@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class JavaSourceContainer {
 
-   private Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
+   private static final Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
 
    private static class JavaSourceContainerHolder {
 
@@ -48,16 +48,14 @@ public final class JavaSourceContainer {
    }
 
    public void clear() {
-      javaSources = new ConcurrentHashMap<>();
+      javaSources.clear();
    }
 
    public void add(JavaSource javaSource) {
       if (javaSource == null) {
          return;
       }
-      if (javaSource.getJavaFile() != null) {
-         javaSources.put(javaSource.getJavaFile().getName(), javaSource);
-      } else {
+      if (!javaSources.containsKey(javaSource.getName())) {
          javaSources.put(javaSource.getName(), javaSource);
       }
    }

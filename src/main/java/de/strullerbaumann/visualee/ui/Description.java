@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.resources;
+package de.strullerbaumann.visualee.ui;
 
 import de.strullerbaumann.visualee.dependency.DependenciyType;
 import static de.strullerbaumann.visualee.dependency.DependenciyType.EJB;
@@ -23,6 +23,7 @@ import static de.strullerbaumann.visualee.dependency.DependenciyType.INSTANCE;
 import static de.strullerbaumann.visualee.dependency.DependenciyType.OBSERVES;
 import static de.strullerbaumann.visualee.dependency.DependenciyType.PRODUCES;
 import de.strullerbaumann.visualee.dependency.Dependency;
+import de.strullerbaumann.visualee.resources.JavaSource;
 import java.util.HashMap;
 
 /**

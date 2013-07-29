@@ -20,6 +20,7 @@ public class JavaSourceContainerTest {
 
    @Test
    public void testGetJavaSourceByName() {
+      JavaSourceContainer.getInstance().clear();
       JavaSource javaSource1 = new JavaSource("DataPoint");
       JavaSourceContainer.getInstance().add(javaSource1);
       JavaSource javaSource2 = new JavaSource("int");
@@ -33,5 +34,23 @@ public class JavaSourceContainerTest {
       assertEquals("int", JavaSourceContainer.getInstance().getJavaSourceByName("int").getName());
       assertNotNull(JavaSourceContainer.getInstance().getJavaSourceByName("DataPoint"));
       assertEquals("DataPoint", JavaSourceContainer.getInstance().getJavaSourceByName("DataPoint").getName());
+   }
+
+   @Test
+   public void testPutJavaSourceDoublette() {
+      JavaSourceContainer.getInstance().clear();
+      String name = "DataPoint";
+      JavaSource javaSource1 = new JavaSource(name);
+      String sourceCode1 = "Test source code for JavaSource1";
+      javaSource1.setSourceCode(sourceCode1);
+      JavaSourceContainer.getInstance().add(javaSource1);
+      JavaSource javaSource2 = new JavaSource(name);
+      javaSource2.setSourceCode("");
+      JavaSourceContainer.getInstance().add(javaSource2);
+
+      assertNotNull(JavaSourceContainer.getInstance().getJavaSourceByName(name));
+      assertEquals(1, JavaSourceContainer.getInstance().getJavaSources().size());
+      assertEquals(name, JavaSourceContainer.getInstance().getJavaSourceByName(name).getName());
+      assertEquals(sourceCode1, JavaSourceContainer.getInstance().getJavaSourceByName(name).getSourceCode());
    }
 }

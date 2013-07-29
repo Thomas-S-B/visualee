@@ -4,11 +4,13 @@
  * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
  * This software is the proprietary information of Thomas Struller-Baumann.
  */
-package de.strullerbaumann.visualee.resources;
+package de.strullerbaumann.visualee.ui;
 
-import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
-import de.strullerbaumann.visualee.dependency.Dependency;
 import de.strullerbaumann.visualee.dependency.DependenciyType;
+import de.strullerbaumann.visualee.dependency.Dependency;
+import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
+import de.strullerbaumann.visualee.resources.JavaSource;
+import de.strullerbaumann.visualee.resources.JavaSourceContainer;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -131,7 +133,8 @@ public class DescriptionTest {
 
 
       javaSource.setSourceCode(sourceCode);
-      JavaSourceExaminer.getInstance().findAndSetAttributes(javaSource);
+      JavaSourceContainer.getInstance().add(javaSource);
+      JavaSourceExaminer.getInstance().examine();
 
       String actual = Description.generateDescription(javaSource);
 

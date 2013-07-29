@@ -9,7 +9,6 @@ package de.strullerbaumann.visualee.ui;
 import de.strullerbaumann.visualee.dependency.DependenciyType;
 import de.strullerbaumann.visualee.dependency.Dependency;
 import de.strullerbaumann.visualee.dependency.DependencyFilter;
-import de.strullerbaumann.visualee.resources.Description;
 import de.strullerbaumann.visualee.resources.JavaSource;
 import de.strullerbaumann.visualee.resources.JavaSourceContainer;
 import java.io.File;

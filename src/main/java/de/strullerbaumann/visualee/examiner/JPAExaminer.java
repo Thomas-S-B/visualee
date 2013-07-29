@@ -22,27 +22,27 @@ public class JPAExaminer extends Examiner {
       // Examine class body
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
-            String line = scanner.next();
-            DependenciyType type = getTypeFromLine(line);
+            String token = scanner.next();
+            DependenciyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
                // Find the associated Class
-               if (line.indexOf('(') > - 1) {
-                  line = scanAfterClosedParenthesis(line, scanner);
+               if (token.indexOf('(') > - 1) {
+                  token = scanAfterClosedParenthesis(token, scanner);
                }
-               while (scanner.hasNext() && (isAJavaToken(line))) {
-                  // possible tokens now in line are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
-                  if (line.indexOf('(') > - 1) {
-                     line = scanAfterClosedParenthesis(line, scanner);
+               while (scanner.hasNext() && (isAJavaToken(token))) {
+                  // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+                  if (token.indexOf('(') > - 1) {
+                     token = scanAfterClosedParenthesis(token, scanner);
                   } else {
-                     line = scanner.next();
+                     token = scanner.next();
                   }
                }
 
-               if (line.indexOf('<') > - 1 && line.indexOf('>') > - 1) {
+               if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
                   // e.g. Set<Group> becomes to Group
-                  line = line.substring(line.indexOf('<') + 1, line.indexOf('>'));
+                  token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
                }
-               createDependency(line, type, javaSource);
+               createDependency(token, type, javaSource);
             }
          }
       }

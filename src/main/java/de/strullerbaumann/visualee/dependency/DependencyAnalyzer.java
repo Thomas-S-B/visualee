@@ -17,11 +17,11 @@ package de.strullerbaumann.visualee.dependency;
 
 import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
 import de.strullerbaumann.visualee.resources.FileManager;
-import de.strullerbaumann.visualee.resources.HTMLManager;
 import de.strullerbaumann.visualee.resources.JavaSource;
 import de.strullerbaumann.visualee.resources.JavaSourceContainer;
 import de.strullerbaumann.visualee.ui.Graph;
 import de.strullerbaumann.visualee.ui.GraphCreator;
+import de.strullerbaumann.visualee.ui.HTMLManager;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -38,11 +38,13 @@ public final class DependencyAnalyzer {
    }
 
    public static void analyze(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
+      JavaSourceContainer.getInstance().clear();
       // 1. Load Javafiles
       final List<File> javaFiles = FileManager.searchFiles(rootFolder, ".java");
       for (File javaFile : javaFiles) {
          JavaSource javaSource = new JavaSource(javaFile);
          JavaSourceContainer.getInstance().add(javaSource);
+         javaSource.loadSourceCode();
       }
       // 2. Examine Javafiles
       JavaSourceExaminer.getInstance().examine();
@@ -96,7 +98,10 @@ public final class DependencyAnalyzer {
       HTMLManager.generateHTML(graphProducesClasses, htmlTemplate);
 
       // GRAPH - only JPA classes
-      DependencyFilter filterJPA = new DependencyFilter().addType(DependenciyType.ONE_TO_ONE).addType(DependenciyType.ONE_TO_MANY).addType(DependenciyType.MANY_TO_ONE).addType(DependenciyType.MANY_TO_MANY);
+      DependencyFilter filterJPA = new DependencyFilter().addType(DependenciyType.ONE_TO_ONE)
+              .addType(DependenciyType.ONE_TO_MANY)
+              .addType(DependenciyType.MANY_TO_ONE)
+              .addType(DependenciyType.MANY_TO_MANY);
       Graph graphJPAClasses = GraphCreator.generateGraph("graphJPAClasses", outputdirectory, filterJPA, true, htmlTemplateIS);
       graphJPAClasses.setTitle("Only JPA classes of " + rootFolder.getPath());
       graphJPAClasses.calculateDimensions();

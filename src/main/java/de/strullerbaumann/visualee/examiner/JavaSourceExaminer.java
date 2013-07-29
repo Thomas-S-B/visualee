@@ -46,8 +46,15 @@ public final class JavaSourceExaminer {
    }
 
    public void examine() {
+      // Init javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
-         findAndSetAttributes(javaSource);
+         findAndSetPackage(javaSource);
+      }
+      // Examine javaSources
+      for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
+         for (Examiner examiner : examiners) {
+            examiner.examine(javaSource);
+         }
       }
       setGroupNrs();
    }
@@ -70,33 +77,16 @@ public final class JavaSourceExaminer {
       }
    }
 
-   // TODO Duplicate ist auch in Examiner
-   protected static Scanner getSourceCodeScanner(String sourceCode) {
-      Scanner scanner = new Scanner(sourceCode);
-      scanner.useDelimiter("[ \t\r\n]+");
-      return scanner;
-   }
-
    protected static void findAndSetPackage(JavaSource javaSource) {
-      Scanner scanner = getSourceCodeScanner(javaSource.getSourceCode());
+      Scanner scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
       while (scanner.hasNext()) {
-         String line = scanner.next();
-         if (javaSource.getPackagePath() == null && line.equals("package")) {
-            line = scanner.next();
+         String token = scanner.next();
+         if (javaSource.getPackagePath() == null && token.equals("package")) {
+            token = scanner.next();
             //without ; at the end
-            String packagePath = line.substring(0, line.indexOf(';'));
+            String packagePath = token.substring(0, token.indexOf(';'));
             javaSource.setPackagePath(packagePath);
          }
-      }
-   }
-
-   public void findAndSetAttributes(JavaSource javaSource) {
-      // Init javaSource
-      javaSource.loadSourceCode();
-      findAndSetPackage(javaSource);
-      // Examine javasource
-      for (Examiner examiner : examiners) {
-         examiner.examine(javaSource);
       }
    }
 }
