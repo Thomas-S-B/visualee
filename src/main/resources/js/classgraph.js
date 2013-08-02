@@ -130,7 +130,6 @@ function initGraph(graphJSON, width, height) {
          $("#tweakgraph-sliders").slideUp(250);
       });
 
-
       // Make Nodeinfos draggable (using jquery-ui)
       $('#pop-up').draggable({
          cursor: "move",

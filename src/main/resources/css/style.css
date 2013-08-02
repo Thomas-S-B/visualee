@@ -98,10 +98,12 @@ div#pop-up {
 
 div#pop-up-buttons {
    font-size: 16px;
+   font-weight: bold;
    width:10px;
    color:#eee;
    margin-left: auto;
    margin-right: 0;
+   float: right;
 }
 div#pop-up-buttons:hover {
    text-decoration:none;
@@ -113,10 +115,10 @@ div#pop-up-buttons:hover {
 
 div#pop-up-title {
    font-size: 16px;
-   margin-bottom: 4px;
    font-weight: bolder;
    margin-left: 0;
    margin-right: auto;
+   margin-bottom: 4px;
 }
 div#pop-up-content {
    font-size: 14px;
