@@ -5,24 +5,17 @@
       <title>DI_TEMPLATE_TITLE</title>
       <link type="text/css" rel="stylesheet" href="css/style.css"/>
       <link type="text/css" rel="stylesheet" href="css/jquery-ui.css" />
-
       <script type="text/javascript" src="js/d3.v3.min.js"></script>
       <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
       <script type="text/javascript" src="js/jquery-ui-1.9.2.min.js"></script>
       <script type="text/javascript" src="js/classgraph.js"></script>
-      <script type="text/javascript" src="js/nodeinfo.js"></script>
-
    </head>
    <body>
       <h1>DI_TEMPLATE_TITLE</h1>
 
       <script type="text/javascript">
-         initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_WIDTH, DI_TEMPLATE_HEIGHT);
-      </script>
-
-
-      <script>
          window.onload = function() {
+            initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_WIDTH, DI_TEMPLATE_HEIGHT);
             printValue('sliderDistance', 'distanceValue');
             printValue('sliderGravity', 'gravityValue');
             printValue('sliderGraphSize', 'graphSizeValue');
@@ -33,6 +26,31 @@
             var y = document.getElementById(sliderID);
             x.innerHTML = y.value;
          }
+
+         $(document).ready(function() {
+            var originalSize = $('#pop-sourcecode').css('font-size');
+            $(".resetFont").click(function() {
+               $('#pop-sourcecode').css('font-size', originalSize);
+               return false;
+            });
+
+            $(".increaseFont").click(function() {
+               var currentSize = $('#pop-sourcecode').css('font-size');
+               var currentSize = parseFloat(currentSize) * 1.1;
+               $('#pop-sourcecode').css('font-size', currentSize);
+
+               return false;
+            });
+
+            $(".decreaseFont").click(function() {
+               var currentSize = $('#pop-sourcecode').css('font-size');
+               var currentSize = parseFloat(currentSize) * 0.9;
+               $('#pop-sourcecode').css('font-size', currentSize);
+
+               return false;
+            });
+         });
+
       </script>
 
       <div id="tweakgraph">
@@ -68,19 +86,27 @@
       </div>
 
       <div id="pop-up">
-         <div id="pop-up-title"></div>
+         <div id="pop-up-buttons">
+            <div class="pop-up-close">X</div>
+         </div>
+         <div id="pop-up-title">title</div>
          <div id="pop-up-content">
             <div class="table">
                <div id="pop-description-header"><br/>Description</div>
                <div id="pop-description"></div>
-
-               <div id="pop-sourcecode-header"><br/>Sourcecode</div>
+               <div id="pop-sourcecode-header"><br/>Sourcecode
+                  <input type="button" class="increaseFont" value="Font +"/>
+                  <input type="button" class="decreaseFont" value="Font -"/>
+                  <input type="button" class="resetFont" value="Reset"/>
+               </div>
                <textarea readonly id="pop-sourcecode" class="ui-corner-all ui-widget-content pop-sourcecode" >
                </textarea>
             </div>
          </div>
       </div>
+
       <div id="canvasGraph"></div>
+
       <div id="created" class="created">DI_TEMPLATE_CREATIONDATE</div>
    </body>
 </html>

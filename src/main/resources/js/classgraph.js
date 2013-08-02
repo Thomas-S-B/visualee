@@ -143,8 +143,14 @@ function initGraph(graphJSON, width, height) {
       $("#pop-up").on("resize", updatePopUpSize);
 
       // Hide NodeInfos when click outside
-      $("body").click(function(d) {
+      /*
+       $("body").click(function(d) {
+       hideNodeInfos(d);
+       });
+       */
+      $(".pop-up-close").click(function(d) {
          hideNodeInfos(d);
+         return false;
       });
 
       // Hide NodeInfos when ESC
@@ -158,27 +164,29 @@ function initGraph(graphJSON, width, height) {
 
       function showNodeInfos(d) {
          highlight(0.1, d);
-         poppadding = 50;
+         // poppadding = 50;
          $("#pop-up").fadeOut(150, function() {
             $("#pop-up-title").html(d.name);
             $("#pop-description").html(d.description);
             $("#pop-sourcecode").html(d.sourcecode);
-            if (d.x < $(window).width() / 2) {
-               popLeft = d.x + poppadding;
-            } else {
-               popLeft = d.x - $("#pop-up").width() - poppadding;
-            }
-            if (popLeft < 0) {
-               popLeft = poppadding;
-            }
-            popTop = d.y + 100;
-            if (popTop > $(window).height() - $("#pop-up").height()) {
-               popTop = $(window).height() - $("#pop-up").height() - poppadding;
-            }
-            $("#pop-up").css({
-               "left": popLeft,
-               "top": popTop
-            });
+            /*
+             if (d.x < $(window).width() / 2) {
+             popLeft = d.x + poppadding;
+             } else {
+             popLeft = d.x - $("#pop-up").width() - poppadding;
+             }
+             if (popLeft < 0) {
+             popLeft = poppadding;
+             }
+             popTop = d.y + 100;
+             if (popTop > $(window).height() - $("#pop-up").height()) {
+             popTop = $(window).height() - $("#pop-up").height() - poppadding;
+             }
+             $("#pop-up").css({
+             "left": popLeft,
+             "top": popTop
+             });
+             */
             $("#pop-up").fadeIn(150);
          });
          updatePopUpSize();

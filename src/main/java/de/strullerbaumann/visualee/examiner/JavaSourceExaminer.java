@@ -15,13 +15,12 @@
  */
 package de.strullerbaumann.visualee.examiner;
 
-import de.strullerbaumann.visualee.resources.JavaSource;
-import de.strullerbaumann.visualee.resources.JavaSourceContainer;
+import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  *
@@ -48,7 +47,7 @@ public final class JavaSourceExaminer {
    public void examine() {
       // Init javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
-         findAndSetPackage(javaSource);
+         Examiner.findAndSetPackage(javaSource);
       }
       // Examine javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
@@ -60,7 +59,7 @@ public final class JavaSourceExaminer {
    }
 
    // TODO UnitTest
-   protected void setGroupNrs() {
+   void setGroupNrs() {
       // Group durchnumerieren/setzen aus packagePaths
       // alle aus demselben Package haben die selbe groupNr
       Map<String, Integer> packagePaths = new HashMap<>();
@@ -74,19 +73,6 @@ public final class JavaSourceExaminer {
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          int group = packagePaths.get(javaSource.getPackagePath());
          javaSource.setGroup(group);
-      }
-   }
-
-   protected static void findAndSetPackage(JavaSource javaSource) {
-      Scanner scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
-      while (scanner.hasNext()) {
-         String token = scanner.next();
-         if (javaSource.getPackagePath() == null && token.equals("package")) {
-            token = scanner.next();
-            //without ; at the end
-            String packagePath = token.substring(0, token.indexOf(';'));
-            javaSource.setPackagePath(packagePath);
-         }
       }
    }
 }

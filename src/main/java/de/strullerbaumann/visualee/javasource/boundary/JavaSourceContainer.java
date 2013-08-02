@@ -13,10 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.resources;
+package de.strullerbaumann.visualee.javasource.boundary;
 
-import de.strullerbaumann.visualee.dependency.Dependency;
-import de.strullerbaumann.visualee.dependency.DependencyFilter;
+import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.resources.FileManager;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class JavaSourceContainer {
 
-   private static final Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
+   private static Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
 
    private static class JavaSourceContainerHolder {
 
@@ -74,13 +77,26 @@ public final class JavaSourceContainer {
          if (javaSource.getInjected().size() > 0) {
             for (Dependency dependency : javaSource.getInjected()) {
                if (filter == null || filter.contains(dependency.getDependencyType())) {
-                  relevantClasses.add(dependency.getJavaSourceFrom());
-                  relevantClasses.add(dependency.getJavaSourceTo());
+                  if (!relevantClasses.contains(dependency.getJavaSourceFrom())) {
+                     relevantClasses.add(dependency.getJavaSourceFrom());
+                  }
+                  if (!relevantClasses.contains(dependency.getJavaSourceTo())) {
+                     relevantClasses.add(dependency.getJavaSourceTo());
+                  }
                }
             }
          }
       }
 
       return relevantClasses;
+   }
+
+   public void loadJavaFiles(File rootFolder) {
+      final List<File> javaFiles = FileManager.searchFiles(rootFolder, ".java");
+      for (File javaFile : javaFiles) {
+         JavaSource javaSource = new JavaSource(javaFile);
+         JavaSourceContainer.getInstance().add(javaSource);
+         javaSource.loadSourceCode();
+      }
    }
 }

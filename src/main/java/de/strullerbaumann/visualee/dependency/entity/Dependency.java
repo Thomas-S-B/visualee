@@ -13,9 +13,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.dependency;
+package de.strullerbaumann.visualee.dependency.entity;
 
-import de.strullerbaumann.visualee.resources.JavaSource;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 
 /**
  *
@@ -23,24 +23,24 @@ import de.strullerbaumann.visualee.resources.JavaSource;
  */
 public class Dependency {
 
-   private DependenciyType dependencyType;
+   private DependencyType dependencyType;
    private JavaSource javaSourceFrom;
    private JavaSource javaSourceTo;
 
    public Dependency() {
    }
 
-   public Dependency(DependenciyType dependencyType, JavaSource javaSourceFrom, JavaSource javaSourceTo) {
+   public Dependency(DependencyType dependencyType, JavaSource javaSourceFrom, JavaSource javaSourceTo) {
       this.dependencyType = dependencyType;
       this.javaSourceFrom = javaSourceFrom;
       this.javaSourceTo = javaSourceTo;
    }
 
-   public DependenciyType getDependencyType() {
+   public DependencyType getDependencyType() {
       return dependencyType;
    }
 
-   public void setDependencyType(DependenciyType dependencyType) {
+   public void setDependencyType(DependencyType dependencyType) {
       this.dependencyType = dependencyType;
    }
 

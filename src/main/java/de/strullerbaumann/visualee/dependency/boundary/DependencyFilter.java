@@ -13,8 +13,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.dependency;
+package de.strullerbaumann.visualee.dependency.boundary;
 
+import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,18 +25,18 @@ import java.util.List;
  */
 public class DependencyFilter {
 
-   private List<DependenciyType> filterTypes = new ArrayList<>();
+   private List<DependencyType> filterTypes = new ArrayList<>();
 
-   public DependencyFilter addType(DependenciyType dependencyType) {
+   public DependencyFilter addType(DependencyType dependencyType) {
       filterTypes.add(dependencyType);
       return this;
    }
 
-   public List<DependenciyType> getFilterTypes() {
+   public List<DependencyType> getFilterTypes() {
       return filterTypes;
    }
 
-   public boolean contains(DependenciyType dependencyType) {
+   public boolean contains(DependencyType dependencyType) {
       return filterTypes.contains(dependencyType);
    }
 

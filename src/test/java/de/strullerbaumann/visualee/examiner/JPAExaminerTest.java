@@ -15,9 +15,9 @@
  */
 package de.strullerbaumann.visualee.examiner;
 
-import de.strullerbaumann.visualee.dependency.Dependency;
-import de.strullerbaumann.visualee.dependency.DependenciyType;
-import de.strullerbaumann.visualee.resources.JavaSource;
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
+import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -33,16 +33,16 @@ public class JPAExaminerTest {
    @Test
    public void testIsRelevantType() {
       JPAExaminer jpaExaminer = new JPAExaminer();
-      assertTrue(jpaExaminer.isRelevantType(DependenciyType.MANY_TO_MANY));
-      assertTrue(jpaExaminer.isRelevantType(DependenciyType.MANY_TO_ONE));
-      assertTrue(jpaExaminer.isRelevantType(DependenciyType.ONE_TO_ONE));
-      assertTrue(jpaExaminer.isRelevantType(DependenciyType.ONE_TO_MANY));
-      assertFalse(jpaExaminer.isRelevantType(DependenciyType.EJB));
-      assertFalse(jpaExaminer.isRelevantType(DependenciyType.EVENT));
-      assertFalse(jpaExaminer.isRelevantType(DependenciyType.INJECT));
-      assertFalse(jpaExaminer.isRelevantType(DependenciyType.INSTANCE));
-      assertFalse(jpaExaminer.isRelevantType(DependenciyType.OBSERVES));
-      assertFalse(jpaExaminer.isRelevantType(DependenciyType.PRODUCES));
+      assertTrue(jpaExaminer.isRelevantType(DependencyType.MANY_TO_MANY));
+      assertTrue(jpaExaminer.isRelevantType(DependencyType.MANY_TO_ONE));
+      assertTrue(jpaExaminer.isRelevantType(DependencyType.ONE_TO_ONE));
+      assertTrue(jpaExaminer.isRelevantType(DependencyType.ONE_TO_MANY));
+      assertFalse(jpaExaminer.isRelevantType(DependencyType.EJB));
+      assertFalse(jpaExaminer.isRelevantType(DependencyType.EVENT));
+      assertFalse(jpaExaminer.isRelevantType(DependencyType.INJECT));
+      assertFalse(jpaExaminer.isRelevantType(DependencyType.INSTANCE));
+      assertFalse(jpaExaminer.isRelevantType(DependencyType.OBSERVES));
+      assertFalse(jpaExaminer.isRelevantType(DependencyType.PRODUCES));
    }
 
    @Test
@@ -54,7 +54,7 @@ public class JPAExaminerTest {
 
       // Many to one
       javaSource = new JavaSource("MyTestClass");
-      sourceCode = getTestSourceCodeBeforeBody()
+      sourceCode = SourceCodeProvider.getTestSourceCodeBeforeBody()
               + "@ManyToOne(cascade = { CascadeType.DETACH })\n"
               + "@JoinColumn(name = \"ALBUMID\", nullable = false)\n"
               + "@NotNull(groups = PersistenceConstraint.class)\n"
@@ -63,7 +63,7 @@ public class JPAExaminerTest {
       jpaExaminer.examine(javaSource);
       dependency = javaSource.getInjected().get(0);
       assertEquals(1, javaSource.getInjected().size());
-      assertEquals(DependenciyType.MANY_TO_ONE, dependency.getDependencyType());
+      assertEquals(DependencyType.MANY_TO_ONE, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("Album", dependency.getJavaSourceTo().getName());
    }
@@ -77,7 +77,7 @@ public class JPAExaminerTest {
 
       // Many to many
       javaSource = new JavaSource("User");
-      sourceCode = getTestSourceCodeBeforeBody()
+      sourceCode = SourceCodeProvider.getTestSourceCodeBeforeBody()
               + "@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)\n"
               + "@JoinTable(name = \"USERS_GROUPS\", joinColumns = {\n"
               + "   @JoinColumn(name = \"USERID\", nullable = false)}, inverseJoinColumns = {\n"
@@ -87,7 +87,7 @@ public class JPAExaminerTest {
       jpaExaminer.examine(javaSource);
       dependency = javaSource.getInjected().get(0);
       assertEquals(1, javaSource.getInjected().size());
-      assertEquals(DependenciyType.MANY_TO_MANY, dependency.getDependencyType());
+      assertEquals(DependencyType.MANY_TO_MANY, dependency.getDependencyType());
       assertEquals("User", dependency.getJavaSourceFrom().getName());
       assertEquals("Group", dependency.getJavaSourceTo().getName());
    }
@@ -145,63 +145,5 @@ public class JPAExaminerTest {
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
       assertEquals(0, javaSource.getInjected().size());
-   }
-
-   // TODO auslagern siehe auch JavaSourceExaminerTest
-   private String getTestSourceCode() {
-      return getTestSourceCodeBeforeBody() + getTestSourceCodeBody();
-   }
-
-   // TODO auslagern siehe auch JavaSourceExaminerTest
-   private String getTestSourceCodeBeforeBody() {
-      return "/*\n"
-              + " Copyright 2013 Thomas Struller-Baumann, struller-baumann.de\n"
-              + "\n"
-              + " Licensed under the Apache License, Version 2.0 (the \"License\");\n"
-              + " you may not use this file except in compliance with the License.\n"
-              + " You may obtain a copy of the License at\n"
-              + "\n"
-              + " http://www.apache.org/licenses/LICENSE-2.0\n"
-              + "\n"
-              + " Unless required by applicable law or agreed to in writing, software\n"
-              + " distributed under the License is distributed on an \"AS IS\" BASIS,\n"
-              + " WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"
-              + " See the License for the specific language governing permissions and\n"
-              + " limitations under the License.\n"
-              + " */\n"
-              + "package de.strullerbaumann.visualee.resources;\n"
-              + "\n"
-              + "import de.strullerbaumann.visualee.cdi.CDIDependency;\n"
-              + "import de.strullerbaumann.visualee.cdi.CDIType;\n"
-              + "import java.io.BufferedReader;\n"
-              + "import java.io.FileNotFoundException;\n"
-              + "import java.io.FileReader;\n"
-              + "import java.io.IOException;\n"
-              + "import java.util.HashMap;\n"
-              + "import java.util.Map;\n"
-              + "import java.util.Scanner;\n"
-              + "import java.util.logging.Level;\n"
-              + "import java.util.logging.Logger;\n"
-              + "\n"
-              + "/**\n"
-              + " *\n"
-              + " * @author Thomas Struller-Baumann <thomas at struller-baumann.de>\n"
-              + " */\n"
-              + "public class JavaSourceExaminer {\n"
-              + "\n";
-   }
-
-   // TODO auslagern siehe auch JavaSourceExaminerTest
-   private String getTestSourceCodeBody() {
-      return "   private JavaSourceContainer javaSourceContainer;\n"
-              + "    private static class JavaSourceExaminerHolder {\n"
-              + "        private static final JavaSourceExaminer INSTANCE = new JavaSourceExaminer();\n"
-              + "    }\n"
-              + "    private JavaSourceExaminer() {\n"
-              + "    }\n"
-              + "    public static JavaSourceExaminer getInstance() {\n"
-              + "        return JavaSourceExaminerHolder.INSTANCE;\n"
-              + "    }\n"
-              + "}\n";
    }
 }

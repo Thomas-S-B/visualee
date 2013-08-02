@@ -13,10 +13,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.ui;
+package de.strullerbaumann.visualee.ui.graph.control;
 
-import de.strullerbaumann.visualee.dependency.DependencyAnalyzer;
-import de.strullerbaumann.visualee.ui.Graph;
+import de.strullerbaumann.visualee.ui.graph.entity.Graph;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -77,7 +76,7 @@ public final class HTMLManager {
       try (PrintStream ps = new PrintStream(htmlFile)) {
          ps.println(indexHtml);
       } catch (FileNotFoundException ex) {
-         Logger.getLogger(DependencyAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, null, ex);
       }
    }
 
@@ -93,7 +92,7 @@ public final class HTMLManager {
       try (PrintStream ps = new PrintStream(graph.getHtmlFile())) {
          ps.println(html);
       } catch (FileNotFoundException ex) {
-         Logger.getLogger(DependencyAnalyzer.class.getName()).log(Level.SEVERE, null, ex);
+         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, null, ex);
       }
    }
 }

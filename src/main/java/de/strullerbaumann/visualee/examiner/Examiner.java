@@ -1,15 +1,24 @@
 /*
- * Created on 29.07.2013 - 14:36:09
- *
- * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
- * This software is the proprietary information of Thomas Struller-Baumann.
+ Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
 package de.strullerbaumann.visualee.examiner;
 
-import de.strullerbaumann.visualee.dependency.DependenciyType;
-import de.strullerbaumann.visualee.dependency.Dependency;
-import de.strullerbaumann.visualee.resources.JavaSource;
-import de.strullerbaumann.visualee.resources.JavaSourceContainer;
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
+import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
@@ -20,7 +29,9 @@ import java.util.Scanner;
  */
 public abstract class Examiner {
 
-   protected abstract boolean isRelevantType(DependenciyType type);
+   private static final String[] JAVA_TOKENS = {"void", "private", "protected", "transient", "public", "static", "@"};
+
+   protected abstract boolean isRelevantType(DependencyType type);
 
    public abstract void examine(JavaSource javaSource);
 
@@ -28,18 +39,6 @@ public abstract class Examiner {
       Scanner scanner = new Scanner(sourceCode);
       scanner.useDelimiter("[ \t\r\n]+");
       return scanner;
-   }
-
-   protected static boolean isAJavaToken(String token) {
-      String[] javaTokens = {"void", "private", "protected", "transient", "public", "static", "@"};
-
-      for (String javaToken : javaTokens) {
-         if (token.indexOf(javaToken) > - 1) {
-            return true;
-         }
-      }
-
-      return false;
    }
 
    protected static String getClassBody(String sourceCode) {
@@ -51,7 +50,6 @@ public abstract class Examiner {
          while (scanner.hasNext()) {
             String token = scanner.next();
             if (!isInBodyNow) {
-               // In Class/Interface-Body?
                if (token.indexOf('{') > -1) {
                   isInBodyNow = true;
                }
@@ -64,34 +62,34 @@ public abstract class Examiner {
       return classBody.toString();
    }
 
-   protected static DependenciyType getTypeFromToken(String token) {
-      DependenciyType type = null;
+   protected static DependencyType getTypeFromToken(String token) {
+      DependencyType type = null;
       if (token.indexOf("@EJB") > -1) {
-         type = DependenciyType.EJB;
+         type = DependencyType.EJB;
       }
       if (token.indexOf("@Inject") > -1) {
-         type = DependenciyType.INJECT;
+         type = DependencyType.INJECT;
       }
       if (token.indexOf("@Observes") > -1) {
-         type = DependenciyType.OBSERVES;
+         type = DependencyType.OBSERVES;
       }
       // Identify @Produces form Inject (@Produces form WS is @Produces(...)
       // Inject: http://docs.oracle.com/javaee/6/api/javax/enterprise/inject/Produces.html
       // WS: http://docs.oracle.com/javaee/6/api/javax/ws/rs/Produces.html
       if (token.indexOf("@Produces") > -1 && token.indexOf("@Produces(") < 0) {
-         type = DependenciyType.PRODUCES;
+         type = DependencyType.PRODUCES;
       }
       if (token.indexOf("@OneToOne") > -1) {
-         type = DependenciyType.ONE_TO_ONE;
+         type = DependencyType.ONE_TO_ONE;
       }
       if (token.indexOf("@OneToMany") > -1) {
-         type = DependenciyType.ONE_TO_MANY;
+         type = DependencyType.ONE_TO_MANY;
       }
       if (token.indexOf("@ManyToOne") > -1) {
-         type = DependenciyType.MANY_TO_ONE;
+         type = DependencyType.MANY_TO_ONE;
       }
       if (token.indexOf("@ManyToMany") > -1) {
-         type = DependenciyType.MANY_TO_MANY;
+         type = DependencyType.MANY_TO_MANY;
       }
       return type;
    }
@@ -146,8 +144,7 @@ public abstract class Examiner {
       return token;
    }
 
-   protected void createDependency(String className, DependenciyType type, JavaSource javaSource) {
-      // Create the dependency
+   protected void createDependency(String className, DependencyType type, JavaSource javaSource) {
       JavaSource injectedJavaSource = JavaSourceContainer.getInstance().getJavaSourceByName(className);
       if (injectedJavaSource == null) {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
@@ -158,12 +155,38 @@ public abstract class Examiner {
       javaSource.getInjected().add(dependency);
    }
 
+   protected static boolean isAJavaToken(String token) {
+      for (String javaToken : JAVA_TOKENS) {
+         if (token.indexOf(javaToken) > - 1) {
+            return true;
+         }
+      }
+
+      return false;
+   }
+
    // TODO Unittest
    protected String jumpOverJavaToken(String token, Scanner scanner) {
       String nextToken = token;
       while (isAJavaToken(nextToken)) {
-         nextToken = scanner.next();
+         if (nextToken.startsWith("@") && nextToken.indexOf('(') > -1 && !nextToken.endsWith(")")) {
+            nextToken = scanAfterClosedParenthesis(nextToken, scanner);
+         } else {
+            nextToken = scanner.next();
+         }
       }
       return nextToken;
+   }
+
+   protected static void findAndSetPackage(JavaSource javaSource) {
+      Scanner scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      while (scanner.hasNext()) {
+         String token = scanner.next();
+         if (javaSource.getPackagePath() == null && token.equals("package")) {
+            token = scanner.next();
+            String packagePath = token.substring(0, token.indexOf(';'));
+            javaSource.setPackagePath(packagePath);
+         }
+      }
    }
 }

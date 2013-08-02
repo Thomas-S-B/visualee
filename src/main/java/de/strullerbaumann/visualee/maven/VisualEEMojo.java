@@ -15,8 +15,8 @@ package de.strullerbaumann.visualee.maven;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-import de.strullerbaumann.visualee.dependency.DependencyAnalyzer;
-import de.strullerbaumann.visualee.ui.HTMLManager;
+import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
+import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -56,6 +56,8 @@ public class VisualEEMojo extends AbstractMojo {
    private static final String JS_DIR = "/js/";
    private static final String CSS_DIR = "/css/";
    private static final int BUFFER_SIZE = 4096;
+   private static final String[] CSS_DIR_FILES = {"style.css", "jquery-ui.css"};
+   private static final String[] JS_DIR_FILES = {"d3.v3.min.js", "jquery-2.0.3.min.js", "jquery-ui-1.9.2.min.js", "classgraph.js", "LICENSE"};
 
    @Override
    public void execute() throws MojoExecutionException {
@@ -65,13 +67,12 @@ public class VisualEEMojo extends AbstractMojo {
       InputStream indexIS = getClass().getResourceAsStream("/html/index.html");
       InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
 
-      export(CSS_DIR, "style.css", outputdirectory.getAbsoluteFile());
-      export(CSS_DIR, "jquery-ui.css", outputdirectory.getAbsoluteFile());
-      export(JS_DIR, "d3.v3.min.js", outputdirectory.getAbsoluteFile());
-      export(JS_DIR, "jquery-2.0.3.min.js", outputdirectory.getAbsoluteFile());
-      export(JS_DIR, "jquery-ui-1.9.2.min.js", outputdirectory.getAbsoluteFile());
-      export(JS_DIR, "classgraph.js", outputdirectory.getAbsoluteFile());
-      export(JS_DIR, "LICENSE", outputdirectory.getAbsoluteFile());
+      for (String exportFile : CSS_DIR_FILES) {
+         export(CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
+      }
+      for (String exportFile : JS_DIR_FILES) {
+         export(JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
+      }
 
       // Only inspect src-folder, and not e.g. target-folder
       String sourceFolder = getSourceFolder();

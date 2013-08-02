@@ -1,16 +1,25 @@
 /*
- * Created on 10.07.2013 - 16:45:45
- *
- * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
- * This software is the proprietary information of Thomas Struller-Baumann.
- */
-package de.strullerbaumann.visualee.ui;
+ Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
 
-import de.strullerbaumann.visualee.dependency.DependenciyType;
-import de.strullerbaumann.visualee.dependency.Dependency;
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+package de.strullerbaumann.visualee.ui.graph.control;
+
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
+import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
-import de.strullerbaumann.visualee.resources.JavaSource;
-import de.strullerbaumann.visualee.resources.JavaSourceContainer;
+import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -37,8 +46,8 @@ public class DescriptionTest {
 
       javaSource1.setPackagePath(testPackage);
 
-      Dependency dependency12 = new Dependency(DependenciyType.INJECT, javaSource1, javaSource2);
-      Dependency dependency13 = new Dependency(DependenciyType.OBSERVES, javaSource1, javaSource3);
+      Dependency dependency12 = new Dependency(DependencyType.INJECT, javaSource1, javaSource2);
+      Dependency dependency13 = new Dependency(DependencyType.OBSERVES, javaSource1, javaSource3);
       List<Dependency> dependencies = new ArrayList<>();
       dependencies.add(dependency12);
       dependencies.add(dependency13);
@@ -150,7 +159,7 @@ public class DescriptionTest {
     */
    @Test
    public void testGetDescriptionHeader() {
-      for (DependenciyType cdiType : DependenciyType.values()) {
+      for (DependencyType cdiType : DependencyType.values()) {
          assertNotNull("No descriptionheader for CDIType " + cdiType.name(), Description.getDescriptionHeader(cdiType));
       }
    }
@@ -160,11 +169,11 @@ public class DescriptionTest {
     */
    @Test
    public void testGetDescriptionPart() {
-      String header = "TestHeader";
+      DependencyType type = DependencyType.EJB;
       String description = "My test desciption";
-      String actual = Description.getDescriptionPart(header, description);
+      String actual = Description.getDescriptionPart(type, description);
 
-      assertTrue(actual.indexOf(header) > 0);
+      assertTrue(actual.indexOf(Description.getDescriptionHeader(type)) > 0);
       assertTrue(actual.indexOf(description) > 0);
    }
 }

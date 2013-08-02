@@ -1,14 +1,23 @@
 /*
- * Created on 29.07.2013 - 15:34:06
- *
- * Copyright(c) 2013 Thomas Struller-Baumann. All Rights Reserved.
- * This software is the proprietary information of Thomas Struller-Baumann.
+ Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
 package de.strullerbaumann.visualee.examiner;
 
-import de.strullerbaumann.visualee.dependency.Dependency;
-import de.strullerbaumann.visualee.dependency.DependenciyType;
-import de.strullerbaumann.visualee.resources.JavaSource;
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
+import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -24,16 +33,16 @@ public class CDIExaminerTest {
    @Test
    public void testIsRelevantType() {
       CDIExaminer cdiExaminer = new CDIExaminer();
-      assertTrue(cdiExaminer.isRelevantType(DependenciyType.EJB));
-      assertTrue(cdiExaminer.isRelevantType(DependenciyType.EVENT));
-      assertTrue(cdiExaminer.isRelevantType(DependenciyType.INJECT));
-      assertTrue(cdiExaminer.isRelevantType(DependenciyType.INSTANCE));
-      assertTrue(cdiExaminer.isRelevantType(DependenciyType.OBSERVES));
-      assertTrue(cdiExaminer.isRelevantType(DependenciyType.PRODUCES));
-      assertFalse(cdiExaminer.isRelevantType(DependenciyType.MANY_TO_MANY));
-      assertFalse(cdiExaminer.isRelevantType(DependenciyType.MANY_TO_ONE));
-      assertFalse(cdiExaminer.isRelevantType(DependenciyType.ONE_TO_MANY));
-      assertFalse(cdiExaminer.isRelevantType(DependenciyType.ONE_TO_ONE));
+      assertTrue(cdiExaminer.isRelevantType(DependencyType.EJB));
+      assertTrue(cdiExaminer.isRelevantType(DependencyType.EVENT));
+      assertTrue(cdiExaminer.isRelevantType(DependencyType.INJECT));
+      assertTrue(cdiExaminer.isRelevantType(DependencyType.INSTANCE));
+      assertTrue(cdiExaminer.isRelevantType(DependencyType.OBSERVES));
+      assertTrue(cdiExaminer.isRelevantType(DependencyType.PRODUCES));
+      assertFalse(cdiExaminer.isRelevantType(DependencyType.MANY_TO_MANY));
+      assertFalse(cdiExaminer.isRelevantType(DependencyType.MANY_TO_ONE));
+      assertFalse(cdiExaminer.isRelevantType(DependencyType.ONE_TO_MANY));
+      assertFalse(cdiExaminer.isRelevantType(DependencyType.ONE_TO_ONE));
    }
 
    @Test
@@ -43,9 +52,8 @@ public class CDIExaminerTest {
       Dependency dependency;
       String sourceCode;
 
-      // Many to many
       javaSource = new JavaSource("SnapshotEscalator");
-      sourceCode = getTestSourceCodeBeforeBody()
+      sourceCode = SourceCodeProvider.getTestSourceCodeBeforeBody()
               + "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
               + "List<Script> scripts = this.scripting.activeScripts();\n"
               + "try {\n"
@@ -64,9 +72,36 @@ public class CDIExaminerTest {
       cdiExaminer.examine(javaSource);
       dependency = javaSource.getInjected().get(0);
       assertEquals(1, javaSource.getInjected().size());
-      assertEquals(DependenciyType.OBSERVES, dependency.getDependencyType());
+      assertEquals(DependencyType.OBSERVES, dependency.getDependencyType());
       assertEquals("SnapshotEscalator", dependency.getJavaSourceFrom().getName());
       assertEquals("Snapshot", dependency.getJavaSourceTo().getName());
+   }
+
+   @Test
+   public void testFindAndSetAttributesProduces() {
+      CDIExaminer cdiExaminer = new CDIExaminer();
+      JavaSource javaSource;
+      Dependency dependency;
+      String sourceCode;
+
+      javaSource = new JavaSource("DatabaseProducer");
+      sourceCode = "package org.agoncal.application.petstore.util;\n"
+              + "import javax.enterprise.inject.Produces;\n"
+              + "import javax.persistence.EntityManager;\n"
+              + "import javax.persistence.PersistenceContext;\n"
+              + "public class DatabaseProducer {\n"
+              + "@Produces\n"
+              + "    @PersistenceContext(unitName = \"applicationPetstorePU\")\n"
+              + "    private EntityManager em;\n"
+              + "}\n";
+
+      javaSource.setSourceCode(sourceCode);
+      cdiExaminer.examine(javaSource);
+      dependency = javaSource.getInjected().get(0);
+      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(DependencyType.PRODUCES, dependency.getDependencyType());
+      assertEquals("DatabaseProducer", dependency.getJavaSourceFrom().getName());
+      assertEquals("EntityManager", dependency.getJavaSourceTo().getName());
    }
 
    @Test
@@ -90,7 +125,7 @@ public class CDIExaminerTest {
 
       Dependency dependency;
       dependency = javaSource.getInjected().get(0);
-      assertEquals(DependenciyType.INJECT, dependency.getDependencyType());
+      assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("EntityManager", dependency.getJavaSourceTo().getName());
    }
@@ -123,7 +158,7 @@ public class CDIExaminerTest {
 
       Dependency dependency;
       dependency = javaSource.getInjected().get(0);
-      assertEquals(DependenciyType.PRODUCES, dependency.getDependencyType());
+      assertEquals(DependencyType.PRODUCES, dependency.getDependencyType());
       assertEquals("LoggerProducer", dependency.getJavaSourceFrom().getName());
       assertEquals("Log", dependency.getJavaSourceTo().getName());
    }
@@ -147,7 +182,7 @@ public class CDIExaminerTest {
 
       Dependency dependency;
       dependency = javaSource.getInjected().get(0);
-      assertEquals(DependenciyType.INJECT, dependency.getDependencyType());
+      assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("ZeiterfassungEingabeModel", dependency.getJavaSourceFrom().getName());
       assertEquals("Date", dependency.getJavaSourceTo().getName());
    }
@@ -205,63 +240,5 @@ public class CDIExaminerTest {
       javaSource.setSourceCode(sourceCode);
       cdiExaminer.examine(javaSource);
       assertEquals(0, javaSource.getInjected().size());
-   }
-
-   // TODO auslagern siehe auch JavaSourceExaminerTest
-   private String getTestSourceCode() {
-      return getTestSourceCodeBeforeBody() + getTestSourceCodeBody();
-   }
-
-   // TODO auslagern siehe auch JavaSourceExaminerTest
-   private String getTestSourceCodeBeforeBody() {
-      return "/*\n"
-              + " Copyright 2013 Thomas Struller-Baumann, struller-baumann.de\n"
-              + "\n"
-              + " Licensed under the Apache License, Version 2.0 (the \"License\");\n"
-              + " you may not use this file except in compliance with the License.\n"
-              + " You may obtain a copy of the License at\n"
-              + "\n"
-              + " http://www.apache.org/licenses/LICENSE-2.0\n"
-              + "\n"
-              + " Unless required by applicable law or agreed to in writing, software\n"
-              + " distributed under the License is distributed on an \"AS IS\" BASIS,\n"
-              + " WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"
-              + " See the License for the specific language governing permissions and\n"
-              + " limitations under the License.\n"
-              + " */\n"
-              + "package de.strullerbaumann.visualee.resources;\n"
-              + "\n"
-              + "import de.strullerbaumann.visualee.cdi.CDIDependency;\n"
-              + "import de.strullerbaumann.visualee.cdi.CDIType;\n"
-              + "import java.io.BufferedReader;\n"
-              + "import java.io.FileNotFoundException;\n"
-              + "import java.io.FileReader;\n"
-              + "import java.io.IOException;\n"
-              + "import java.util.HashMap;\n"
-              + "import java.util.Map;\n"
-              + "import java.util.Scanner;\n"
-              + "import java.util.logging.Level;\n"
-              + "import java.util.logging.Logger;\n"
-              + "\n"
-              + "/**\n"
-              + " *\n"
-              + " * @author Thomas Struller-Baumann <thomas at struller-baumann.de>\n"
-              + " */\n"
-              + "public class JavaSourceExaminer {\n"
-              + "\n";
-   }
-
-   // TODO auslagern siehe auch JavaSourceExaminerTest
-   private String getTestSourceCodeBody() {
-      return "   private JavaSourceContainer javaSourceContainer;\n"
-              + "    private static class JavaSourceExaminerHolder {\n"
-              + "        private static final JavaSourceExaminer INSTANCE = new JavaSourceExaminer();\n"
-              + "    }\n"
-              + "    private JavaSourceExaminer() {\n"
-              + "    }\n"
-              + "    public static JavaSourceExaminer getInstance() {\n"
-              + "        return JavaSourceExaminerHolder.INSTANCE;\n"
-              + "    }\n"
-              + "}\n";
    }
 }

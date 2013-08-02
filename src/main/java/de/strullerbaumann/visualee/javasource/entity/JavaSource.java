@@ -13,10 +13,9 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.resources;
+package de.strullerbaumann.visualee.javasource.entity;
 
-import de.strullerbaumann.visualee.dependency.Dependency;
-import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,6 +33,8 @@ import java.util.logging.Logger;
  */
 public class JavaSource {
 
+   private static final int HASH = 7;
+   private static final int HASH_MULTIPLIER = 13;
    private File javaFile;
    private List<Dependency> injected;
    // for D3.js, links need id's from the nodes (id's start with 0)
@@ -153,16 +154,14 @@ public class JavaSource {
             loadedSourceCode.append(inputLine).append('\n');
          }
       } catch (IOException ex) {
-         Logger.getLogger(JavaSourceExaminer.class.getName()).log(Level.SEVERE, "Problems while reading " + this.getJavaFile(), ex);
+         Logger.getLogger(JavaSource.class.getName()).log(Level.SEVERE, "Problems while reading " + this.getJavaFile(), ex);
       }
       setSourceCode(loadedSourceCode.toString());
    }
 
    @Override
    public int hashCode() {
-      int hash = 7;
-      hash = 13 * hash + Objects.hashCode(this.name);
-      return hash;
+      return HASH_MULTIPLIER * HASH + Objects.hashCode(this.name);
    }
 
    @Override
