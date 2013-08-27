@@ -25,13 +25,13 @@ After successful build, only put this in your maven-pom:
 Alternatively you can use a ready to use visualee-plugin.
 Add this also to your pom:
 
-   <pluginRepositories>
+    <pluginRepositories>
       <pluginRepository>
          <id>strullerbaumann-ftp</id>
          <name>Visualee Repository</name>
          <url>http://www.struller-baumann.de/maven2</url>
       </pluginRepository>
-   </pluginRepositories>
+    </pluginRepositories>
 
 The visualization will be generated in a project outputdirectory called "visualee".
 Open the index.html in your browser and select one of the generated graphs.
