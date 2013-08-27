@@ -17,6 +17,7 @@ package de.strullerbaumann.visualee.dependency.boundary;
 
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -42,6 +43,11 @@ public class DependencyFilter {
 
    public DependencyFilter clearFilter() {
       filterTypes.clear();
+      return this;
+   }
+
+   public DependencyFilter filterAllTypes() {
+      filterTypes = Arrays.asList(DependencyType.values());
       return this;
    }
 }

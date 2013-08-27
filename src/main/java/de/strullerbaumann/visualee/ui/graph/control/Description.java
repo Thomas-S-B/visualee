@@ -27,6 +27,7 @@ import static de.strullerbaumann.visualee.dependency.entity.DependencyType.OBSER
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.ONE_TO_MANY;
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.ONE_TO_ONE;
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.PRODUCES;
+import static de.strullerbaumann.visualee.dependency.entity.DependencyType.RESOURCE;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public final class Description {
          put(OBSERVES, "Observes:");
          put(PRODUCES, "Produces:");
          put(INSTANCE, "Instances:");
+         put(RESOURCE, "Resources:");
          put(ONE_TO_ONE, "One to one relations:");
          put(ONE_TO_MANY, "One to many relations:");
          put(MANY_TO_ONE, "Many to one relations:");
@@ -61,6 +63,7 @@ public final class Description {
          put(OBSERVES, "Observes " + JAVASOURCE_TO + " events");
          put(PRODUCES, "Produces " + JAVASOURCE_TO);
          put(INSTANCE, JAVASOURCE_TO + " is injected as an instance");
+         put(RESOURCE, JAVASOURCE_TO + " is injected as a resource");
          put(ONE_TO_ONE, "One to one relation to " + JAVASOURCE_TO);
          put(ONE_TO_MANY, "One to many relation to " + JAVASOURCE_TO);
          put(MANY_TO_ONE, "Many to one relation to " + JAVASOURCE_TO);

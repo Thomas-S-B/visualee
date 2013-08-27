@@ -17,7 +17,7 @@ package de.strullerbaumann.visualee.ui.graph.control;
 
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
+import de.strullerbaumann.visualee.examiner.JavaSourceInspector;
 import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.ArrayList;
@@ -140,10 +140,9 @@ public class DescriptionTest {
               + "    }\n"
               + "}\n";
 
-
       javaSource.setSourceCode(sourceCode);
       JavaSourceContainer.getInstance().add(javaSource);
-      JavaSourceExaminer.getInstance().examine();
+      JavaSourceInspector.getInstance().examine();
 
       String actual = Description.generateDescription(javaSource);
 

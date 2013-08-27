@@ -15,9 +15,16 @@
  */
 package de.strullerbaumann.visualee.dependency.boundary;
 
-import de.strullerbaumann.visualee.examiner.JavaSourceExaminer;
+import de.strullerbaumann.visualee.examiner.JavaSourceInspector;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerEJB;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerEvent;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInject;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInstance;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerObserves;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerResource;
+import de.strullerbaumann.visualee.examiner.jpa.ExaminerJPA;
 import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
-import de.strullerbaumann.visualee.ui.graph.boundary.GraphCreator;
 import java.io.File;
 import java.io.InputStream;
 
@@ -27,16 +34,35 @@ import java.io.InputStream;
  */
 public final class DependencyAnalyzer {
 
+   private static class DependencyAnalyzerHolder {
+
+      private static final DependencyAnalyzer INSTANCE = new DependencyAnalyzer();
+   }
+
    private DependencyAnalyzer() {
    }
 
-   public static void analyze(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
+   public static DependencyAnalyzer getInstance() {
+      return DependencyAnalyzerHolder.INSTANCE;
+   }
+
+   public void analyze(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
       JavaSourceContainer.getInstance().clear();
       JavaSourceContainer.getInstance().loadJavaFiles(rootFolder);
-      JavaSourceExaminer.getInstance().examine();
+
+      //Register Examiners
+      new ExaminerEJB();
+      new ExaminerEvent();
+      new ExaminerInject();
+      new ExaminerInstance();
+      new ExaminerJPA();
+      new ExaminerObserves();
+      new ExaminerProduces();
+      new ExaminerResource();
+
+      JavaSourceInspector.getInstance().examine();
       if (!outputdirectory.exists()) {
          outputdirectory.mkdir();
       }
-      GraphCreator.generateGraphs(rootFolder, htmlTemplateIS, outputdirectory);
    }
 }

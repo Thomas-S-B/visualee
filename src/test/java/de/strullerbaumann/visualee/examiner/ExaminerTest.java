@@ -72,40 +72,6 @@ public class ExaminerTest {
    }
 
    @Test
-   public void testGetCDITypeFromLine() {
-      String sourceLine;
-      DependencyType actual;
-
-      sourceLine = "My test desciption";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(null, actual);
-
-      sourceLine = "@EJB";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(DependencyType.EJB, actual);
-
-      sourceLine = "@EJB(name = \"java:global/test/test-ejb/TestService\", beanInterface = TestService.class)";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(DependencyType.EJB, actual);
-
-      sourceLine = "@Inject TestCalss myTestClass;";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(DependencyType.INJECT, actual);
-
-      sourceLine = "public void onEscalationBrowserRequest(@Observes Escalation escalation) {";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(DependencyType.OBSERVES, actual);
-
-      sourceLine = "@Produces";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(DependencyType.PRODUCES, actual);
-
-      sourceLine = "@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON})";
-      actual = ExaminerImpl.getTypeFromToken(sourceLine);
-      assertEquals(null, actual);
-   }
-
-   @Test
    public void testCountChar() {
       String inputString;
       int actual;
@@ -155,6 +121,50 @@ public class ExaminerTest {
       assertEquals(expected, actual);
    }
 
+   @Test
+   public void testJumpOverJavaToken() {
+      JavaSource javaSource;
+      String sourceCode;
+      String actual;
+      String expected;
+      Scanner scanner;
+      String currentToken;
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "@NotNull(groups = PersistenceConstraint.class)\n"
+              + "private Album album;\n";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now @NotNull((groups
+      expected = "Album";
+      actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
+      assertEquals(expected, actual);
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "@NotNull((groups = PersistenceConstraint.class) saddas)\n"
+              + "protected Album2 album;\n";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now @NotNull((groups
+      expected = "Album2";
+      actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
+      assertEquals(expected, actual);
+   }
+
+   @Test
+   public void testCleanupGeneric() {
+      String inputString;
+      String actual;
+
+      inputString = "DataCollector<?";
+      actual = ExaminerImpl.cleanupGeneric(inputString);
+      assertEquals("DataCollector", actual);
+
+      inputString = "DataCollector";
+      actual = ExaminerImpl.cleanupGeneric(inputString);
+      assertEquals("DataCollector", actual);
+   }
+
    public class ExaminerImpl extends Examiner {
 
       @Override
@@ -164,6 +174,11 @@ public class ExaminerTest {
 
       @Override
       public void examine(JavaSource javaSource) {
+      }
+
+      @Override
+      protected DependencyType getTypeFromToken(String token) {
+         return null;
       }
    }
 }

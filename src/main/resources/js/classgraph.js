@@ -23,6 +23,7 @@ cdiTypes["EVENT"] = "Fires event";
 cdiTypes['OBSERVES'] = "Observes for";
 cdiTypes['INSTANCE'] = "Injected instance";
 cdiTypes['PRODUCES'] = "Produces";
+cdiTypes['RESOURCE'] = "Resource";
 cdiTypes['EJB'] = "EJB";
 cdiTypes['ONE_TO_MANY'] = "One to many >>";
 cdiTypes['ONE_TO_ONE'] = "One to one >>";

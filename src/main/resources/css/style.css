@@ -43,6 +43,14 @@ path.link.INSTANCE {
    stroke-dasharray: 2,4 1;
 }
 
+marker#RESOURCE {
+   fill: #ba0;
+}
+path.link.RESOURCE {
+   stroke: #ba0;
+   stroke-dasharray: 12,4 1;
+}
+
 marker#EJB {
    fill: #999;
 }
@@ -81,6 +89,15 @@ div#tweakgraph-open:hover, div#tweakgraph-close:hover {
    cursor: default;
 }
 
+label#help {
+   font-size: 16px;
+   padding: 0px 0px 0px 25px;
+}
+div#help-content {
+   font-size: 14px;
+   padding: 0px 0px 0px 25px;
+}
+
 div#pop-up {
    font-family: Arial, sans-serif;
    display: none;
@@ -95,7 +112,6 @@ div#pop-up {
    left: 100px;
    box-shadow: 6px 6px 6px #666;
 }
-
 div#pop-up-buttons {
    font-size: 16px;
    font-weight: bold;
@@ -112,7 +128,6 @@ div#pop-up-buttons:hover {
    transition: color, text-shadow 0.1s;
    cursor: default;
 }
-
 div#pop-up-title {
    font-size: 16px;
    font-weight: bolder;
@@ -123,13 +138,11 @@ div#pop-up-title {
 div#pop-up-content {
    font-size: 14px;
 }
-
 div#pop-description {
    width: 600px;
    font-size: 12px;
    background: rgba(0,0,0,0.3);
 }
-
 textarea#pop-sourcecode {
    width: 600px;
    height: 240px;

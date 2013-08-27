@@ -15,11 +15,25 @@
  */
 package de.strullerbaumann.visualee.dependency.entity;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public enum DependencyType {
 
-    INJECT, EVENT, PRODUCES, EJB, OBSERVES, INSTANCE, ONE_TO_ONE, ONE_TO_MANY, MANY_TO_ONE, MANY_TO_MANY
+   INJECT, EVENT, PRODUCES, EJB, OBSERVES, INSTANCE, RESOURCE, ONE_TO_ONE, ONE_TO_MANY, MANY_TO_ONE, MANY_TO_MANY;
+
+   public static boolean isInverseDirection(DependencyType type) {
+      return Arrays.asList(
+              DependencyType.EVENT,
+              DependencyType.PRODUCES,
+              DependencyType.OBSERVES,
+              DependencyType.ONE_TO_MANY,
+              DependencyType.ONE_TO_ONE,
+              DependencyType.MANY_TO_ONE,
+              DependencyType.MANY_TO_MANY).contains(type);
+
+   }
 }

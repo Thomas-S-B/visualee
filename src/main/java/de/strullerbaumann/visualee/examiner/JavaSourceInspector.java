@@ -26,22 +26,28 @@ import java.util.Map;
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public final class JavaSourceExaminer {
+public final class JavaSourceInspector {
 
    private List<Examiner> examiners = new ArrayList<>();
 
    private static class JavaSourceExaminerHolder {
 
-      private static final JavaSourceExaminer INSTANCE = new JavaSourceExaminer();
+      private static final JavaSourceInspector INSTANCE = new JavaSourceInspector();
    }
 
-   private JavaSourceExaminer() {
-      examiners.add(new CDIExaminer());
-      examiners.add(new JPAExaminer());
+   private JavaSourceInspector() {
    }
 
-   public static JavaSourceExaminer getInstance() {
+   public static JavaSourceInspector getInstance() {
       return JavaSourceExaminerHolder.INSTANCE;
+   }
+
+   void registerExaminer(Examiner examiner) {
+      examiners.add(examiner);
+   }
+
+   List<Examiner> getExaminers() {
+      return examiners;
    }
 
    public void examine() {
@@ -51,17 +57,15 @@ public final class JavaSourceExaminer {
       }
       // Examine javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
-         for (Examiner examiner : examiners) {
+         for (Examiner examiner : getExaminers()) {
             examiner.examine(javaSource);
          }
       }
       setGroupNrs();
    }
 
-   // TODO UnitTest
    void setGroupNrs() {
-      // Group durchnumerieren/setzen aus packagePaths
-      // alle aus demselben Package haben die selbe groupNr
+      // all javasources from the same package should have the same groupNr
       Map<String, Integer> packagePaths = new HashMap<>();
       int groupNr = 1;
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {

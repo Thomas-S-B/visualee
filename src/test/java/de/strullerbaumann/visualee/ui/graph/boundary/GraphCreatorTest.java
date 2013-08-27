@@ -15,7 +15,14 @@
  */
 package de.strullerbaumann.visualee.ui.graph.boundary;
 
-import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.dependency.entity.Dependency;
+import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
+import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import java.util.ArrayList;
+import java.util.List;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -29,16 +36,41 @@ public class GraphCreatorTest {
    }
 
    @Test
-   public void testIsInverseDirection() {
-      assertFalse(GraphCreator.isInverseDirection(DependencyType.EJB));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.EVENT));
-      assertFalse(GraphCreator.isInverseDirection(DependencyType.INJECT));
-      assertFalse(GraphCreator.isInverseDirection(DependencyType.INSTANCE));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.MANY_TO_MANY));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.MANY_TO_ONE));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.OBSERVES));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.ONE_TO_MANY));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.ONE_TO_ONE));
-      assertTrue(GraphCreator.isInverseDirection(DependencyType.PRODUCES));
+   public void testBuildJSONNode() {
+      String name = "MyTestClass";
+      String sourcecode = "test source code";
+
+      JavaSource javaSource = new JavaSource("MyTestClass");
+      javaSource.setGroup(2);
+      javaSource.setId(1);
+      javaSource.setInjected(new ArrayList<Dependency>());
+      javaSource.setPackagePath("de.test.test2");
+      javaSource.setSourceCode(sourcecode);
+
+      JsonObjectBuilder job = GraphCreator.buildJSONNode(javaSource);
+      JsonObject node = job.build();
+      assertEquals(name, node.getString("name"));
+      assertEquals(2, node.getInt("group"));
+      assertEquals(1, node.getInt("id"));
+      assertNotNull(node.getString("description"));
+      assertEquals(sourcecode, node.getString("sourcecode"));
+   }
+
+   @Test
+   public void testBuildJSONNodes() {
+      JavaSourceContainer.getInstance().clear();
+      int count = 10;
+
+      String namePrefix = "Testclass ";
+      for (int i = 0; i < count; i++) {
+         String name = namePrefix + i;
+         JavaSource javaSource = new JavaSource(name);
+         List<Dependency> injected = new ArrayList<>();
+         javaSource.setInjected(injected);
+         JavaSourceContainer.getInstance().add(javaSource);
+      }
+
+      JsonArray nodes = GraphCreator.buildJSONNodes(null).build();
+      assertEquals(count, nodes.size());
    }
 }

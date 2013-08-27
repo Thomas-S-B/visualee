@@ -13,9 +13,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.examiner;
+package de.strullerbaumann.visualee.examiner.cdi;
 
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.examiner.Examiner;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -24,54 +25,57 @@ import java.util.Scanner;
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class CDIExaminer extends Examiner {
+public class ExaminerResource extends Examiner {
 
    @Override
    protected boolean isRelevantType(DependencyType type) {
-      return Arrays.asList(
-              DependencyType.EJB,
-              DependencyType.EVENT,
-              DependencyType.INJECT,
-              DependencyType.INSTANCE,
-              DependencyType.OBSERVES,
-              DependencyType.PRODUCES).contains(type);
+      return Arrays.asList(DependencyType.RESOURCE).contains(type);
    }
 
    @Override
+   protected DependencyType getTypeFromToken(String token) {
+      DependencyType type = null;
+      if (token.indexOf("@Resource(") > -1 || "@Resource".equals(token)) {
+         type = DependencyType.RESOURCE;
+      }
+      return type;
+   }
+
+   @Override
+   // TODO simplifizieren
    public void examine(JavaSource javaSource) {
+      // http://docs.oracle.com/javaee/6/api/javax/annotation/Resource.html
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
             String token = scanner.next();
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
-               token = scanner.next();
-               token = jumpOverJavaToken(token, scanner);
-
-               // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
                if (token.indexOf('(') > - 1) {
-                  // Greeter(PhraseBuilder becomes PhraseBuilder
+                  token = scanAfterClosedParenthesis(token, scanner);
+               }
+               token = jumpOverJavaToken(token, scanner);
+               if (token.indexOf('(') > - 1) {
                   token = token.substring(token.indexOf('(') + 1);
                }
-               if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
-                  // e.g. the token is now e.g. Event<BrowserWindow>
-                  if (token.startsWith("Event<")) {
-                     // set type to Event (it could be setted before as an Inject)
-                     type = DependencyType.EVENT;
-                  }
+               token = jumpOverJavaToken(token, scanner);
+               if (token.indexOf('(') > - 1) {
+                  token = token.substring(token.indexOf('(') + 1);
+               }
+
+               token = jumpOverJavaToken(token, scanner);
+               if (token.startsWith("Instance<")) {
                   // e.g. the token is now e.g. Instance<GlassfishAuthenticator>
-                  if (token.startsWith("Instance<")) {
-                     // set type to Event (it could be setted before as an Inject)
-                     type = DependencyType.INSTANCE;
-                  }
-                  // e.g. Event<Person> becomes Person
+                  // e.g. Instance<Person> becomes Person
                   token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
+                  token = jumpOverJavaToken(token, scanner);
+                  if (token.indexOf('(') > - 1) {
+                     token = token.substring(token.indexOf('(') + 1);
+                  }
+                  token = jumpOverJavaToken(token, scanner);
                }
-               token = jumpOverJavaToken(token, scanner);
-               if (token.indexOf('(') > - 1) {
-                  token = token.substring(token.indexOf('(') + 1);
-               }
-               String className = jumpOverJavaToken(token, scanner);
 
+               String className = token;
+               className = cleanupGeneric(className);
                createDependency(className, type, javaSource);
             }
          }

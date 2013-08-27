@@ -13,10 +13,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.examiner;
+package de.strullerbaumann.visualee.examiner.jpa;
 
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.examiner.SourceCodeProvider;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class JPAExaminerTest {
 
    @Test
    public void testIsRelevantType() {
-      JPAExaminer jpaExaminer = new JPAExaminer();
+      ExaminerJPA jpaExaminer = new ExaminerJPA();
       assertTrue(jpaExaminer.isRelevantType(DependencyType.MANY_TO_MANY));
       assertTrue(jpaExaminer.isRelevantType(DependencyType.MANY_TO_ONE));
       assertTrue(jpaExaminer.isRelevantType(DependencyType.ONE_TO_ONE));
@@ -47,7 +48,7 @@ public class JPAExaminerTest {
 
    @Test
    public void testFindAndSetAttributesManyToOne() {
-      JPAExaminer jpaExaminer = new JPAExaminer();
+      ExaminerJPA jpaExaminer = new ExaminerJPA();
       JavaSource javaSource;
       Dependency dependency;
       String sourceCode;
@@ -70,7 +71,7 @@ public class JPAExaminerTest {
 
    @Test
    public void testFindAndSetAttributesManyToMany() {
-      JPAExaminer jpaExaminer = new JPAExaminer();
+      ExaminerJPA jpaExaminer = new ExaminerJPA();
       JavaSource javaSource;
       Dependency dependency;
       String sourceCode;
@@ -94,7 +95,7 @@ public class JPAExaminerTest {
 
    @Test
    public void testFindAndSetAttributesIgnoreComments() {
-      JPAExaminer jpaExaminer = new JPAExaminer();
+      ExaminerJPA jpaExaminer = new ExaminerJPA();
       JavaSource javaSource;
       String sourceCode;
 
@@ -123,7 +124,7 @@ public class JPAExaminerTest {
 
    @Test
    public void testFindAndSetAttributesIgnoreCommentBlocks() {
-      JPAExaminer jpaExaminer = new JPAExaminer();
+      ExaminerJPA jpaExaminer = new ExaminerJPA();
       JavaSource javaSource;
       String sourceCode;
 

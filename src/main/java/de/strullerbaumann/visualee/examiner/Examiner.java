@@ -29,9 +29,23 @@ import java.util.Scanner;
  */
 public abstract class Examiner {
 
-   private static final String[] JAVA_TOKENS = {"void", "private", "protected", "transient", "public", "static", "@"};
+   private static final String[] JAVA_TOKENS = {
+      "void",
+      "private",
+      "protected",
+      "transient",
+      "public",
+      "static",
+      "@"
+   };
+
+   public Examiner() {
+      JavaSourceInspector.getInstance().registerExaminer(this);
+   }
 
    protected abstract boolean isRelevantType(DependencyType type);
+
+   protected abstract DependencyType getTypeFromToken(String token);
 
    public abstract void examine(JavaSource javaSource);
 
@@ -42,7 +56,6 @@ public abstract class Examiner {
    }
 
    protected static String getClassBody(String sourceCode) {
-      // todo evtl doch interface class abstract abfragen kann ja ein produces mit { sein
       StringBuilder classBody = new StringBuilder();
       boolean isInBodyNow = false;
       try (Scanner scanner = new Scanner(sourceCode)) {
@@ -50,7 +63,7 @@ public abstract class Examiner {
          while (scanner.hasNext()) {
             String token = scanner.next();
             if (!isInBodyNow) {
-               if (token.indexOf('{') > -1) {
+               if (token.indexOf("class ") > -1) {
                   isInBodyNow = true;
                }
             } else {
@@ -60,38 +73,6 @@ public abstract class Examiner {
       }
 
       return classBody.toString();
-   }
-
-   protected static DependencyType getTypeFromToken(String token) {
-      DependencyType type = null;
-      if (token.indexOf("@EJB") > -1) {
-         type = DependencyType.EJB;
-      }
-      if (token.indexOf("@Inject") > -1) {
-         type = DependencyType.INJECT;
-      }
-      if (token.indexOf("@Observes") > -1) {
-         type = DependencyType.OBSERVES;
-      }
-      // Identify @Produces form Inject (@Produces form WS is @Produces(...)
-      // Inject: http://docs.oracle.com/javaee/6/api/javax/enterprise/inject/Produces.html
-      // WS: http://docs.oracle.com/javaee/6/api/javax/ws/rs/Produces.html
-      if (token.indexOf("@Produces") > -1 && token.indexOf("@Produces(") < 0) {
-         type = DependencyType.PRODUCES;
-      }
-      if (token.indexOf("@OneToOne") > -1) {
-         type = DependencyType.ONE_TO_ONE;
-      }
-      if (token.indexOf("@OneToMany") > -1) {
-         type = DependencyType.ONE_TO_MANY;
-      }
-      if (token.indexOf("@ManyToOne") > -1) {
-         type = DependencyType.MANY_TO_ONE;
-      }
-      if (token.indexOf("@ManyToMany") > -1) {
-         type = DependencyType.MANY_TO_MANY;
-      }
-      return type;
    }
 
    protected static int countChar(String string, char char2Find) {
@@ -107,17 +88,19 @@ public abstract class Examiner {
    protected static String scanAfterClosedParenthesis(String currentToken, Scanner scanner) {
       Deque<Integer> stack = new ArrayDeque<>();
       int iStack = 1;
-
       int countParenthesis = countChar(currentToken, '(');
       for (int iCount = 0; iCount < countParenthesis; iCount++) {
          stack.push(iStack);
          iStack++;
       }
       String token = scanner.next();
-      boolean bEnd = false;
-      while (stack.size() > 0 && !bEnd) {
-         if (getTypeFromToken(token) != null) {
-            break;
+
+      whilestack:
+      while (stack.size() > 0) {
+         for (Examiner examiner : JavaSourceInspector.getInstance().getExaminers()) {
+            if (examiner.getTypeFromToken(token) != null) {
+               break whilestack;
+            }
          }
          if (token.indexOf('(') > -1) {
             int countOpenParenthesis = countChar(token, '(');
@@ -136,7 +119,7 @@ public abstract class Examiner {
          if (scanner.hasNext()) {
             token = scanner.next();
          } else {
-            bEnd = true;
+            break whilestack;
          }
          iStack++;
       }
@@ -161,12 +144,10 @@ public abstract class Examiner {
             return true;
          }
       }
-
       return false;
    }
 
-   // TODO Unittest
-   protected String jumpOverJavaToken(String token, Scanner scanner) {
+   protected static String jumpOverJavaToken(String token, Scanner scanner) {
       String nextToken = token;
       while (isAJavaToken(nextToken)) {
          if (nextToken.startsWith("@") && nextToken.indexOf('(') > -1 && !nextToken.endsWith(")")) {
@@ -188,5 +169,17 @@ public abstract class Examiner {
             javaSource.setPackagePath(packagePath);
          }
       }
+   }
+
+   protected static String cleanupGeneric(String className) {
+      //clears Genericsyntax from a classname
+      //e.g. "DataCollector<?" becomes "DataCollector"
+      String cleanedName = className;
+      int posGeneric = className.indexOf('<');
+      if (posGeneric > -1) {
+         cleanedName = className.substring(0, posGeneric);
+      }
+
+      return cleanedName;
    }
 }

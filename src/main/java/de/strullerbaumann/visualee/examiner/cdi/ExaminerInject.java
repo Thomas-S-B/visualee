@@ -13,9 +13,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.examiner;
+package de.strullerbaumann.visualee.examiner.cdi;
 
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.examiner.Examiner;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -24,43 +25,47 @@ import java.util.Scanner;
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class JPAExaminer extends Examiner {
+public class ExaminerInject extends Examiner {
 
    @Override
    protected boolean isRelevantType(DependencyType type) {
       return Arrays.asList(
-              DependencyType.ONE_TO_MANY,
-              DependencyType.ONE_TO_ONE,
-              DependencyType.MANY_TO_ONE,
-              DependencyType.MANY_TO_MANY).contains(type);
+              DependencyType.INJECT).contains(type);
    }
 
    @Override
+   protected DependencyType getTypeFromToken(String token) {
+      DependencyType type = null;
+      if (token.indexOf("@Inject") > -1) {
+         type = DependencyType.INJECT;
+      }
+      return type;
+   }
+
+   @Override
+   // TODO simplifizieren
    public void examine(JavaSource javaSource) {
-      // Examine class body
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
             String token = scanner.next();
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
-               // Find the associated Class
+               token = scanner.next();
+               token = jumpOverJavaToken(token, scanner);
+               // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
                if (token.indexOf('(') > - 1) {
-                  token = scanAfterClosedParenthesis(token, scanner);
+                  // Greeter(PhraseBuilder becomes PhraseBuilder
+                  token = token.substring(token.indexOf('(') + 1);
                }
-               while (scanner.hasNext() && (isAJavaToken(token))) {
-                  // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
-                  if (token.indexOf('(') > - 1) {
-                     token = scanAfterClosedParenthesis(token, scanner);
-                  } else {
-                     token = scanner.next();
-                  }
+               token = jumpOverJavaToken(token, scanner);
+               if (token.indexOf('(') > - 1) {
+                  token = token.substring(token.indexOf('(') + 1);
                }
-
-               if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
-                  // e.g. Set<Group> becomes Group
-                  token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
+               String className = jumpOverJavaToken(token, scanner);
+               if (className.indexOf("Instance") < 0 && className.indexOf("Event") < 0) {
+                  className = cleanupGeneric(className);
+                  createDependency(className, DependencyType.INJECT, javaSource);
                }
-               createDependency(token, type, javaSource);
             }
          }
       }
