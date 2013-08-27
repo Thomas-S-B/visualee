@@ -42,7 +42,6 @@ public class ExaminerResource extends Examiner {
    }
 
    @Override
-   // TODO simplifizieren
    public void examine(JavaSource javaSource) {
       // http://docs.oracle.com/javaee/6/api/javax/annotation/Resource.html
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
@@ -54,28 +53,12 @@ public class ExaminerResource extends Examiner {
                   token = scanAfterClosedParenthesis(token, scanner);
                }
                token = jumpOverJavaToken(token, scanner);
-               if (token.indexOf('(') > - 1) {
-                  token = token.substring(token.indexOf('(') + 1);
-               }
-               token = jumpOverJavaToken(token, scanner);
-               if (token.indexOf('(') > - 1) {
-                  token = token.substring(token.indexOf('(') + 1);
-               }
-
-               token = jumpOverJavaToken(token, scanner);
                if (token.startsWith("Instance<")) {
                   // e.g. the token is now e.g. Instance<GlassfishAuthenticator>
                   // e.g. Instance<Person> becomes Person
                   token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
-                  token = jumpOverJavaToken(token, scanner);
-                  if (token.indexOf('(') > - 1) {
-                     token = token.substring(token.indexOf('(') + 1);
-                  }
-                  token = jumpOverJavaToken(token, scanner);
                }
-
-               String className = token;
-               className = cleanupGeneric(className);
+               String className = cleanupGeneric(token);;
                createDependency(className, type, javaSource);
             }
          }

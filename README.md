@@ -3,12 +3,12 @@ visualee
 
 A maven plugin to visualize a java ee app.
 
-Only put this in your maven-pom:
+After successful build, only put this in your maven-pom:
 
         <plugin>
             <groupId>de.strullerbaumann</groupId>
             <artifactId>visualee</artifactId>
-            <version>0.12</version>
+            <version>0.14</version>
             <configuration>
                <outputdirectory>visualee</outputdirectory>
             </configuration>
@@ -21,6 +21,43 @@ Only put this in your maven-pom:
                </execution>
             </executions>
          </plugin>
+
+Alternatively you can use a ready to use visualee-plugin.
+Add this to your pom:
+<project
+...
+   <pluginRepositories>
+      <pluginRepository>
+         <id>strullerbaumann-ftp</id>
+         <name>Visualee Repository</name>
+         <url>http://www.struller-baumann.de/maven2</url>
+      </pluginRepository>
+   </pluginRepositories>
+...
+   <build>
+      <plugins>
+         ...
+         <plugin>
+            <groupId>de.strullerbaumann</groupId>
+            <artifactId>visualee</artifactId>
+            <version>0.14</version>
+            <configuration>
+               <outputdirectory>visualee</outputdirectory>
+            </configuration>
+            <executions>
+               <execution>
+                  <phase>process-resources</phase>
+                  <goals>
+                     <goal>visualize</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         ...
+      </plugins>
+   </build>
+...
+</project>
 
 The visualization will be generated in a project outputdirectory called "visualee".
 Open the index.html in your browser and select one of the generated graphs.

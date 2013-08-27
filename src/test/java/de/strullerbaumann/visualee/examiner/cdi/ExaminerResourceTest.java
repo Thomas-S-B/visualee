@@ -75,7 +75,6 @@ public class ExaminerResourceTest {
 
       javaSource = new JavaSource("DatabaseConnectionProducer");
       sourceCode = "package de.gedoplan.buch.eedemos.cdi.producer;\n"
-              + "import de.gedoplan.buch.eedemos.cdi.qualifier.TempDb;\n"
               + "import javax.annotation.Resource;\n"
               + "import javax.enterprise.context.ApplicationScoped;\n"
               + "import javax.enterprise.inject.Produces;\n"

@@ -4,7 +4,7 @@
    <groupId>de.strullerbaumann</groupId>
    <artifactId>visualee</artifactId>
    <packaging>maven-plugin</packaging>
-   <version>0.12</version>
+   <version>0.14</version>
    <name>visualee</name>
    <description>A maven plugin to visualize a java ee app.</description>
 
@@ -20,7 +20,7 @@
          <url>ftp://ftp.struller-baumann.de/html/maven2</url>
       </repository>
    </distributionManagement>
-   
+
    <build>
       <extensions>
          <!-- for deploy on ftp -->

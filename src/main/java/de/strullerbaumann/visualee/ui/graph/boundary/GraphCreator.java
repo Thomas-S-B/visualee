@@ -152,49 +152,57 @@ public final class GraphCreator {
       HTMLManager.generateHTML(graphAllClasses, htmlTemplate);
 
       // GRAPH - only Event/Observer classes
-      DependencyFilter cdiFilterEventObserver = new DependencyFilter().addType(DependencyType.EVENT).addType(DependencyType.OBSERVES);
+      DependencyFilter cdiFilterEventObserver = new DependencyFilter()
+              .addType(DependencyType.EVENT)
+              .addType(DependencyType.OBSERVES);
       Graph graphEventObserverClasses = GraphCreator.generateGraph("graphEventObserverClasses", cdiFilterEventObserver, htmlTemplateIS, outputdirectory);
       graphEventObserverClasses.setTitle("Event/Observer classes of " + rootFolder.getPath());
       graphEventObserverClasses.calculateDimensions();
       HTMLManager.generateHTML(graphEventObserverClasses, htmlTemplate);
 
       // GRAPH - only EJB classes
-      DependencyFilter cdiFilterEJB = new DependencyFilter().addType(DependencyType.EJB);
+      DependencyFilter cdiFilterEJB = new DependencyFilter()
+              .addType(DependencyType.EJB);
       Graph graphEJBClasses = GraphCreator.generateGraph("graphEJBClasses", cdiFilterEJB, htmlTemplateIS, outputdirectory);
       graphEJBClasses.setTitle("Only EJB classes of " + rootFolder.getPath());
       graphEJBClasses.calculateDimensions();
       HTMLManager.generateHTML(graphEJBClasses, htmlTemplate);
 
       // GRAPH - only Instance classes
-      DependencyFilter cdiFilterInstance = new DependencyFilter().addType(DependencyType.INSTANCE);
+      DependencyFilter cdiFilterInstance = new DependencyFilter()
+              .addType(DependencyType.INSTANCE);
       Graph graphInstanceClasses = GraphCreator.generateGraph("graphInstanceClasses", cdiFilterInstance, htmlTemplateIS, outputdirectory);
       graphInstanceClasses.setTitle("Only Instance classes of " + rootFolder.getPath());
       graphInstanceClasses.calculateDimensions();
       HTMLManager.generateHTML(graphInstanceClasses, htmlTemplate);
 
       // GRAPH - only Inject classes
-      DependencyFilter cdiFilterInject = new DependencyFilter().addType(DependencyType.INJECT);
+      DependencyFilter cdiFilterInject = new DependencyFilter()
+              .addType(DependencyType.INJECT);
       Graph graphInjectClasses = GraphCreator.generateGraph("graphInjectClasses", cdiFilterInject, htmlTemplateIS, outputdirectory);
       graphInjectClasses.setTitle("Only Inject classes of " + rootFolder.getPath());
       graphInjectClasses.calculateDimensions();
       HTMLManager.generateHTML(graphInjectClasses, htmlTemplate);
 
       // GRAPH - only Produces classes
-      DependencyFilter cdiFilterProduces = new DependencyFilter().addType(DependencyType.PRODUCES);
+      DependencyFilter cdiFilterProduces = new DependencyFilter()
+              .addType(DependencyType.PRODUCES);
       Graph graphProducesClasses = GraphCreator.generateGraph("graphProducesClasses", cdiFilterProduces, htmlTemplateIS, outputdirectory);
       graphProducesClasses.setTitle("Only Produces classes of " + rootFolder.getPath());
       graphProducesClasses.calculateDimensions();
       HTMLManager.generateHTML(graphProducesClasses, htmlTemplate);
 
       // GRAPH - only Resources classes
-      DependencyFilter cdiFilterResources = new DependencyFilter().addType(DependencyType.RESOURCE);
+      DependencyFilter cdiFilterResources = new DependencyFilter()
+              .addType(DependencyType.RESOURCE);
       Graph graphResourcesClasses = GraphCreator.generateGraph("graphResourcesClasses", cdiFilterResources, htmlTemplateIS, outputdirectory);
       graphResourcesClasses.setTitle("Only Resource classes of " + rootFolder.getPath());
       graphResourcesClasses.calculateDimensions();
       HTMLManager.generateHTML(graphResourcesClasses, htmlTemplate);
 
       // GRAPH - only JPA classes
-      DependencyFilter filterJPA = new DependencyFilter().addType(DependencyType.ONE_TO_ONE)
+      DependencyFilter filterJPA = new DependencyFilter()
+              .addType(DependencyType.ONE_TO_ONE)
               .addType(DependencyType.ONE_TO_MANY)
               .addType(DependencyType.MANY_TO_ONE)
               .addType(DependencyType.MANY_TO_MANY);

@@ -43,22 +43,16 @@ public class ExaminerInject extends Examiner {
    }
 
    @Override
-   // TODO simplifizieren
    public void examine(JavaSource javaSource) {
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
             String token = scanner.next();
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
-               token = scanner.next();
                token = jumpOverJavaToken(token, scanner);
                // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
                if (token.indexOf('(') > - 1) {
                   // Greeter(PhraseBuilder becomes PhraseBuilder
-                  token = token.substring(token.indexOf('(') + 1);
-               }
-               token = jumpOverJavaToken(token, scanner);
-               if (token.indexOf('(') > - 1) {
                   token = token.substring(token.indexOf('(') + 1);
                }
                String className = jumpOverJavaToken(token, scanner);
