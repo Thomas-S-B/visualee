@@ -34,12 +34,13 @@ import java.util.logging.Logger;
  */
 public final class HTMLManager {
 
+   private static final Logger LOGGER = Logger.getLogger(HTMLManager.class.getName());
+
    private HTMLManager() {
    }
 
    public static String loadHTMLTemplate(InputStream graphTemplate, String htmlName) {
-      // So spart man sich mehrfaches laden des Templates und auch umständliche reopen des InputStreams
-      // InputStream, da im Plugin per getResource auf das html im jar zugegriffen wird)
+      //InputStream because html is accessed via getResource->jar in the plugin
       StringBuilder htmlTemplateBuilder = new StringBuilder();
       BufferedReader br = null;
       try {
@@ -50,15 +51,15 @@ public final class HTMLManager {
             htmlTemplateBuilder.append(System.lineSeparator());
          }
       } catch (FileNotFoundException ex) {
-         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
+         LOGGER.log(Level.SEVERE, "can't load " + htmlName, ex);
       } catch (IOException ex) {
-         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, "can not load " + htmlName, ex);
+         LOGGER.log(Level.SEVERE, "can't load " + htmlName, ex);
       } finally {
          if (br != null) {
             try {
                br.close();
             } catch (IOException ex) {
-               Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, "can not close " + htmlName, ex);
+               LOGGER.log(Level.SEVERE, "can't close " + htmlName, ex);
             }
          }
       }
@@ -76,7 +77,7 @@ public final class HTMLManager {
       try (PrintStream ps = new PrintStream(htmlFile)) {
          ps.println(indexHtml);
       } catch (FileNotFoundException ex) {
-         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, null, ex);
+         LOGGER.log(Level.SEVERE, null, ex);
       }
    }
 
@@ -92,7 +93,7 @@ public final class HTMLManager {
       try (PrintStream ps = new PrintStream(graph.getHtmlFile())) {
          ps.println(html);
       } catch (FileNotFoundException ex) {
-         Logger.getLogger(HTMLManager.class.getName()).log(Level.SEVERE, null, ex);
+         LOGGER.log(Level.SEVERE, "Didn't found " + graph.getHtmlFile(), ex);
       }
    }
 }

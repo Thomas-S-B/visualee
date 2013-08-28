@@ -41,6 +41,7 @@ import javax.json.JsonObjectBuilder;
  */
 public final class GraphCreator {
 
+   private static final Logger LOGGER = Logger.getLogger(GraphCreator.class.getName());
    private static String htmlTemplate;
 
    private GraphCreator() {
@@ -73,7 +74,7 @@ public final class GraphCreator {
       try (PrintStream ps = new PrintStream(graph.getJsonFile())) {
          ps.println(json.toString());
       } catch (FileNotFoundException ex) {
-         Logger.getLogger(GraphCreator.class.getName()).log(Level.SEVERE, "Didn't found file " + graph.getJsonFile().getName(), ex);
+         LOGGER.log(Level.SEVERE, "Didn't found file " + graph.getJsonFile().getName(), ex);
       }
 
       return graph;

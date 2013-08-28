@@ -38,7 +38,7 @@ public class GraphCreatorTest {
    @Test
    public void testBuildJSONNode() {
       String name = "MyTestClass";
-      String sourcecode = "test source code";
+      String sourcecode = "test source code - Matt Pavolka Group - Something People Can Use";
 
       JavaSource javaSource = new JavaSource("MyTestClass");
       javaSource.setGroup(2);

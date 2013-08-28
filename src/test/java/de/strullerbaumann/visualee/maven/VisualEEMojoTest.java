@@ -24,15 +24,15 @@ public class VisualEEMojoTest {
    @Test
    public void testGetSourceFolder() {
       String actual;
-      String expected = getParsedFileSeparator("//thomas/NetBeansProjects/MyTestRoot/src/main");
+      String expected = getParsedFileSeparator("//jimi/hendrix/MyTestRoot/src/main");
 
       VisualEEMojo visualEEMojo = new VisualEEMojo();
       List<String> testSourceRoots = new ArrayList<>();
-      testSourceRoots.add(getParsedFileSeparator("//thomas/NetBeansProjects/MyTestRoot"));
+      testSourceRoots.add(getParsedFileSeparator("//jimi/hendrix/MyTestRoot"));
       testSourceRoots.add(expected);
-      testSourceRoots.add(getParsedFileSeparator("//thomas/NetBeansProjects/MyTestRoot/target"));
-      testSourceRoots.add(getParsedFileSeparator("//thomas/NetBeansProjects/MyTestRoot/src/main/java"));
-      testSourceRoots.add(getParsedFileSeparator("//thomas/NetBeansProjects/MyTestRoot/target/classes"));
+      testSourceRoots.add(getParsedFileSeparator("//jimi/hendrix/MyTestRoot/target"));
+      testSourceRoots.add(getParsedFileSeparator("//jimi/hendrix/MyTestRoot/src/main/java"));
+      testSourceRoots.add(getParsedFileSeparator("//jimi/hendrix/MyTestRoot/target/classes"));
 
       actual = visualEEMojo.getSourceFolder(testSourceRoots);
       assertEquals(expected + File.separatorChar, actual);

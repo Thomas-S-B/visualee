@@ -33,6 +33,7 @@ import java.util.logging.Logger;
  */
 public class JavaSource {
 
+   private static final Logger LOGGER = Logger.getLogger(JavaSource.class.getName());
    private static final int HASH = 7;
    private static final int HASH_MULTIPLIER = 13;
    private File javaFile;
@@ -154,7 +155,7 @@ public class JavaSource {
             loadedSourceCode.append(inputLine).append('\n');
          }
       } catch (IOException ex) {
-         Logger.getLogger(JavaSource.class.getName()).log(Level.SEVERE, "Problems while reading " + this.getJavaFile(), ex);
+         LOGGER.log(Level.SEVERE, "Problems while reading " + this.getJavaFile(), ex);
       }
       setSourceCode(loadedSourceCode.toString());
    }

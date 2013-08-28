@@ -62,7 +62,7 @@ public class JavaSourceTest {
               + "      * \n"
               + "      * commentblock\n"
               + "      */\n"
-              + "      //this is also a comment\n"
+              + "      //this is also a comment - give them a try: Gilad Hekselman - Split Life\n"
               + "      try {";
       String expected = "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
               + "      List<Script> scripts = this.scripting.activeScripts();\n"

@@ -56,7 +56,7 @@ public class JavaSourceContainerTest {
       JavaSourceContainer.getInstance().clear();
       String name = "DataPoint";
       JavaSource javaSource1 = new JavaSource(name);
-      String sourceCode1 = "Test source code for JavaSource1";
+      String sourceCode1 = "Test source code for JavaSource1 (listen to Brian Blade - Season of change";
       javaSource1.setSourceCode(sourceCode1);
       JavaSourceContainer.getInstance().add(javaSource1);
       JavaSource javaSource2 = new JavaSource(name);

@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,11 +32,19 @@ import java.util.List;
  */
 public final class FileManager {
 
+   private static final Logger LOGGER = Logger.getLogger(FileManager.class.getName());
    private static final int BUFFER_SIZE = 1024;
 
    private FileManager() {
    }
 
+   /**
+    * Searches for files filtered by the fileextension in the given directory
+    *
+    * @param dir
+    * @param extension
+    * @return
+    */
    public static List<File> searchFiles(File dir, String extension) {
       File[] files = dir.listFiles();
       List<File> matches = new ArrayList<>();
@@ -77,6 +87,36 @@ public final class FileManager {
             }
          }
          out.close();
+      }
+   }
+
+   /**
+    * Exports Files from the jar to a given directory
+    *
+    * @param clazz
+    * @param sourceFolder
+    * @param fileName
+    * @param targetFolder
+    */
+   public static void export(Class clazz, String sourceFolder, String fileName, File targetFolder) {
+      try {
+         if (!targetFolder.exists()) {
+            targetFolder.mkdir();
+         }
+         File dstResourceFolder = new File(targetFolder + sourceFolder + File.separatorChar);
+         if (!dstResourceFolder.exists()) {
+            dstResourceFolder.mkdir();
+         }
+         try (InputStream is = clazz.getResourceAsStream(sourceFolder + fileName);
+                 OutputStream os = new FileOutputStream(targetFolder + sourceFolder + fileName)) {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+               os.write(buffer, 0, length);
+            }
+         }
+      } catch (Exception exc) {
+         LOGGER.log(Level.SEVERE, "Can't export " + fileName + " from " + sourceFolder + " (jar) to " + targetFolder, exc);
       }
    }
 }

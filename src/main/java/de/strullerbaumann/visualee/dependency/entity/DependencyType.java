@@ -23,7 +23,17 @@ import java.util.Arrays;
  */
 public enum DependencyType {
 
-   INJECT, EVENT, PRODUCES, EJB, OBSERVES, INSTANCE, RESOURCE, ONE_TO_ONE, ONE_TO_MANY, MANY_TO_ONE, MANY_TO_MANY;
+   INJECT,
+   EVENT,
+   PRODUCES,
+   EJB,
+   OBSERVES,
+   INSTANCE,
+   RESOURCE,
+   ONE_TO_ONE,
+   ONE_TO_MANY,
+   MANY_TO_ONE,
+   MANY_TO_MANY;
 
    public static boolean isInverseDirection(DependencyType type) {
       return Arrays.asList(
@@ -34,6 +44,5 @@ public enum DependencyType {
               DependencyType.ONE_TO_ONE,
               DependencyType.MANY_TO_ONE,
               DependencyType.MANY_TO_MANY).contains(type);
-
    }
 }

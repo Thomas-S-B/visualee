@@ -58,7 +58,7 @@ public class ExaminerResource extends Examiner {
                   // e.g. Instance<Person> becomes Person
                   token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
                }
-               String className = cleanupGeneric(token);;
+               String className = cleanupGeneric(token);
                createDependency(className, type, javaSource);
             }
          }

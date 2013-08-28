@@ -16,15 +16,12 @@ package de.strullerbaumann.visualee.maven;
  limitations under the License.
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
+import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.ui.graph.boundary.GraphCreator;
 import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -61,23 +58,23 @@ public class VisualEEMojo extends AbstractMojo {
    private MavenSession mavenSession;
    private static final String JS_DIR = "/js/";
    private static final String CSS_DIR = "/css/";
-   private static final int BUFFER_SIZE = 4096;
    private static final String[] CSS_DIR_FILES = {"style.css", "jquery-ui.css"};
    private static final String[] JS_DIR_FILES = {"d3.v3.min.js", "jquery-2.0.3.min.js", "jquery-ui-1.9.2.min.js", "classgraph.js", "LICENSE"};
+   private static final String HEADER_FOOTER = "#######################################################";
 
    @Override
    public void execute() throws MojoExecutionException {
       //Ensure only one execution (important for multi module poms)
       if (isThisRootDir()) {
-         getLog().info("#######################################################");
+         getLog().info(HEADER_FOOTER);
          getLog().info("### VisualEE-Plugin");
          InputStream indexIS = getClass().getResourceAsStream("/html/index.html");
          InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
          for (String exportFile : CSS_DIR_FILES) {
-            export(CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
+            FileManager.export(getClass(), CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
          for (String exportFile : JS_DIR_FILES) {
-            export(JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
+            FileManager.export(getClass(), JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
          //Examine all dirs under the projectroot for java-files
          String sourceFolder = mavenSession.getExecutionRootDirectory();
@@ -90,7 +87,7 @@ public class VisualEEMojo extends AbstractMojo {
             GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
             getLog().info("### Done, visualization can be found in");
             getLog().info("### " + outputdirectory + File.separatorChar + "index.html");
-            getLog().info("#######################################################");
+            getLog().info(HEADER_FOOTER);
          } else {
             getLog().error("### Cannot find src-folder");
          }
@@ -104,29 +101,6 @@ public class VisualEEMojo extends AbstractMojo {
          }
       }
       return null;
-   }
-
-   //Exports Files from jar to a given directory
-   private void export(String sourceFolder, String fileName, File targetFolder) {
-      try {
-         if (!targetFolder.exists()) {
-            targetFolder.mkdir();
-         }
-         File dstResourceFolder = new File(targetFolder + sourceFolder + File.separatorChar);
-         if (!dstResourceFolder.exists()) {
-            dstResourceFolder.mkdir();
-         }
-         try (InputStream is = getClass().getResourceAsStream(sourceFolder + fileName);
-                 OutputStream os = new FileOutputStream(targetFolder + sourceFolder + fileName)) {
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int length;
-            while ((length = is.read(buffer)) > 0) {
-               os.write(buffer, 0, length);
-            }
-         }
-      } catch (Exception exc) {
-         Logger.getLogger(VisualEEMojo.class.getName()).log(Level.INFO, null, exc);
-      }
    }
 
    protected boolean isThisRootDir() {

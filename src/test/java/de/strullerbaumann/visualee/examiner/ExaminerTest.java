@@ -43,7 +43,7 @@ public class ExaminerTest {
       String inputString;
       boolean actual;
 
-      inputString = "asddaads";
+      inputString = "Joshua Redman - Compass";
       actual = ExaminerImpl.isAJavaToken(inputString);
       assertEquals(false, actual);
 
@@ -76,7 +76,7 @@ public class ExaminerTest {
       String inputString;
       int actual;
 
-      inputString = "My test de(sciption((asddaads)fdf))saddassd";
+      inputString = "My test de(sciption((Lage Lund - Standards)fdf))saddassd";
       actual = ExaminerImpl.countChar(inputString, '(');
       assertEquals(3, actual);
       actual = ExaminerImpl.countChar(inputString, ')');
