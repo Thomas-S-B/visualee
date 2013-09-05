@@ -52,7 +52,7 @@ Example:
           <plugin>
             <groupId>de.strullerbaumann</groupId>
             <artifactId>visualee</artifactId>
-            <version>0.14</version>
+            <version>0.15</version>
             <configuration>
                <outputdirectory>visualee</outputdirectory>
                <graphs>
