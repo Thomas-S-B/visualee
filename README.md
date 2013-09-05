@@ -46,9 +46,10 @@ The attributes are:
 - graphsize
 - fontsize (in percent)
 
-The graph-name is the name of the genreted files.
+The graph-name is the name of the generated files.
 
 Example:
+
           <plugin>
             <groupId>de.strullerbaumann</groupId>
             <artifactId>visualee</artifactId>
