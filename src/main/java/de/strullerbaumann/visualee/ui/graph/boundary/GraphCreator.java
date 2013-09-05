@@ -20,6 +20,7 @@ import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.maven.GraphMojo;
 import de.strullerbaumann.visualee.ui.graph.control.Description;
 import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
 import de.strullerbaumann.visualee.ui.graph.entity.Graph;
@@ -27,7 +28,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
@@ -43,41 +47,46 @@ public final class GraphCreator {
 
    private static final Logger LOGGER = Logger.getLogger(GraphCreator.class.getName());
    private static String htmlTemplate;
+   // TODO one Array (duplicated keys)
+   private static final Map<String, String> GRAPH_TITLES = Collections.unmodifiableMap(new HashMap<String, String>() {
+      {
+         put("graphOnlyCDIJPA", "Only CDI/JPA relevant classes of ");
+         put("graphAllClasses", "All classes of ");
+         put("graphEventObserverClasses", "Event/Observer classes of ");
+         put("graphEJBClasses", "Only EJB classes of ");
+         put("graphInstanceClasses", "Only Instance classes of ");
+         put("graphInjectClasses", "Only Inject classes of ");
+         put("graphProducesClasses", "Only Produces classes of ");
+         put("graphResourcesClasses", "Only Resource classes of ");
+         put("graphJPAClasses", "Only JPA classes of ");
+      }
+   });
+   private static final Map<String, DependencyFilter> GRAPH_FILTERS = Collections.unmodifiableMap(new HashMap<String, DependencyFilter>() {
+      {
+         put("graphOnlyCDIJPA", new DependencyFilter().filterAllTypes());
+         put("graphAllClasses", null);
+         put("graphEventObserverClasses", new DependencyFilter()
+                 .addType(DependencyType.EVENT)
+                 .addType(DependencyType.OBSERVES));
+         put("graphEJBClasses", new DependencyFilter()
+                 .addType(DependencyType.EJB));
+         put("graphInstanceClasses", new DependencyFilter()
+                 .addType(DependencyType.INSTANCE));
+         put("graphInjectClasses", new DependencyFilter()
+                 .addType(DependencyType.INJECT));
+         put("graphProducesClasses", new DependencyFilter()
+                 .addType(DependencyType.PRODUCES));
+         put("graphResourcesClasses", new DependencyFilter()
+                 .addType(DependencyType.RESOURCE));
+         put("graphJPAClasses", new DependencyFilter()
+                 .addType(DependencyType.ONE_TO_ONE)
+                 .addType(DependencyType.ONE_TO_MANY)
+                 .addType(DependencyType.MANY_TO_ONE)
+                 .addType(DependencyType.MANY_TO_MANY));
+      }
+   });
 
    private GraphCreator() {
-   }
-
-   static Graph initGraph(File outputdirectory, String fileName, InputStream htmlTemplateIS) {
-      Graph graph = new Graph();
-      File jsonFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".json");
-      graph.setJsonFile(jsonFile);
-      File htmlFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".html");
-      graph.setHtmlFile(htmlFile);
-      graph.setHtmlTemplateIS(htmlTemplateIS);
-      return graph;
-   }
-
-   public static Graph generateGraph(String fileName,
-           DependencyFilter filter,
-           InputStream htmlTemplateIS,
-           File outputdirectory) {
-      Graph graph = initGraph(outputdirectory, fileName, htmlTemplateIS);
-      JsonObjectBuilder builder = Json.createObjectBuilder();
-      // Nodes
-      JsonArrayBuilder nodesArray = buildJSONNodes(filter);
-      builder.add("nodes", nodesArray);
-      graph.setCountClasses(nodesArray.build().size());
-      // Links
-      JsonArrayBuilder linksArray = buildJSONLinks(filter);
-      builder.add("links", linksArray);
-      JsonObject json = builder.build();
-      try (PrintStream ps = new PrintStream(graph.getJsonFile())) {
-         ps.println(json.toString());
-      } catch (FileNotFoundException ex) {
-         LOGGER.log(Level.SEVERE, "Didn't found file " + graph.getJsonFile().getName(), ex);
-      }
-
-      return graph;
    }
 
    static JsonObjectBuilder buildJSONNode(JavaSource javaSource) {
@@ -96,7 +105,7 @@ public final class GraphCreator {
       JsonArrayBuilder nodesArray = Json.createArrayBuilder();
       int id = 0;
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
-         if (filter == null || (filter != null && relevantClasses.contains(javaSource))) {
+         if (filter == null || relevantClasses.contains(javaSource)) {
             javaSource.setId(id);
             nodesArray.add(buildJSONNode(javaSource));
             id++;
@@ -134,82 +143,67 @@ public final class GraphCreator {
       return linksArray;
    }
 
-   public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
+   private static void setMojoAttributes(Graph graph, List<GraphMojo> graphMojos) {
+      for (GraphMojo graphMojo : graphMojos) {
+         if (graphMojo.getName().equals(graph.getName())) {
+            graph.setDistance(graphMojo.getDistance());
+            graph.setGravity(graphMojo.getGravity());
+            graph.setGraphSize(graphMojo.getGraphsize());
+            graph.setFontsize(graphMojo.getFontsize());
+            break;
+         }
+      }
+   }
+
+   public static Graph generateGraph(String fileName,
+           String title,
+           List<GraphMojo> graphMojos,
+           DependencyFilter filter,
+           InputStream htmlTemplateIS,
+           File outputdirectory) {
+      Graph graph = new Graph();
+      graph.setName(fileName);
+      File jsonFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".json");
+      graph.setJsonFile(jsonFile);
+      File htmlFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".html");
+      graph.setHtmlFile(htmlFile);
+      graph.setHtmlTemplateIS(htmlTemplateIS);
+
+      setMojoAttributes(graph, graphMojos);
+      graph.setTitle(title);
+      JsonObjectBuilder builder = Json.createObjectBuilder();
+      // Nodes
+      JsonArrayBuilder nodesArray = buildJSONNodes(filter);
+      builder.add("nodes", nodesArray);
+      graph.setCountClasses(nodesArray.build().size());
+      // Links
+      JsonArrayBuilder linksArray = buildJSONLinks(filter);
+      builder.add("links", linksArray);
+      JsonObject json = builder.build();
+      try (PrintStream ps = new PrintStream(graph.getJsonFile())) {
+         ps.println(json.toString());
+      } catch (FileNotFoundException ex) {
+         LOGGER.log(Level.SEVERE, "Didn't found file " + graph.getJsonFile().getName(), ex);
+      }
+
+      return graph;
+   }
+
+   public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS, List<GraphMojo> graphMojos) {
       // 3. Load HTML-Template, if not already done (Maven modules)
       if (htmlTemplate == null) {
          htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
       }
-      // GRAPH - only CDI-relevant classes
-      DependencyFilter cdiFilterOnlyCDI = new DependencyFilter().filterAllTypes();
-      Graph graphOnlyCDI = GraphCreator.generateGraph("graphOnlyCDI", cdiFilterOnlyCDI, htmlTemplateIS, outputdirectory);
-      graphOnlyCDI.setTitle("Only CDI relevant classes of " + rootFolder.getPath());
-      graphOnlyCDI.calculateDimensions();
-      HTMLManager.generateHTML(graphOnlyCDI, htmlTemplate);
 
-      // GRAPH - all classes
-      Graph graphAllClasses = GraphCreator.generateGraph("graphAllClasses", null, htmlTemplateIS, outputdirectory);
-      graphAllClasses.setTitle("All classes of " + rootFolder.getPath());
-      graphAllClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphAllClasses, htmlTemplate);
-
-      // GRAPH - only Event/Observer classes
-      DependencyFilter cdiFilterEventObserver = new DependencyFilter()
-              .addType(DependencyType.EVENT)
-              .addType(DependencyType.OBSERVES);
-      Graph graphEventObserverClasses = GraphCreator.generateGraph("graphEventObserverClasses", cdiFilterEventObserver, htmlTemplateIS, outputdirectory);
-      graphEventObserverClasses.setTitle("Event/Observer classes of " + rootFolder.getPath());
-      graphEventObserverClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphEventObserverClasses, htmlTemplate);
-
-      // GRAPH - only EJB classes
-      DependencyFilter cdiFilterEJB = new DependencyFilter()
-              .addType(DependencyType.EJB);
-      Graph graphEJBClasses = GraphCreator.generateGraph("graphEJBClasses", cdiFilterEJB, htmlTemplateIS, outputdirectory);
-      graphEJBClasses.setTitle("Only EJB classes of " + rootFolder.getPath());
-      graphEJBClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphEJBClasses, htmlTemplate);
-
-      // GRAPH - only Instance classes
-      DependencyFilter cdiFilterInstance = new DependencyFilter()
-              .addType(DependencyType.INSTANCE);
-      Graph graphInstanceClasses = GraphCreator.generateGraph("graphInstanceClasses", cdiFilterInstance, htmlTemplateIS, outputdirectory);
-      graphInstanceClasses.setTitle("Only Instance classes of " + rootFolder.getPath());
-      graphInstanceClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphInstanceClasses, htmlTemplate);
-
-      // GRAPH - only Inject classes
-      DependencyFilter cdiFilterInject = new DependencyFilter()
-              .addType(DependencyType.INJECT);
-      Graph graphInjectClasses = GraphCreator.generateGraph("graphInjectClasses", cdiFilterInject, htmlTemplateIS, outputdirectory);
-      graphInjectClasses.setTitle("Only Inject classes of " + rootFolder.getPath());
-      graphInjectClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphInjectClasses, htmlTemplate);
-
-      // GRAPH - only Produces classes
-      DependencyFilter cdiFilterProduces = new DependencyFilter()
-              .addType(DependencyType.PRODUCES);
-      Graph graphProducesClasses = GraphCreator.generateGraph("graphProducesClasses", cdiFilterProduces, htmlTemplateIS, outputdirectory);
-      graphProducesClasses.setTitle("Only Produces classes of " + rootFolder.getPath());
-      graphProducesClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphProducesClasses, htmlTemplate);
-
-      // GRAPH - only Resources classes
-      DependencyFilter cdiFilterResources = new DependencyFilter()
-              .addType(DependencyType.RESOURCE);
-      Graph graphResourcesClasses = GraphCreator.generateGraph("graphResourcesClasses", cdiFilterResources, htmlTemplateIS, outputdirectory);
-      graphResourcesClasses.setTitle("Only Resource classes of " + rootFolder.getPath());
-      graphResourcesClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphResourcesClasses, htmlTemplate);
-
-      // GRAPH - only JPA classes
-      DependencyFilter filterJPA = new DependencyFilter()
-              .addType(DependencyType.ONE_TO_ONE)
-              .addType(DependencyType.ONE_TO_MANY)
-              .addType(DependencyType.MANY_TO_ONE)
-              .addType(DependencyType.MANY_TO_MANY);
-      Graph graphJPAClasses = GraphCreator.generateGraph("graphJPAClasses", filterJPA, htmlTemplateIS, outputdirectory);
-      graphJPAClasses.setTitle("Only JPA classes of " + rootFolder.getPath());
-      graphJPAClasses.calculateDimensions();
-      HTMLManager.generateHTML(graphJPAClasses, htmlTemplate);
+      for (String graphName : GRAPH_TITLES.keySet()) {
+         Graph graph = GraphCreator.generateGraph(graphName,
+                 GRAPH_TITLES.get(graphName) + rootFolder.getPath(),
+                 graphMojos,
+                 GRAPH_FILTERS.get(graphName),
+                 htmlTemplateIS,
+                 outputdirectory);
+         graph.calculateAttributes();
+         HTMLManager.generateHTML(graph, htmlTemplate);
+      }
    }
 }

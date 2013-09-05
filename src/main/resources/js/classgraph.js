@@ -16,6 +16,8 @@
 
 var force;
 var svg;
+var fontSize = 90;
+var MIN_SIZE = 300;
 var cdiTypeKeys = [];
 var cdiTypes = new Array();
 cdiTypes["INJECT"] = "Is injected in";
@@ -42,7 +44,12 @@ function setGravity(newGravity) {
 
 function setGraphSize(newSize) {
    force.size([newSize, newSize]).start();
-   svg.attr("width", newSize).attr("height", newSize);
+}
+
+function setFontSize(newSize) {
+   $('body').css('font-size', newSize + "%");
+   fontSize = newSize;
+   force.start();
 }
 
 function initCDITypeKeys() {
@@ -364,13 +371,17 @@ function initGraph(graphJSON, width, height) {
                d.y = 20;
             }
          });
-         if (maxWidth < 500) {
-            maxWidth = 500;
+         if (maxWidth < MIN_SIZE) {
+            maxWidth = MIN_SIZE;
          }
-         if (maxHeight < 500) {
-            maxHeight = 500;
+         if (maxHeight < MIN_SIZE) {
+            maxHeight = MIN_SIZE;
          }
-         svg.attr("width", maxWidth + 200).attr("height", maxHeight + 100);
+         var xBorder = fontSize * 2;   //hack
+         if (xBorder < 200) {
+            xBorder = 200;
+         }
+         svg.attr("width", maxWidth + xBorder).attr("height", maxHeight + 100);
       }
 
       function isConnected(a, b) {

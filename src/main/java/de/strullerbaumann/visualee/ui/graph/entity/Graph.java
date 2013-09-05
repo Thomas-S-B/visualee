@@ -15,6 +15,7 @@
  */
 package de.strullerbaumann.visualee.ui.graph.entity;
 
+import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import java.io.File;
 import java.io.InputStream;
 
@@ -24,16 +25,26 @@ import java.io.InputStream;
  */
 public class Graph {
 
+   private static final int DEFAULT_DISTANCE = 160;
+   private static final int DEFAULT_GRAVITY = 15;
+   private static final int DEFAULT_GRAPHSIZE = 900;
+   private static final int DEFAULT_FONTSIZE = 90;
    private static final int CLASS_SIZE = 20;
-   private static final int MIN_WIDTH = 600;
-   private static final int MIN_HEIGHT = 500;
+   private static final int MIN_WIDTH = 400;
+   private static final int MIN_HEIGHT = 400;
    private int countClasses;
    private int width;
    private int height;
+   private int distance;
+   private int gravity;
+   private int graphSize;
+   private int fontsize;
    private File htmlFile;
    private InputStream htmlTemplateIS;
    private File jsonFile;
+   private String name;
    private String title;
+   private DependencyFilter dependencyFilter;
 
    public int getCountClasses() {
       return countClasses;
@@ -65,6 +76,54 @@ public class Graph {
 
    public void setHeight(int height) {
       this.height = height;
+   }
+
+   public int getDistance() {
+      return distance;
+   }
+
+   public String getDistanceString() {
+      return Integer.toString(distance);
+   }
+
+   public void setDistance(int distance) {
+      this.distance = distance;
+   }
+
+   public int getGravity() {
+      return gravity;
+   }
+
+   public String getGravityString() {
+      return Integer.toString(gravity);
+   }
+
+   public void setGravity(int gravity) {
+      this.gravity = gravity;
+   }
+
+   public int getGraphSize() {
+      return graphSize;
+   }
+
+   public String getGraphSizeString() {
+      return Integer.toString(graphSize);
+   }
+
+   public void setGraphSize(int graphSize) {
+      this.graphSize = graphSize;
+   }
+
+   public int getFontsize() {
+      return fontsize;
+   }
+
+   public String getFontsizeString() {
+      return Integer.toString(fontsize);
+   }
+
+   public void setFontsize(int fontsize) {
+      this.fontsize = fontsize;
    }
 
    public File getHtmlFile() {
@@ -99,9 +158,38 @@ public class Graph {
       this.title = title;
    }
 
-   public void calculateDimensions() {
-      setWidth(getCountClasses() * CLASS_SIZE);
-      setHeight(getCountClasses() * CLASS_SIZE);
+   public DependencyFilter getDependencyFilter() {
+      return dependencyFilter;
+   }
+
+   public void setDependencyFilter(DependencyFilter dependencyFilter) {
+      this.dependencyFilter = dependencyFilter;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void calculateAttributes() {
+      if (getDistance() == 0) {
+         setDistance(DEFAULT_DISTANCE);
+      }
+      if (getGravity() == 0) {
+         setGravity(DEFAULT_GRAVITY);
+      }
+      if (getGraphSize() == 0) {
+         setGraphSize(DEFAULT_GRAPHSIZE);
+      }
+      if (getFontsize() == 0) {
+         setFontsize(DEFAULT_FONTSIZE);
+      }
+
+      setWidth(countClasses * CLASS_SIZE);
+      setHeight(countClasses * CLASS_SIZE);
 
       if (getWidth() < MIN_WIDTH) {
          setWidth(MIN_WIDTH);

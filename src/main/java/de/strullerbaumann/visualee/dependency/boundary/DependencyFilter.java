@@ -33,10 +33,6 @@ public class DependencyFilter {
       return this;
    }
 
-   public List<DependencyType> getFilterTypes() {
-      return filterTypes;
-   }
-
    public boolean contains(DependencyType dependencyType) {
       return filterTypes.contains(dependencyType);
    }
@@ -49,5 +45,9 @@ public class DependencyFilter {
    public DependencyFilter filterAllTypes() {
       filterTypes = Arrays.asList(DependencyType.values());
       return this;
+   }
+
+   public List<DependencyType> getFilterTypes() {
+      return filterTypes;
    }
 }

@@ -36,12 +36,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class VisualEEMojo extends AbstractMojo {
 
    /**
-    * Location of the visual files.
-    *
-    * @parameter expression="${project.build.directory}"
+    * @parameter expression="${session}"
     * @required
+    * @readonly
     */
-   private File outputdirectory;
+   private MavenSession mavenSession;
    /**
     * Base directory of the project.
     *
@@ -51,11 +50,18 @@ public class VisualEEMojo extends AbstractMojo {
     */
    private File basedir;
    /**
-    * @parameter expression="${session}"
+    * Location for the generated visualee files.
+    *
+    * @parameter expression="${project.build.directory}"
     * @required
-    * @readonly
     */
-   private MavenSession mavenSession;
+   private File outputdirectory;
+   /**
+    * Graphs Properties.
+    *
+    * @parameter
+    */
+   private List<GraphMojo> graphs;
    private static final String JS_DIR = "/js/";
    private static final String CSS_DIR = "/css/";
    private static final String[] CSS_DIR_FILES = {"style.css", "jquery-ui.css"};
@@ -76,7 +82,7 @@ public class VisualEEMojo extends AbstractMojo {
          for (String exportFile : JS_DIR_FILES) {
             FileManager.export(getClass(), JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
-         //Examine all dirs under the projectroot for java-files
+         //Examine all java-files under the projectroot
          String sourceFolder = mavenSession.getExecutionRootDirectory();
          if (sourceFolder != null) {
             HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
@@ -84,7 +90,7 @@ public class VisualEEMojo extends AbstractMojo {
             File sourceFolderDir = new File(sourceFolder);
             DependencyAnalyzer.getInstance().analyze(sourceFolderDir, outputdirectory, graphTemplateIS);
             getLog().info("### Generating graphs");
-            GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
+            GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS, graphs);
             getLog().info("### Done, visualization can be found in");
             getLog().info("### " + outputdirectory + File.separatorChar + "index.html");
             getLog().info(HEADER_FOOTER);
@@ -92,15 +98,6 @@ public class VisualEEMojo extends AbstractMojo {
             getLog().error("### Cannot find src-folder");
          }
       }
-   }
-
-   protected String getSourceFolder(List<String> roots) {
-      for (String sourceFolder : roots) {
-         if (sourceFolder.indexOf(File.separatorChar + "src" + File.separatorChar) > -1) {
-            return sourceFolder + File.separatorChar;
-         }
-      }
-      return null;
    }
 
    protected boolean isThisRootDir() {

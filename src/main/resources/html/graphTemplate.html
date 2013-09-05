@@ -15,10 +15,15 @@
 
       <script type="text/javascript">
          window.onload = function() {
-            initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_WIDTH, DI_TEMPLATE_HEIGHT);
+            initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_GRAPHSIZE, DI_TEMPLATE_GRAPHSIZE);
             printValue('sliderDistance', 'distanceValue');
             printValue('sliderGravity', 'gravityValue');
             printValue('sliderGraphSize', 'graphSizeValue');
+            printValue('sliderFontSize', 'fontSizeValue');
+            setDistance(sliderDistance.value);
+            setGravity(sliderGravity.value);
+            setGraphSize(sliderGraphSize.value);
+            setFontSize(sliderFontSize.value);
          }
 
          function printValue(sliderID, label) {
@@ -62,22 +67,28 @@
                   <td>Distance:<label id="distanceValue"></label></td>
                   <td>Gravity:<label id="gravityValue"></label></td>
                   <td>Graphsize:<label id="graphSizeValue"></label></td>
+                  <td>Fontsize:<label id="fontSizeValue"></label>%</td>
                </tr>
                <tr>
                   <td>
-                     <input id="sliderDistance" type ="range" min ="10" max="800" step ="5" value ="160"
+                     <input id="sliderDistance" type ="range" min ="10" max="800" step ="3" value ="DI_TEMPLATE_DISTANCE"
                             onchange="setDistance(sliderDistance.value);
             printValue('sliderDistance', 'distanceValue');"/>
                   </td>
                   <td>
-                     <input id="sliderGravity" type ="range" min ="1" max="100" step ="1" value ="3"
+                     <input id="sliderGravity" type ="range" min ="1" max="100" step ="1" value ="DI_TEMPLATE_GRAVITY"
                             onchange="setGravity(sliderGravity.value);
             printValue('sliderGravity', 'gravityValue');"/>
                   </td>
                   <td>
-                     <input id="sliderGraphSize" type ="range" min ="10" max="6000" step ="50" value ="800"
+                     <input id="sliderGraphSize" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPHSIZE"
                             onchange="setGraphSize(sliderGraphSize.value);
             printValue('sliderGraphSize', 'graphSizeValue');"/>
+                  </td>
+                  <td>
+                     <input id="sliderFontSize" type ="range" min ="1" max="300" step ="1" value ="DI_TEMPLATE_FONTSIZE"
+                            onchange="setFontSize(sliderFontSize.value);
+            printValue('sliderFontSize', 'fontSizeValue');"/>
                   </td>
                </tr>
             </table>
