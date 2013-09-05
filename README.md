@@ -8,7 +8,7 @@ After successful build, only put this in your maven-pom:
         <plugin>
             <groupId>de.strullerbaumann</groupId>
             <artifactId>visualee</artifactId>
-            <version>0.14</version>
+            <version>0.15</version>
             <configuration>
                <outputdirectory>visualee</outputdirectory>
             </configuration>
