@@ -42,6 +42,7 @@ It's only tested with chrome version 28.0.1500.71 and firefox version 22.
 It's possible to configure the graphs individually.
 The attributes are:
 - distance
+- linkdistance
 - gravity
 - graphsize
 - fontsize (in percent)
@@ -66,6 +67,7 @@ Example:
                   <graph>
                      <name>graphInjectClasses</name>
                      <distance>200</distance>
+                     <linkdistance>120</linkdistance>
                      <gravity>20</gravity>
                      <graphsize>800</graphsize>
                      <fontsize>110</fontsize>
