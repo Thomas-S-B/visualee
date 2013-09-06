@@ -138,14 +138,17 @@ public final class GraphCreator {
    }
 
    private static void setMojoAttributes(Graph graph, List<GraphMojo> graphMojos) {
-      for (GraphMojo graphMojo : graphMojos) {
-         if (graphMojo.getName().equals(graph.getName())) {
-            graph.setDistance(graphMojo.getDistance());
-            graph.setLinkdistance(graphMojo.getLinkdistance());
-            graph.setGravity(graphMojo.getGravity());
-            graph.setGraphSize(graphMojo.getGraphsize());
-            graph.setFontsize(graphMojo.getFontsize());
-            break;
+      // graphMojos could be null (no graphs configuratin in the pom)
+      if (graphMojos != null) {
+         for (GraphMojo graphMojo : graphMojos) {
+            if (graphMojo.getName().equals(graph.getName())) {
+               graph.setDistance(graphMojo.getDistance());
+               graph.setLinkdistance(graphMojo.getLinkdistance());
+               graph.setGravity(graphMojo.getGravity());
+               graph.setGraphSize(graphMojo.getGraphsize());
+               graph.setFontsize(graphMojo.getFontsize());
+               break;
+            }
          }
       }
    }
