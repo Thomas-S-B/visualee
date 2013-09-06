@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -47,42 +48,35 @@ public final class GraphCreator {
 
    private static final Logger LOGGER = Logger.getLogger(GraphCreator.class.getName());
    private static String htmlTemplate;
-   // TODO one Array (duplicated keys)
-   private static final Map<String, String> GRAPH_TITLES = Collections.unmodifiableMap(new HashMap<String, String>() {
+   private static final Map<String, List> GRAPH_TITLES = Collections.unmodifiableMap(new HashMap<String, List>() {
       {
-         put("graphOnlyCDIJPA", "Only CDI/JPA relevant classes of ");
-         put("graphAllClasses", "All classes of ");
-         put("graphEventObserverClasses", "Event/Observer classes of ");
-         put("graphEJBClasses", "Only EJB classes of ");
-         put("graphInstanceClasses", "Only Instance classes of ");
-         put("graphInjectClasses", "Only Inject classes of ");
-         put("graphProducesClasses", "Only Produces classes of ");
-         put("graphResourcesClasses", "Only Resource classes of ");
-         put("graphJPAClasses", "Only JPA classes of ");
-      }
-   });
-   private static final Map<String, DependencyFilter> GRAPH_FILTERS = Collections.unmodifiableMap(new HashMap<String, DependencyFilter>() {
-      {
-         put("graphOnlyCDIJPA", new DependencyFilter().filterAllTypes());
-         put("graphAllClasses", null);
-         put("graphEventObserverClasses", new DependencyFilter()
+         put("graphOnlyCDIJPA", Arrays.asList("Only CDI/JPA relevant classes of ", new DependencyFilter().filterAllTypes()));
+         put("graphAllClasses", Arrays.asList("All classes of ", null));
+         put("graphEventObserverClasses", Arrays.asList("Event/Observer classes of ", new DependencyFilter()
                  .addType(DependencyType.EVENT)
-                 .addType(DependencyType.OBSERVES));
-         put("graphEJBClasses", new DependencyFilter()
-                 .addType(DependencyType.EJB));
-         put("graphInstanceClasses", new DependencyFilter()
-                 .addType(DependencyType.INSTANCE));
-         put("graphInjectClasses", new DependencyFilter()
-                 .addType(DependencyType.INJECT));
-         put("graphProducesClasses", new DependencyFilter()
-                 .addType(DependencyType.PRODUCES));
-         put("graphResourcesClasses", new DependencyFilter()
-                 .addType(DependencyType.RESOURCE));
-         put("graphJPAClasses", new DependencyFilter()
+                 .addType(DependencyType.OBSERVES)));
+         put("graphEJBClasses", Arrays.asList("Only EJB classes of ", new DependencyFilter()
+                 .addType(DependencyType.EJB)));
+         put("graphInstanceClasses", Arrays.asList("Only Instance classes of ", new DependencyFilter()
+                 .addType(DependencyType.INSTANCE)));
+         put("graphInjectClasses", Arrays.asList("Only Inject classes of ", new DependencyFilter()
+                 .addType(DependencyType.INJECT)));
+         put("graphProducesClasses", Arrays.asList("Only Produces classes of ", new DependencyFilter()
+                 .addType(DependencyType.PRODUCES)));
+         put("graphInstanceProducesClasses", Arrays.asList("Only Instance and Produces classes of ", new DependencyFilter()
+                 .addType(DependencyType.INSTANCE)
+                 .addType(DependencyType.PRODUCES)));
+         put("graphInjectInstanceProducesClasses", Arrays.asList("Only Inject, Instance and Produces classes of ", new DependencyFilter()
+                 .addType(DependencyType.INJECT)
+                 .addType(DependencyType.INSTANCE)
+                 .addType(DependencyType.PRODUCES)));
+         put("graphResourcesClasses", Arrays.asList("Only Resource classes of ", new DependencyFilter()
+                 .addType(DependencyType.RESOURCE)));
+         put("graphJPAClasses", Arrays.asList("Only JPA classes of ", new DependencyFilter()
                  .addType(DependencyType.ONE_TO_ONE)
                  .addType(DependencyType.ONE_TO_MANY)
                  .addType(DependencyType.MANY_TO_ONE)
-                 .addType(DependencyType.MANY_TO_MANY));
+                 .addType(DependencyType.MANY_TO_MANY)));
       }
    });
 
@@ -147,6 +141,7 @@ public final class GraphCreator {
       for (GraphMojo graphMojo : graphMojos) {
          if (graphMojo.getName().equals(graph.getName())) {
             graph.setDistance(graphMojo.getDistance());
+            graph.setLinkdistance(graphMojo.getLinkdistance());
             graph.setGravity(graphMojo.getGravity());
             graph.setGraphSize(graphMojo.getGraphsize());
             graph.setFontsize(graphMojo.getFontsize());
@@ -190,16 +185,15 @@ public final class GraphCreator {
    }
 
    public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS, List<GraphMojo> graphMojos) {
-      // 3. Load HTML-Template, if not already done (Maven modules)
+      // Load HTML-Template, if not already done (Maven modules)
       if (htmlTemplate == null) {
          htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
       }
-
       for (String graphName : GRAPH_TITLES.keySet()) {
          Graph graph = GraphCreator.generateGraph(graphName,
-                 GRAPH_TITLES.get(graphName) + rootFolder.getPath(),
+                 (String) GRAPH_TITLES.get(graphName).get(0) + rootFolder.getPath(),
                  graphMojos,
-                 GRAPH_FILTERS.get(graphName),
+                 (DependencyFilter) GRAPH_TITLES.get(graphName).get(1),
                  htmlTemplateIS,
                  outputdirectory);
          graph.calculateAttributes();

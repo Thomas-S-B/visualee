@@ -25,7 +25,8 @@ import java.io.InputStream;
  */
 public class Graph {
 
-   private static final int DEFAULT_DISTANCE = 160;
+   private static final int DEFAULT_DISTANCE = 200;
+   private static final int DEFAULT_LINKDISTANCE = 160;
    private static final int DEFAULT_GRAVITY = 15;
    private static final int DEFAULT_GRAPHSIZE = 900;
    private static final int DEFAULT_FONTSIZE = 90;
@@ -36,6 +37,7 @@ public class Graph {
    private int width;
    private int height;
    private int distance;
+   private int linkdistance;
    private int gravity;
    private int graphSize;
    private int fontsize;
@@ -88,6 +90,18 @@ public class Graph {
 
    public void setDistance(int distance) {
       this.distance = distance;
+   }
+
+   public int getLinkdistance() {
+      return linkdistance;
+   }
+
+   public String getLinkdistanceString() {
+      return Integer.toString(linkdistance);
+   }
+
+   public void setLinkdistance(int linkdistance) {
+      this.linkdistance = linkdistance;
    }
 
    public int getGravity() {
@@ -177,6 +191,9 @@ public class Graph {
    public void calculateAttributes() {
       if (getDistance() == 0) {
          setDistance(DEFAULT_DISTANCE);
+      }
+      if (getLinkdistance() == 0) {
+         setLinkdistance(DEFAULT_LINKDISTANCE);
       }
       if (getGravity() == 0) {
          setGravity(DEFAULT_GRAVITY);

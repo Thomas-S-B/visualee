@@ -22,6 +22,7 @@ package de.strullerbaumann.visualee.maven;
 public class GraphMojo {
 
    private int distance;
+   private int linkdistance;
    private int gravity;
    private int graphsize;
    private int fontsize;
@@ -37,6 +38,18 @@ public class GraphMojo {
 
    public void setDistance(int distance) {
       this.distance = distance;
+   }
+
+   public int getLinkdistance() {
+      return linkdistance;
+   }
+
+   public String getLinkdistanceString() {
+      return Integer.toString(linkdistance);
+   }
+
+   public void setLinkdistance(int linkdistance) {
+      this.linkdistance = linkdistance;
    }
 
    public int getGravity() {

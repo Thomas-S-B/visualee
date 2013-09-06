@@ -34,7 +34,11 @@ cdiTypes['MANY_TO_MANY'] = "Many to many >>";
 
 function setDistance(newDistance) {
    force.distance(newDistance)
-           .linkDistance(newDistance)
+           .start();
+}
+
+function setLinkdistance(newLinkdistance) {
+   force.linkDistance(newLinkdistance)
            .start();
 }
 

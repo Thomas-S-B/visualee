@@ -17,10 +17,12 @@
          window.onload = function() {
             initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_GRAPHSIZE, DI_TEMPLATE_GRAPHSIZE);
             printValue('sliderDistance', 'distanceValue');
+            printValue('sliderLinkdistance', 'linkdistanceValue');
             printValue('sliderGravity', 'gravityValue');
             printValue('sliderGraphSize', 'graphSizeValue');
             printValue('sliderFontSize', 'fontSizeValue');
             setDistance(sliderDistance.value);
+            setLinkdistance(sliderLinkdistance.value);
             setGravity(sliderGravity.value);
             setGraphSize(sliderGraphSize.value);
             setFontSize(sliderFontSize.value);
@@ -64,16 +66,22 @@
          <div id="tweakgraph-sliders">
             <table>
                <tr>
-                  <td>Distance:<label id="distanceValue"></label></td>
-                  <td>Gravity:<label id="gravityValue"></label></td>
-                  <td>Graphsize:<label id="graphSizeValue"></label></td>
-                  <td>Fontsize:<label id="fontSizeValue"></label>%</td>
+                  <td>Distance: <label id="distanceValue"></label></td>
+                  <td>Linkdistance: <label id="linkdistanceValue"></label></td>
+                  <td>Gravity: <label id="gravityValue"></label></td>
+                  <td>Graphsize: <label id="graphSizeValue"></label></td>
+                  <td>Fontsize: <label id="fontSizeValue"></label>%</td>
                </tr>
                <tr>
                   <td>
                      <input id="sliderDistance" type ="range" min ="10" max="800" step ="3" value ="DI_TEMPLATE_DISTANCE"
                             onchange="setDistance(sliderDistance.value);
             printValue('sliderDistance', 'distanceValue');"/>
+                  </td>
+                  <td>
+                     <input id="sliderLinkdistance" type ="range" min ="10" max="800" step ="3" value ="DI_TEMPLATE_LINKDISTANCE"
+                            onchange="setLinkdistance(sliderLinkdistance.value);
+            printValue('sliderLinkdistance', 'linkdistanceValue');"/>
                   </td>
                   <td>
                      <input id="sliderGravity" type ="range" min ="1" max="100" step ="1" value ="DI_TEMPLATE_GRAVITY"
