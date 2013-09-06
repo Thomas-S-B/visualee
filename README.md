@@ -48,6 +48,17 @@ The attributes are:
 - fontsize (in percent)
 
 The graph-name is the name of the generated files.
+- graphOnlyCDIJPA
+- graphAllClasses
+- graphEventObserverClasses
+- graphEJBClasses
+- graphInstanceClasses
+- graphInjectClasses
+- graphProducesClasses
+- graphInstanceProducesClasses
+- graphInjectInstanceProducesClasses
+- graphResourcesClasses
+- graphJPAClasses
 
 Example:
 
