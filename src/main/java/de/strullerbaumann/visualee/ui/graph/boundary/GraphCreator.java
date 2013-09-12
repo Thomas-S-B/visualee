@@ -137,9 +137,11 @@ public final class GraphCreator {
       return linksArray;
    }
 
+   //TODO Unittest
    private static void setMojoAttributes(Graph graph, List<GraphMojo> graphMojos) {
       // graphMojos could be null (no graphs configuratin in the pom)
       if (graphMojos != null) {
+         boolean foundConfig = false;
          for (GraphMojo graphMojo : graphMojos) {
             if (graphMojo.getName().equals(graph.getName())) {
                graph.setDistance(graphMojo.getDistance());
@@ -147,7 +149,21 @@ public final class GraphCreator {
                graph.setGravity(graphMojo.getGravity());
                graph.setGraphSize(graphMojo.getGraphsize());
                graph.setFontsize(graphMojo.getFontsize());
+               foundConfig = true;
                break;
+            }
+         }
+         //If there's a default config, setting attributes for not configurated graphs
+         if (!foundConfig) {
+            for (GraphMojo graphMojo : graphMojos) {
+               if (graphMojo.getName().equals("default")) {
+                  graph.setDistance(graphMojo.getDistance());
+                  graph.setLinkdistance(graphMojo.getLinkdistance());
+                  graph.setGravity(graphMojo.getGravity());
+                  graph.setGraphSize(graphMojo.getGraphsize());
+                  graph.setFontsize(graphMojo.getFontsize());
+                  break;
+               }
             }
          }
       }
@@ -173,7 +189,6 @@ public final class GraphCreator {
       // Nodes
       JsonArrayBuilder nodesArray = buildJSONNodes(filter);
       builder.add("nodes", nodesArray);
-      graph.setCountClasses(nodesArray.build().size());
       // Links
       JsonArrayBuilder linksArray = buildJSONLinks(filter);
       builder.add("links", linksArray);

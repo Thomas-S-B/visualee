@@ -84,8 +84,6 @@ public final class HTMLManager {
    public static void generateHTML(Graph graph, String htmlTemplate) {
       String html = htmlTemplate;
       html = html.replaceAll("DI_TEMPLATE_JSON_FILE", graph.getJsonFile().getName());
-      html = html.replaceAll("DI_TEMPLATE_WIDTH", graph.getWidthString());
-      html = html.replaceAll("DI_TEMPLATE_HEIGHT", graph.getHeightString());
       html = html.replaceAll("DI_TEMPLATE_TITLE", graph.getTitle());
       html = html.replaceAll("DI_TEMPLATE_DISTANCE", graph.getDistanceString());
       html = html.replaceAll("DI_TEMPLATE_LINKDISTANCE", graph.getLinkdistanceString());

@@ -93,6 +93,28 @@ public class ExaminerEJBTest {
    }
 
    @Test
+   public void testFindAndSetAttributesSetEJBPackageView() {
+      JavaSource javaSource;
+      String sourceCode;
+
+      javaSource = new JavaSource("MyTestClass");
+      sourceCode = "public abstract class MyTestClass {\n"
+              + "@EJB\n"
+              + "PersonSessionBean bean;"
+              + "}\n";
+
+      javaSource.setSourceCode(sourceCode);
+      examiner.examine(javaSource);
+      assertEquals(1, javaSource.getInjected().size());
+
+      Dependency dependency;
+      dependency = javaSource.getInjected().get(0);
+      assertEquals(DependencyType.EJB, dependency.getDependencyType());
+      assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
+      assertEquals("PersonSessionBean", dependency.getJavaSourceTo().getName());
+   }
+
+   @Test
    public void testFindAndSetAttributesEJBSetterWithAnnotations() {
       JavaSource javaSource;
       String sourceCode;

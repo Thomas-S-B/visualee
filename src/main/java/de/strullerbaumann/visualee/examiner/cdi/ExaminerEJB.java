@@ -49,17 +49,14 @@ public class ExaminerEJB extends Examiner {
             String token = scanner.next();
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
-               //Jump over possible "(", e.g. "@EJB(name = \"java:global/..."
-               scanAfterClosedParenthesis(token, scanner);
-               token = jumpOverJavaToken(scanner.next(), scanner);
-               //Set-Injected? e.g. Token is now "setEntityManager(EntityManager"
+               token = jumpOverJavaToken(token, scanner);
+               // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
                if (token.indexOf('(') > - 1) {
+                  // Greeter(PhraseBuilder becomes PhraseBuilder
                   token = token.substring(token.indexOf('(') + 1);
                }
-               //Jump over possible Annotaions
                String className = jumpOverJavaToken(token, scanner);
-               className = cleanupGeneric(className);
-               createDependency(className, type, javaSource);
+               createDependency(className, DependencyType.EJB, javaSource);
             }
          }
       }

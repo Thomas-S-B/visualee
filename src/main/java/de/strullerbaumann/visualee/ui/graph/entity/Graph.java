@@ -30,12 +30,6 @@ public class Graph {
    private static final int DEFAULT_GRAVITY = 15;
    private static final int DEFAULT_GRAPHSIZE = 900;
    private static final int DEFAULT_FONTSIZE = 90;
-   private static final int CLASS_SIZE = 20;
-   private static final int MIN_WIDTH = 400;
-   private static final int MIN_HEIGHT = 400;
-   private int countClasses;
-   private int width;
-   private int height;
    private int distance;
    private int linkdistance;
    private int gravity;
@@ -47,38 +41,6 @@ public class Graph {
    private String name;
    private String title;
    private DependencyFilter dependencyFilter;
-
-   public int getCountClasses() {
-      return countClasses;
-   }
-
-   public void setCountClasses(int countClasses) {
-      this.countClasses = countClasses;
-   }
-
-   public int getWidth() {
-      return width;
-   }
-
-   public String getWidthString() {
-      return Integer.toString(width);
-   }
-
-   public void setWidth(int width) {
-      this.width = width;
-   }
-
-   public int getHeight() {
-      return height;
-   }
-
-   public String getHeightString() {
-      return Integer.toString(height);
-   }
-
-   public void setHeight(int height) {
-      this.height = height;
-   }
 
    public int getDistance() {
       return distance;
@@ -203,16 +165,6 @@ public class Graph {
       }
       if (getFontsize() == 0) {
          setFontsize(DEFAULT_FONTSIZE);
-      }
-
-      setWidth(countClasses * CLASS_SIZE);
-      setHeight(countClasses * CLASS_SIZE);
-
-      if (getWidth() < MIN_WIDTH) {
-         setWidth(MIN_WIDTH);
-      }
-      if (getHeight() < MIN_HEIGHT) {
-         setHeight(MIN_HEIGHT);
       }
    }
 }
