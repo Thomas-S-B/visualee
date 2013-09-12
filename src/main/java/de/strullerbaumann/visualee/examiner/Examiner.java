@@ -156,7 +156,7 @@ public abstract class Examiner {
          injectedJavaSource = new JavaSource(className);
          JavaSourceContainer.getInstance().add(injectedJavaSource);
          // TODO
-         System.out.println("####### created new JavaSource: " + className + " for " + javaSource.getPackagePath() + "." + javaSource.getName() + " with type " + type.name());
+         // System.out.println("####### created new JavaSource: " + className + " for " + javaSource.getPackagePath() + "." + javaSource.getName() + " with type " + type.name());
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
       javaSource.getInjected().add(dependency);
