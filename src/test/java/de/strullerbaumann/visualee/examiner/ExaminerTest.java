@@ -90,6 +90,50 @@ public class ExaminerTest {
    }
 
    @Test
+   public void testScanAfterQuote() {
+      JavaSource javaSource;
+      String sourceCode;
+      String actual;
+      String expected;
+      Scanner scanner;
+      String currentToken;
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "out.println(\"<h1>UserTransaction obtained using @Inject</h1>\");\n"
+              + "mytoken";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now out.println(\"<h1>UserTransaction
+      ExaminerImpl.scanAfterQuote(currentToken, scanner);
+      expected = "mytoken";
+      actual = scanner.next();
+      assertEquals(expected, actual);
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "out.println(\"<title>UserTransaction obtained using @Inject</title>\");\n"
+              + "out.println(\"<h1>UserTransaction obtained using @Inject</h1>);\n"
+              + "mytoken";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now out.println(\"<h1>UserTransaction\"
+      ExaminerImpl.scanAfterQuote(currentToken, scanner);
+      expected = "out.println(\"<h1>UserTransaction";
+      actual = scanner.next();
+      assertEquals(expected, actual);
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "@NotNull((groups = PersistenceConstraint.class) saddas)\n"
+              + "private Album2 album;\n";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now @NotNull((groups
+      ExaminerImpl.scanAfterQuote(currentToken, scanner);
+      expected = "=";
+      actual = scanner.next();
+      assertEquals(expected, actual);
+   }
+
+   @Test
    public void testScanAfterClosedParenthesis() {
       JavaSource javaSource;
       String sourceCode;
@@ -117,6 +161,17 @@ public class ExaminerTest {
       currentToken = scanner.next(); // now @NotNull((groups
       ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
       expected = "Album2";
+      actual = scanner.next();
+      assertEquals(expected, actual);
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "@Resource(mappedName=\"java:global/jms/myQueue2\")\n"
+              + "private Album2 album;\n";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next();
+      ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
+      expected = "private";
       actual = scanner.next();
       assertEquals(expected, actual);
    }

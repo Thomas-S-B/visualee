@@ -122,4 +122,39 @@ public class ExaminerInjectTest {
       assertEquals("ZeiterfassungEingabeModel", dependency.getJavaSourceFrom().getName());
       assertEquals("Date", dependency.getJavaSourceTo().getName());
    }
+
+   @Test
+   public void testFindAndSetAttributesInjectIgnoreQuotes() {
+      JavaSource javaSource;
+      String sourceCode;
+
+      javaSource = new JavaSource("TestCDIServlet");
+      sourceCode = "public class TestCDIServlet extends HttpServlet {\n"
+              + "@Inject UserTransaction ut;\n"
+              + "protected void processRequest(HttpServletRequest request, HttpServletResponse response)\n"
+              + "response.setContentType(\"text/html;charset=UTF-8\");\n"
+              + "try (PrintWriter out = response.getWriter()) {\n"
+              + "out.println(\"<title>UserTransaction obtained using @Inject</title>\");\n"
+              + "out.println(\"<h1>UserTransaction obtained using @Inject</h1>\");\n"
+              + "try {\n"
+              + "} catch (NotSupportedException \n"
+              + "| IllegalStateException ex) {\n"
+              + "ex.printStackTrace(out);\n"
+              + "}\n"
+              + "}\n"
+              + "}\n"
+              + "}\n";
+
+      javaSource.setSourceCode(sourceCode);
+      examiner.examine(javaSource);
+      assertEquals(1, javaSource.getInjected().size());
+
+      Dependency dependency;
+      dependency = javaSource.getInjected().get(0);
+      assertEquals(DependencyType.INJECT, dependency.getDependencyType());
+      assertEquals("TestCDIServlet", dependency.getJavaSourceFrom().getName());
+      assertEquals("UserTransaction", dependency.getJavaSourceTo().getName());
+      // 1, ensure @Inject</title> and @Inject</h1> in the source are ignored
+      assertEquals(1, javaSource.getInjected().size());
+   }
 }

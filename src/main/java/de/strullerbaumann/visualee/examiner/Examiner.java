@@ -85,11 +85,33 @@ public abstract class Examiner {
       return count;
    }
 
+   // TODO better
+   protected static String scanAfterQuote(String currentToken, Scanner scanner) {
+      if (currentToken.contains("\"") && countChar(currentToken, '"') < 2) {
+         currentToken = scanner.next();
+         while (!currentToken.contains("\"")) {
+            if (scanner.hasNext()) {
+               currentToken = scanner.next();
+            } else {
+               break;
+            }
+         }
+      }
+      return currentToken;
+   }
+
    protected static String scanAfterClosedParenthesis(String currentToken, Scanner scanner) {
+      int countParenthesisOpen = countChar(currentToken, '(');
+      int countParenthesisClose = countChar(currentToken, ')');
+
+      if (countParenthesisOpen == countParenthesisClose) {
+         return currentToken;
+      }
+
       Deque<Integer> stack = new ArrayDeque<>();
       int iStack = 1;
-      int countParenthesis = countChar(currentToken, '(');
-      for (int iCount = 0; iCount < countParenthesis; iCount++) {
+      countParenthesisOpen = countChar(currentToken, '(');
+      for (int iCount = 0; iCount < countParenthesisOpen; iCount++) {
          stack.push(iStack);
          iStack++;
       }
@@ -133,6 +155,8 @@ public abstract class Examiner {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
          injectedJavaSource = new JavaSource(className);
          JavaSourceContainer.getInstance().add(injectedJavaSource);
+         // TODO
+         System.out.println("####### created new JavaSource: " + className + " for " + javaSource.getPackagePath() + "." + javaSource.getName() + " with type " + type.name());
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
       javaSource.getInjected().add(dependency);

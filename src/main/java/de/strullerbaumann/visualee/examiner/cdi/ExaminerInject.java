@@ -47,6 +47,11 @@ public class ExaminerInject extends Examiner {
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
             String token = scanner.next();
+            //TODO better
+            //ignore @Inject if it's in quotes
+            while (token.contains("\"") && countChar(token, '"') < 2) {
+               token = scanAfterQuote(token, scanner);
+            }
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
                token = jumpOverJavaToken(token, scanner);
