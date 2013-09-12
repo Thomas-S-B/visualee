@@ -17,6 +17,8 @@
 var force;
 var svg;
 var fontSize = 90;
+var circleRNormal = 8;
+var circleRSelected = 11;
 var MIN_SIZE = 300;
 var cdiTypeKeys = [];
 var cdiTypes = new Array();
@@ -116,7 +118,7 @@ function initGraph(graphJSON, width, height) {
       var circle = svg.append("svg:g").selectAll("circle")
               .data(force.nodes())
               .enter().append("svg:circle")
-              .attr("r", 7)
+              .attr("r", circleRNormal)
               .style("fill", function(d) {
          return fill(d.group);
       })
@@ -222,10 +224,10 @@ function initGraph(graphJSON, width, height) {
          });
          circle.transition().attr("r", function(o) {
             if (opacity === 1) {
-               thisR = 7;
+               thisR = circleRNormal;
                this.setAttribute('r', thisR);
             } else {
-               thisR = isConnected(d, o) ? 10 : 7;
+               thisR = isConnected(d, o) ? circleRSelected : circleRNormal;
                this.setAttribute('r', thisR);
             }
             return thisR;
