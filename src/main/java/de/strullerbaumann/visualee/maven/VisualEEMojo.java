@@ -90,7 +90,7 @@ public class VisualEEMojo extends AbstractMojo {
             HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
             getLog().info("### Analyzing sourcefolder: " + sourceFolder);
             File sourceFolderDir = new File(sourceFolder);
-            DependencyAnalyzer.getInstance().analyze(sourceFolderDir, outputdirectory, graphTemplateIS);
+            DependencyAnalyzer.getInstance().analyze(sourceFolderDir);
             getLog().info("### Generating graphs");
             GraphConfigurator.setGraphConfigs(graphs);
             GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);

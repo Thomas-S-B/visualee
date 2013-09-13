@@ -17,7 +17,6 @@ public class VisualEE {
 
    public static void main(String args[]) {
       File sourceFolderDir = new File("/home/thomas/work/NetBeansProjects/ee-demos");
-      File outputdirectory = new File("/home/thomas/work/NetBeansProjects/ee-demos/visualee2");
-      DependencyAnalyzer.getInstance().analyze(sourceFolderDir, outputdirectory, null);
+      DependencyAnalyzer.getInstance().analyze(sourceFolderDir);
    }
 }

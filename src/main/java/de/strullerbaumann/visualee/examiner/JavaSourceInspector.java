@@ -15,6 +15,14 @@
  */
 package de.strullerbaumann.visualee.examiner;
 
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerEJB;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerEvent;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInject;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInstance;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerObserves;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerResource;
+import de.strullerbaumann.visualee.examiner.jpa.ExaminerJPA;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayList;
@@ -28,7 +36,7 @@ import java.util.Map;
  */
 public final class JavaSourceInspector {
 
-   private List<Examiner> examiners = new ArrayList<>();
+   private static List<Examiner> examiners = new ArrayList<>();
 
    private static class JavaSourceExaminerHolder {
 
@@ -42,8 +50,17 @@ public final class JavaSourceInspector {
       return JavaSourceExaminerHolder.INSTANCE;
    }
 
-   void registerExaminer(Examiner examiner) {
-      examiners.add(examiner);
+   private void registerExaminers() {
+      //Register Examiners
+      examiners.clear();
+      examiners.add(new ExaminerEJB());
+      examiners.add(new ExaminerEvent());
+      examiners.add(new ExaminerInject());
+      examiners.add(new ExaminerInstance());
+      examiners.add(new ExaminerJPA());
+      examiners.add(new ExaminerObserves());
+      examiners.add(new ExaminerProduces());
+      examiners.add(new ExaminerResource());
    }
 
    List<Examiner> getExaminers() {
@@ -55,6 +72,7 @@ public final class JavaSourceInspector {
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          Examiner.findAndSetPackage(javaSource);
       }
+      registerExaminers();
       // Examine javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          for (Examiner examiner : getExaminers()) {

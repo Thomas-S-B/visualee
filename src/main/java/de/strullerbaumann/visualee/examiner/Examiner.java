@@ -40,7 +40,6 @@ public abstract class Examiner {
    };
 
    public Examiner() {
-      JavaSourceInspector.getInstance().registerExaminer(this);
    }
 
    protected abstract boolean isRelevantType(DependencyType type);

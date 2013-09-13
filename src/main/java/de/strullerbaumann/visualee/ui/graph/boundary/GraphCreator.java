@@ -168,6 +168,9 @@ public final class GraphCreator {
    }
 
    public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
+      if (!outputdirectory.exists()) {
+         outputdirectory.mkdir();
+      }
       // Load HTML-Template, if not already done (Maven modules)
       if (htmlTemplate == null) {
          htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
