@@ -16,6 +16,14 @@
 package de.strullerbaumann.visualee.dependency.boundary;
 
 import de.strullerbaumann.visualee.examiner.JavaSourceInspector;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerEJB;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerEvent;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInject;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInstance;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerObserves;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerResource;
+import de.strullerbaumann.visualee.examiner.jpa.ExaminerJPA;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import java.io.File;
 
@@ -40,6 +48,17 @@ public final class DependencyAnalyzer {
    public void analyze(File rootFolder) {
       JavaSourceContainer.getInstance().clear();
       JavaSourceContainer.getInstance().loadJavaFiles(rootFolder);
+
+      //Register Examiners
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerEJB());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerEvent());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerInject());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerInstance());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerJPA());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerObserves());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerProduces());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerResource());
+
       JavaSourceInspector.getInstance().examine();
    }
 }

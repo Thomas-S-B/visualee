@@ -18,6 +18,8 @@ package de.strullerbaumann.visualee.ui.graph.control;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.examiner.JavaSourceInspector;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerInject;
+import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayList;
@@ -142,6 +144,8 @@ public class DescriptionTest {
 
       javaSource.setSourceCode(sourceCode);
       JavaSourceContainer.getInstance().add(javaSource);
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerInject());
+      JavaSourceInspector.getInstance().registerExaminer(new ExaminerProduces());
       JavaSourceInspector.getInstance().examine();
 
       String actual = Description.generateDescription(javaSource);

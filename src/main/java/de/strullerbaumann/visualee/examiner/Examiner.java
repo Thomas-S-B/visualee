@@ -109,15 +109,13 @@ public abstract class Examiner {
       }
 
       Deque<Integer> stack = new ArrayDeque<>();
-      int iStack = 1;
-      for (int iCount = 0; iCount < countParenthesisOpen; iCount++) {
-         stack.push(iStack);
-         iStack++;
+      for (int iCount = 0; iCount < countParenthesisOpen - countParenthesisClose; iCount++) {
+         stack.push(1);
       }
       String token = scanner.next();
 
       whilestack:
-      while (stack.size() > 0) {
+      do {
          for (Examiner examiner : JavaSourceInspector.getInstance().getExaminers()) {
             if (examiner.getTypeFromToken(token) != null) {
                break whilestack;
@@ -126,15 +124,13 @@ public abstract class Examiner {
          if (token.indexOf('(') > -1) {
             int countOpenParenthesis = countChar(token, '(');
             for (int iCount = 0; iCount < countOpenParenthesis; iCount++) {
-               stack.push(iStack);
-               iStack++;
+               stack.push(1);
             }
          }
          if (token.indexOf(')') > -1) {
             int countClosedParenthesis = countChar(token, ')');
             for (int iCount = 0; iCount < countClosedParenthesis; iCount++) {
                stack.pop();
-               iStack++;
             }
          }
          if (scanner.hasNext()) {
@@ -142,8 +138,7 @@ public abstract class Examiner {
          } else {
             break whilestack;
          }
-         iStack++;
-      }
+      } while (stack.size() > 0);
 
       return token;
    }
