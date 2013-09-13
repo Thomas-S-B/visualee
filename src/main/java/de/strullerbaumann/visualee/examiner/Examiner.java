@@ -110,13 +110,9 @@ public abstract class Examiner {
       }
 
       Deque<Integer> stack = new ArrayDeque<>();
-      for (int iCount = 0; iCount < countParenthesisOpen - countParenthesisClose; iCount++) {
-         stack.push(1);
-      }
-      String token = scanner.next();
-
+      String token = currentToken;
       whilestack:
-      while (stack.size() > 0) {
+      do {
          for (Examiner examiner : JavaSourceInspector.getInstance().getExaminers()) {
             if (examiner.getTypeFromToken(token) != null) {
                break whilestack;
@@ -137,7 +133,7 @@ public abstract class Examiner {
          } else {
             break whilestack;
          }
-      }
+      } while (stack.size() > 0);
 
       return token;
    }
