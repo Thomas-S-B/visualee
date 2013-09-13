@@ -13,13 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.maven;
+package de.strullerbaumann.visualee.ui.graph.entity;
 
 /**
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class GraphMojo {
+public class GraphConfig {
 
    private int distance;
    private int linkdistance;

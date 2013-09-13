@@ -87,6 +87,10 @@ public class ExaminerTest {
       assertEquals(7, actual);
       actual = ExaminerImpl.countChar(inputString, ')');
       assertEquals(10, actual);
+
+      inputString = "My test de(sciption((Lage Lund - Standards)fdf))saddassd";
+      actual = ExaminerImpl.countChar(inputString, 'X');
+      assertEquals(0, actual);
    }
 
    @Test

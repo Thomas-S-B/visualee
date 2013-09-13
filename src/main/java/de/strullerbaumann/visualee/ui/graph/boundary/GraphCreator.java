@@ -20,7 +20,6 @@ import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
-import de.strullerbaumann.visualee.maven.GraphMojo;
 import de.strullerbaumann.visualee.ui.graph.control.Description;
 import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
 import de.strullerbaumann.visualee.ui.graph.entity.Graph;
@@ -137,41 +136,8 @@ public final class GraphCreator {
       return linksArray;
    }
 
-   //TODO Unittest
-   private static void setMojoAttributes(Graph graph, List<GraphMojo> graphMojos) {
-      // graphMojos could be null (no graphs configuratin in the pom)
-      if (graphMojos != null) {
-         boolean foundConfig = false;
-         for (GraphMojo graphMojo : graphMojos) {
-            if (graphMojo.getName().equals(graph.getName())) {
-               graph.setDistance(graphMojo.getDistance());
-               graph.setLinkdistance(graphMojo.getLinkdistance());
-               graph.setGravity(graphMojo.getGravity());
-               graph.setGraphSize(graphMojo.getGraphsize());
-               graph.setFontsize(graphMojo.getFontsize());
-               foundConfig = true;
-               break;
-            }
-         }
-         //If there's a default config, setting attributes for not configurated graphs
-         if (!foundConfig) {
-            for (GraphMojo graphMojo : graphMojos) {
-               if (graphMojo.getName().equals("default")) {
-                  graph.setDistance(graphMojo.getDistance());
-                  graph.setLinkdistance(graphMojo.getLinkdistance());
-                  graph.setGravity(graphMojo.getGravity());
-                  graph.setGraphSize(graphMojo.getGraphsize());
-                  graph.setFontsize(graphMojo.getFontsize());
-                  break;
-               }
-            }
-         }
-      }
-   }
-
    public static Graph generateGraph(String fileName,
            String title,
-           List<GraphMojo> graphMojos,
            DependencyFilter filter,
            InputStream htmlTemplateIS,
            File outputdirectory) {
@@ -182,9 +148,8 @@ public final class GraphCreator {
       File htmlFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".html");
       graph.setHtmlFile(htmlFile);
       graph.setHtmlTemplateIS(htmlTemplateIS);
-
-      setMojoAttributes(graph, graphMojos);
       graph.setTitle(title);
+      GraphConfigurator.configGraph(graph);
       JsonObjectBuilder builder = Json.createObjectBuilder();
       // Nodes
       JsonArrayBuilder nodesArray = buildJSONNodes(filter);
@@ -202,7 +167,7 @@ public final class GraphCreator {
       return graph;
    }
 
-   public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS, List<GraphMojo> graphMojos) {
+   public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
       // Load HTML-Template, if not already done (Maven modules)
       if (htmlTemplate == null) {
          htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
@@ -210,11 +175,9 @@ public final class GraphCreator {
       for (String graphName : GRAPH_TITLES.keySet()) {
          Graph graph = GraphCreator.generateGraph(graphName,
                  (String) GRAPH_TITLES.get(graphName).get(0) + rootFolder.getPath(),
-                 graphMojos,
                  (DependencyFilter) GRAPH_TITLES.get(graphName).get(1),
                  htmlTemplateIS,
                  outputdirectory);
-         graph.calculateAttributes();
          HTMLManager.generateHTML(graph, htmlTemplate);
       }
    }

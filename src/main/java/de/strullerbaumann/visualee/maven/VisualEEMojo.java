@@ -17,8 +17,10 @@ package de.strullerbaumann.visualee.maven;
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
 import de.strullerbaumann.visualee.resources.FileManager;
+import de.strullerbaumann.visualee.ui.graph.boundary.GraphConfigurator;
 import de.strullerbaumann.visualee.ui.graph.boundary.GraphCreator;
 import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
+import de.strullerbaumann.visualee.ui.graph.entity.GraphConfig;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -61,7 +63,7 @@ public class VisualEEMojo extends AbstractMojo {
     *
     * @parameter
     */
-   private List<GraphMojo> graphs;
+   private List<GraphConfig> graphs;
    private static final String JS_DIR = "/js/";
    private static final String CSS_DIR = "/css/";
    private static final String[] CSS_DIR_FILES = {"style.css", "jquery-ui.css"};
@@ -90,7 +92,8 @@ public class VisualEEMojo extends AbstractMojo {
             File sourceFolderDir = new File(sourceFolder);
             DependencyAnalyzer.getInstance().analyze(sourceFolderDir, outputdirectory, graphTemplateIS);
             getLog().info("### Generating graphs");
-            GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS, graphs);
+            GraphConfigurator.setGraphConfigs(graphs);
+            GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
             getLog().info("### Done, visualization can be found in");
             getLog().info("### " + outputdirectory + File.separatorChar + "index.html");
             getLog().info(HEADER_FOOTER);

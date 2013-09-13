@@ -87,17 +87,18 @@ public abstract class Examiner {
 
    // TODO better
    protected static String scanAfterQuote(String currentToken, Scanner scanner) {
-      if (currentToken.contains("\"") && countChar(currentToken, '"') < 2) {
-         currentToken = scanner.next();
-         while (!currentToken.contains("\"")) {
+      String token = currentToken;
+      if (token.contains("\"") && countChar(token, '"') < 2) {
+         token = scanner.next();
+         while (!token.contains("\"")) {
             if (scanner.hasNext()) {
-               currentToken = scanner.next();
+               token = scanner.next();
             } else {
                break;
             }
          }
       }
-      return currentToken;
+      return token;
    }
 
    protected static String scanAfterClosedParenthesis(String currentToken, Scanner scanner) {
@@ -155,8 +156,6 @@ public abstract class Examiner {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
          injectedJavaSource = new JavaSource(className);
          JavaSourceContainer.getInstance().add(injectedJavaSource);
-         // TODO
-         // System.out.println("####### created new JavaSource: " + className + " for " + javaSource.getPackagePath() + "." + javaSource.getName() + " with type " + type.name());
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
       javaSource.getInjected().add(dependency);

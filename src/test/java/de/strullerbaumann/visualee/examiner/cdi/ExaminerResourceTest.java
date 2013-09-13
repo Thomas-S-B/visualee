@@ -20,7 +20,6 @@ import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.javasource.entity.JavaSource;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -40,7 +39,6 @@ public class ExaminerResourceTest {
    }
 
    @Test
-   @Ignore
    public void testIsRelevantType() {
       for (DependencyType dependencyType : DependencyType.values()) {
          if (dependencyType == DependencyType.RESOURCE) {
@@ -52,7 +50,6 @@ public class ExaminerResourceTest {
    }
 
    @Test
-   @Ignore
    public void testgetTypeFromToken() {
       String sourceLine;
       DependencyType actual;
@@ -71,7 +68,6 @@ public class ExaminerResourceTest {
    }
 
    @Test
-   @Ignore
    public void testFindAndSetAttributesResource() {
       JavaSource javaSource;
       Dependency dependency;
@@ -122,7 +118,6 @@ public class ExaminerResourceTest {
    }
 
    @Test
-   @Ignore
    public void testFindAndSetAttributesResourceInstance() {
       JavaSource javaSource;
       Dependency dependency;

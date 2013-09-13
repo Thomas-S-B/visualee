@@ -18,8 +18,10 @@ package de.strullerbaumann.visualee.javasource.entity;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -148,10 +150,10 @@ public class JavaSource {
          return;
       }
       StringBuilder loadedSourceCode = new StringBuilder();
-      try {
-         BufferedReader br = new BufferedReader(new FileReader(this.getJavaFile()));
+      Path pathJavaSource = this.getJavaFile().toPath();
+      try (BufferedReader reader = Files.newBufferedReader(pathJavaSource, Charset.defaultCharset())) {
          String inputLine;
-         while ((inputLine = br.readLine()) != null) {
+         while ((inputLine = reader.readLine()) != null) {
             loadedSourceCode.append(inputLine).append('\n');
          }
       } catch (IOException ex) {

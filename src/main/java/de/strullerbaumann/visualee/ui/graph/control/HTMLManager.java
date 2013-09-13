@@ -42,27 +42,16 @@ public final class HTMLManager {
    public static String loadHTMLTemplate(InputStream graphTemplate, String htmlName) {
       //InputStream because html is accessed via getResource->jar in the plugin
       StringBuilder htmlTemplateBuilder = new StringBuilder();
-      BufferedReader br = null;
-      try {
-         br = new BufferedReader(new InputStreamReader(graphTemplate));
+      try (BufferedReader br = new BufferedReader(new InputStreamReader(graphTemplate))) {
          String line;
          while ((line = br.readLine()) != null) {
             htmlTemplateBuilder.append(line);
             htmlTemplateBuilder.append(System.lineSeparator());
          }
-      } catch (FileNotFoundException ex) {
-         LOGGER.log(Level.SEVERE, "can't load " + htmlName, ex);
       } catch (IOException ex) {
          LOGGER.log(Level.SEVERE, "can't load " + htmlName, ex);
-      } finally {
-         if (br != null) {
-            try {
-               br.close();
-            } catch (IOException ex) {
-               LOGGER.log(Level.SEVERE, "can't close " + htmlName, ex);
-            }
-         }
       }
+
       return htmlTemplateBuilder.toString();
    }
 
