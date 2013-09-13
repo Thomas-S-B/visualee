@@ -16,7 +16,7 @@
 package de.strullerbaumann.visualee.examiner;
 
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.Scanner;
 import static org.junit.Assert.*;
 import org.junit.Test;

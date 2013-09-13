@@ -15,6 +15,7 @@
  */
 package de.strullerbaumann.visualee.javasource.entity;
 
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.io.File;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

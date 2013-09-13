@@ -13,11 +13,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.javasource.boundary;
+package de.strullerbaumann.visualee.source.boundary;
 
 import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import de.strullerbaumann.visualee.resources.FileManager;
 import java.io.File;
 import java.util.ArrayList;

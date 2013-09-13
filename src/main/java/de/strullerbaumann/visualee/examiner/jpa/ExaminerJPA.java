@@ -17,7 +17,7 @@ package de.strullerbaumann.visualee.examiner.jpa;
 
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.examiner.Examiner;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.Arrays;
 import java.util.Scanner;
 

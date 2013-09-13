@@ -28,7 +28,7 @@ import static de.strullerbaumann.visualee.dependency.entity.DependencyType.ONE_T
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.ONE_TO_ONE;
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.PRODUCES;
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.RESOURCE;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

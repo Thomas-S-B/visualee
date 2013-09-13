@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-package de.strullerbaumann.visualee.javasource.entity;
+package de.strullerbaumann.visualee.source.entity;
 
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import java.io.BufferedReader;

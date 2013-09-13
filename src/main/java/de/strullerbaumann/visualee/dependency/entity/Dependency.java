@@ -15,7 +15,8 @@
  */
 package de.strullerbaumann.visualee.dependency.entity;
 
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 
 /**
  *

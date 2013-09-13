@@ -15,10 +15,11 @@
  */
 package de.strullerbaumann.visualee.javasource.boundary;
 
+import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;

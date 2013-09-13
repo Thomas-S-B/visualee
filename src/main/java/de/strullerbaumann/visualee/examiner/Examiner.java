@@ -17,8 +17,8 @@ package de.strullerbaumann.visualee.examiner;
 
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
@@ -110,11 +110,8 @@ public abstract class Examiner {
       }
 
       Deque<Integer> stack = new ArrayDeque<>();
-      int iStack = 1;
-      countParenthesisOpen = countChar(currentToken, '(');
-      for (int iCount = 0; iCount < countParenthesisOpen; iCount++) {
-         stack.push(iStack);
-         iStack++;
+      for (int iCount = 0; iCount < countParenthesisOpen - countParenthesisClose; iCount++) {
+         stack.push(1);
       }
       String token = scanner.next();
 
@@ -126,17 +123,13 @@ public abstract class Examiner {
             }
          }
          if (token.indexOf('(') > -1) {
-            int countOpenParenthesis = countChar(token, '(');
-            for (int iCount = 0; iCount < countOpenParenthesis; iCount++) {
-               stack.push(iStack);
-               iStack++;
+            for (int iCount = 0; iCount < countChar(token, '('); iCount++) {
+               stack.push(1);
             }
          }
          if (token.indexOf(')') > -1) {
-            int countClosedParenthesis = countChar(token, ')');
-            for (int iCount = 0; iCount < countClosedParenthesis; iCount++) {
+            for (int iCount = 0; iCount < countChar(token, ')'); iCount++) {
                stack.pop();
-               iStack++;
             }
          }
          if (scanner.hasNext()) {
@@ -144,7 +137,6 @@ public abstract class Examiner {
          } else {
             break whilestack;
          }
-         iStack++;
       }
 
       return token;

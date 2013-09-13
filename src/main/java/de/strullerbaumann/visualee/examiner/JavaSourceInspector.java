@@ -15,8 +15,8 @@
  */
 package de.strullerbaumann.visualee.examiner;
 
-import de.strullerbaumann.visualee.javasource.boundary.JavaSourceContainer;
-import de.strullerbaumann.visualee.javasource.entity.JavaSource;
+import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
+import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
