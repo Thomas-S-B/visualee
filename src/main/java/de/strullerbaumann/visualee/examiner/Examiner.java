@@ -106,30 +106,36 @@ public abstract class Examiner {
       int countParenthesisClose = countChar(currentToken, ')');
 
       if (countParenthesisOpen == countParenthesisClose) {
-         return currentToken;
+         return scanner.next();
       }
 
       Deque<Integer> stack = new ArrayDeque<>();
-      for (int iCount = 0; iCount < countParenthesisOpen - countParenthesisClose; iCount++) {
-         stack.push(1);
+      int iStack = 1;
+      for (int iCount = 0; iCount < countParenthesisOpen; iCount++) {
+         stack.push(iStack);
+         iStack++;
       }
       String token = scanner.next();
 
       whilestack:
-      do {
+      while (stack.size() > 0) {
          for (Examiner examiner : JavaSourceInspector.getInstance().getExaminers()) {
             if (examiner.getTypeFromToken(token) != null) {
                break whilestack;
             }
          }
          if (token.indexOf('(') > -1) {
-            for (int iCount = 0; iCount < countChar(token, '('); iCount++) {
-               stack.push(1);
+            int countOpenParenthesis = countChar(token, '(');
+            for (int iCount = 0; iCount < countOpenParenthesis; iCount++) {
+               stack.push(iStack);
+               iStack++;
             }
          }
          if (token.indexOf(')') > -1) {
-            for (int iCount = 0; iCount < countChar(token, ')'); iCount++) {
+            int countClosedParenthesis = countChar(token, ')');
+            for (int iCount = 0; iCount < countClosedParenthesis; iCount++) {
                stack.pop();
+               iStack++;
             }
          }
          if (scanner.hasNext()) {
@@ -137,7 +143,8 @@ public abstract class Examiner {
          } else {
             break whilestack;
          }
-      } while (stack.size() > 0);
+         iStack++;
+      }
 
       return token;
    }
@@ -146,6 +153,7 @@ public abstract class Examiner {
       JavaSource injectedJavaSource = JavaSourceContainer.getInstance().getJavaSourceByName(className);
       if (injectedJavaSource == null) {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
+         // TODO logging?
          injectedJavaSource = new JavaSource(className);
          JavaSourceContainer.getInstance().add(injectedJavaSource);
       }

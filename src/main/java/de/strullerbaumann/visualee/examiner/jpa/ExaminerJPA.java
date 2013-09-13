@@ -45,9 +45,7 @@ public class ExaminerJPA extends Examiner {
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
                // Find the associated Class
-               if (token.indexOf('(') > - 1) {
-                  token = scanAfterClosedParenthesis(token, scanner);
-               }
+               token = scanAfterClosedParenthesis(token, scanner);
                while (scanner.hasNext() && (isAJavaToken(token))) {
                   if (token.indexOf('(') > - 1) {
                      token = scanAfterClosedParenthesis(token, scanner);

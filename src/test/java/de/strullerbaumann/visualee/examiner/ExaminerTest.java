@@ -165,7 +165,7 @@ public class ExaminerTest {
       currentToken = scanner.next(); // now @NotNull((groups
       ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
       expected = "Album2";
-      actual = scanner.next();
+      actual = scanner.next();   // scan after private
       assertEquals(expected, actual);
 
       javaSource = new JavaSource("TestClass");
@@ -174,9 +174,8 @@ public class ExaminerTest {
       javaSource.setSourceCode(sourceCode);
       scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
       currentToken = scanner.next();
-      ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
+      actual = ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
       expected = "private";
-      actual = scanner.next();
       assertEquals(expected, actual);
    }
 

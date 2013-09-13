@@ -25,7 +25,6 @@ import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
 import de.strullerbaumann.visualee.examiner.cdi.ExaminerResource;
 import de.strullerbaumann.visualee.examiner.jpa.ExaminerJPA;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
-import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import java.io.File;
 import java.io.InputStream;
 

@@ -58,6 +58,7 @@ public final class JavaSourceInspector {
       // Examine javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          for (Examiner examiner : getExaminers()) {
+            // TODO logging?
             examiner.examine(javaSource);
          }
       }
