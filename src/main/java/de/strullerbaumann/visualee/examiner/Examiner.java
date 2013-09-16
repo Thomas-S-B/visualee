@@ -184,8 +184,10 @@ public abstract class Examiner {
          String token = scanner.next();
          if (javaSource.getPackagePath() == null && token.equals("package")) {
             token = scanner.next();
-            String packagePath = token.substring(0, token.indexOf(';'));
-            javaSource.setPackagePath(packagePath);
+            if (token.endsWith(";")) {
+               String packagePath = token.substring(0, token.indexOf(';'));
+               javaSource.setPackagePath(packagePath);
+            }
          }
       }
    }

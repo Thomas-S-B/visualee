@@ -65,7 +65,6 @@ public final class HTMLManager {
       SimpleDateFormat sdf = new SimpleDateFormat();
       sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
       indexHtml = indexHtml.replaceAll("INDEX_CREATIONDATE", "Created " + sdf.format(new Date()));
-
       File htmlFile = new File(outputdirectory.getAbsolutePath() + "/index.html");
       try (PrintStream ps = new PrintStream(htmlFile)) {
          ps.println(indexHtml);
