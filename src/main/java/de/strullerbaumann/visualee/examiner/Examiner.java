@@ -203,4 +203,14 @@ public abstract class Examiner {
 
       return cleanedName;
    }
+
+   protected static String extractClassInstanceOrEvent(String token) {
+      String className = token;
+      // e.g. Instance<Person> becomes Person
+      if (token.startsWith("Instance<") || token.startsWith("Event<")) {
+         className = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
+      }
+
+      return className;
+   }
 }

@@ -55,9 +55,7 @@ public class ExaminerInstance extends Examiner {
             if (isRelevantType(type)) {
                token = jumpOverJavaToken(token, scanner);
                if (token.startsWith("Instance<")) {
-                  // e.g. the token is now e.g. Instance<GlassfishAuthenticator>
-                  // e.g. Instance<Person> becomes Person
-                  token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
+                  token = extractClassInstanceOrEvent(token);
                   token = jumpOverJavaToken(token, scanner);
                   if (token.indexOf('(') > - 1) {
                      token = token.substring(token.indexOf('(') + 1);

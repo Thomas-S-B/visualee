@@ -57,11 +57,7 @@ public class ExaminerResource extends Examiner {
                   token = scanAfterClosedParenthesis(token, scanner);
                }
                token = jumpOverJavaToken(token, scanner);
-               if (token.startsWith("Instance<")) {
-                  // e.g. the token is now e.g. Instance<GlassfishAuthenticator>
-                  // e.g. Instance<Person> becomes Person
-                  token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
-               }
+               token = extractClassInstanceOrEvent(token);
                String className = cleanupGeneric(token);
                createDependency(className, type, javaSource);
             }
