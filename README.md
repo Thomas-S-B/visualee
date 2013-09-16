@@ -1,7 +1,7 @@
 visualee
 ========
 
-A maven plugin to visualize a java ee app.
+A maven plugin to visualize a java ee project.
 
 Please look into the wiki.
 

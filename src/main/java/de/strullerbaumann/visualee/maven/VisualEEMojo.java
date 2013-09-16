@@ -1,19 +1,23 @@
 package de.strullerbaumann.visualee.maven;
 
 /*
- Copyright 2013 Thomas Struller-Baumann, struller-baumann.de
-
- Licensed under the Apache License, Version 2.0 (the "License")
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * #%L
+ * visualee
+ * %%
+ * Copyright (C) 2013 Thomas Struller-Baumann
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
 import de.strullerbaumann.visualee.resources.FileManager;
@@ -66,8 +70,15 @@ public class VisualEEMojo extends AbstractMojo {
    private List<GraphConfig> graphs;
    private static final String JS_DIR = "/js/";
    private static final String CSS_DIR = "/css/";
-   private static final String[] CSS_DIR_FILES = {"style.css", "jquery-ui.css"};
-   private static final String[] JS_DIR_FILES = {"d3.v3.min.js", "jquery-2.0.3.min.js", "jquery-ui-1.9.2.min.js", "classgraph.js", "LICENSE"};
+   private static final String[] CSS_DIR_FILES = {
+      "style.css",
+      "jquery-ui.css"};
+   private static final String[] JS_DIR_FILES = {
+      "d3.v3.min.js",
+      "jquery-2.0.3.min.js",
+      "jquery-ui-1.9.2.min.js",
+      "classgraph.js",
+      "LICENSE"};
    private static final String HEADER_FOOTER = "#######################################################";
 
    @Override
@@ -84,7 +95,7 @@ public class VisualEEMojo extends AbstractMojo {
          for (String exportFile : JS_DIR_FILES) {
             FileManager.export(getClass(), JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
-         //Examine all java-files under the projectroot
+         //Examine all java-files in projectroot
          String sourceFolder = mavenSession.getExecutionRootDirectory();
          if (sourceFolder != null) {
             HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
@@ -98,7 +109,7 @@ public class VisualEEMojo extends AbstractMojo {
             getLog().info("### " + outputdirectory + File.separatorChar + "index.html");
             getLog().info(HEADER_FOOTER);
          } else {
-            getLog().error("### Cannot find src-folder");
+            getLog().error("### Can't find src-folder");
          }
       }
    }
