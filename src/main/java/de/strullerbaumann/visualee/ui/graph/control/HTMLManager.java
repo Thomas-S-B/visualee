@@ -9,9 +9,9 @@ package de.strullerbaumann.visualee.ui.graph.control;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.ui.graph.control;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.ui.graph.entity.Graph;
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,16 +30,12 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public final class HTMLManager {
-
-   private static final Logger LOGGER = Logger.getLogger(HTMLManager.class.getName());
 
    private HTMLManager() {
    }
@@ -53,7 +50,7 @@ public final class HTMLManager {
             htmlTemplateBuilder.append(System.lineSeparator());
          }
       } catch (IOException ex) {
-         LOGGER.log(Level.SEVERE, "can't load " + htmlName, ex);
+         LogProvider.getInstance().error("can't load " + htmlName, ex);
       }
 
       return htmlTemplateBuilder.toString();
@@ -69,7 +66,7 @@ public final class HTMLManager {
       try (PrintStream ps = new PrintStream(htmlFile)) {
          ps.println(indexHtml);
       } catch (FileNotFoundException ex) {
-         LOGGER.log(Level.SEVERE, null, ex);
+         LogProvider.getInstance().error("Didn't found index.html", ex);
       }
    }
 
@@ -88,7 +85,7 @@ public final class HTMLManager {
       try (PrintStream ps = new PrintStream(graph.getHtmlFile())) {
          ps.println(html);
       } catch (FileNotFoundException ex) {
-         LOGGER.log(Level.SEVERE, "Didn't found " + graph.getHtmlFile(), ex);
+         LogProvider.getInstance().error("Didn't found " + graph.getHtmlFile(), ex);
       }
    }
 }

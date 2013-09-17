@@ -9,9 +9,9 @@ package de.strullerbaumann.visualee.examiner;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,14 @@ package de.strullerbaumann.visualee.examiner;
  */
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -152,6 +155,11 @@ public abstract class Examiner {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
          injectedJavaSource = new JavaSource(className);
          JavaSourceContainer.getInstance().add(injectedJavaSource);
+         if (isAValidName(className)) {
+            LogProvider.getInstance().debug("Created new JavaSource with name: " + className);
+         } else {
+            LogProvider.getInstance().debug("Created new JavaSource with a suspicious name: " + className);
+         }
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
       javaSource.getInjected().add(dependency);
@@ -212,5 +220,11 @@ public abstract class Examiner {
       }
 
       return className;
+   }
+
+   public static boolean isAValidName(String className) {
+      Pattern p = Pattern.compile("[A-Z]{1}[a-zA-Z0-9]*");
+      Matcher m = p.matcher(className);
+      return m.matches();
    }
 }

@@ -20,6 +20,7 @@ package de.strullerbaumann.visualee.maven;
  * #L%
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
+import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.ui.graph.boundary.GraphConfigurator;
 import de.strullerbaumann.visualee.ui.graph.boundary.GraphCreator;
@@ -83,10 +84,11 @@ public class VisualEEMojo extends AbstractMojo {
 
    @Override
    public void execute() throws MojoExecutionException {
+      LogProvider.getInstance().setLog(getLog());
       //Ensure only one execution (important for multi module poms)
       if (isThisRootDir()) {
          getLog().info(HEADER_FOOTER);
-         getLog().info("### VisualEE-Plugin");
+         getLog().info("VisualEE-Plugin");
          InputStream indexIS = getClass().getResourceAsStream("/html/index.html");
          InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
          for (String exportFile : CSS_DIR_FILES) {
@@ -99,17 +101,17 @@ public class VisualEEMojo extends AbstractMojo {
          String sourceFolder = mavenSession.getExecutionRootDirectory();
          if (sourceFolder != null) {
             HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
-            getLog().info("### Analyzing sourcefolder: " + sourceFolder);
+            getLog().info("Analyzing sourcefolder: " + sourceFolder);
             File sourceFolderDir = new File(sourceFolder);
             DependencyAnalyzer.getInstance().analyze(sourceFolderDir);
-            getLog().info("### Generating graphs");
+            getLog().info("Generating graphs");
             GraphConfigurator.setGraphConfigs(graphs);
             GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
-            getLog().info("### Done, visualization can be found in");
-            getLog().info("### " + outputdirectory + File.separatorChar + "index.html");
+            getLog().info("Done, visualization can be found in");
+            getLog().info(outputdirectory.toString() + File.separatorChar + "index.html");
             getLog().info(HEADER_FOOTER);
          } else {
-            getLog().error("### Can't find src-folder");
+            getLog().error("Can't find src-folder");
          }
       }
    }
