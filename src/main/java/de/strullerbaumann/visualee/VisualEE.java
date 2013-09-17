@@ -26,7 +26,10 @@ import java.io.File;
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class VisualEE {
+public final class VisualEE {
+
+   private VisualEE() {
+   }
 
    public static void main(String args[]) {
       File sourceFolderDir = new File("/home/thomas/NetBeansProjects/spring-petclinic");

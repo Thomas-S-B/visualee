@@ -6,9 +6,9 @@
       <artifactId>oss-parent</artifactId>
       <version>7</version>
    </parent>
-   <groupId>de.strullerbaumann</groupId>
+   <groupId>de.struller-baumann</groupId>
    <artifactId>visualee</artifactId>
-   <version>0.16</version>
+   <version>0.17-SNAPSHOT</version>
    <packaging>maven-plugin</packaging>
 
    <name>visualee</name>
@@ -65,14 +65,6 @@
    </dependencies>
 
    <build>
-      <extensions>
-         <!-- for deploy on ftp -->
-         <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ftp</artifactId>
-            <version>2.4</version>
-         </extension>
-      </extensions>
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -89,14 +81,6 @@
             <version>2.2.1</version>
             <executions>
                <execution>
-                  <!-- Activate to package sourcecode -->
-                  <!--
-                  <id>attach-sources</id>
-                  <goals>
-                     <goal>jar</goal>
-                     <goal>test-jar</goal>
-                  </goals>
-                  -->
                   <configuration>
                      <includePom>true</includePom>
                   </configuration>
@@ -117,7 +101,7 @@
             <artifactId>license-maven-plugin</artifactId>
             <version>1.5</version>
             <configuration>
-               <verbose>true</verbose>
+               <verbose>false</verbose>
             </configuration>
             <executions>
                <execution>
@@ -144,6 +128,20 @@
                <tagNameFormat>v@{project.version}</tagNameFormat>
             </configuration>
          </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+               <execution>
+                  <id>sign-artifacts</id>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>sign</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
       </plugins>
       <finalName>visualee</finalName>
    </build>
@@ -161,11 +159,10 @@
    </properties>
 
    <distributionManagement>
-      <!-- for deploy on ftp -->
       <repository>
-         <id>strullerbaumann-ftp</id>
-         <url>ftp://ftp.struller-baumann.de/html/maven2</url>
+         <id>nexus-releases</id>
+         <name>Nexus Release Repository</name>
+         <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
       </repository>
    </distributionManagement>
-
 </project>
