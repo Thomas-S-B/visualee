@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public final class JavaSourceInspector {
       }
       // Examine javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
+         LogProvider.getInstance().debug("Examining: " + javaSource.getFullClassName());
          for (Examiner examiner : getExaminers()) {
             examiner.examine(javaSource);
          }

@@ -65,6 +65,32 @@ public class ExaminerTest {
    }
 
    @Test
+   public void testisAValdiClassName() {
+      String inputString;
+      boolean actual;
+
+      inputString = "String";
+      actual = ExaminerImpl.isAValidClassName(inputString);
+      assertEquals(true, actual);
+
+      inputString = "int";
+      actual = ExaminerImpl.isAValidClassName(inputString);
+      assertEquals(false, actual);
+
+      inputString = "Integer";
+      actual = ExaminerImpl.isAValidClassName(inputString);
+      assertEquals(true, actual);
+
+      inputString = "boolean";
+      actual = ExaminerImpl.isAValidClassName(inputString);
+      assertEquals(false, actual);
+
+      inputString = ";";
+      actual = ExaminerImpl.isAValidClassName(inputString);
+      assertEquals(false, actual);
+   }
+
+   @Test
    public void testGetClassBody() {
       JavaSource javaSource = new JavaSource("TestClass");
       javaSource.setSourceCode(SourceCodeProvider.getTestSourceCode());

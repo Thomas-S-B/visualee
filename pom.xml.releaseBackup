@@ -1,0 +1,168 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>7</version>
+   </parent>
+   <groupId>de.struller-baumann</groupId>
+   <artifactId>visualee</artifactId>
+   <version>0.17-SNAPSHOT</version>
+   <packaging>maven-plugin</packaging>
+
+   <name>visualee</name>
+   <description>A maven plugin to visualize a java ee project.</description>
+   <url>http://visualee.struller-baumann.de</url>
+   <organization>
+      <name>Thomas Struller-Baumann</name>
+      <url>http://struller-baumann.de</url>
+   </organization>
+   <inceptionYear>2013</inceptionYear>
+
+   <licenses>
+      <license>
+         <name>The Apache Software License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+         <distribution>repo</distribution>
+      </license>
+   </licenses>
+
+   <developers>
+      <developer>
+         <name>Thomas Struller-Baumann</name>
+         <organization>struller-baumann.de</organization>
+         <organizationUrl>http://www.struller-baumann.de</organizationUrl>
+         <email>visualee@struller-baumann.de</email>
+         <timezone>+1</timezone>
+      </developer>
+   </developers>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.apache.maven</groupId>
+         <artifactId>maven-plugin-api</artifactId>
+         <version>3.1.0</version>
+         <type>jar</type>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.maven</groupId>
+         <artifactId>maven-core</artifactId>
+         <version>3.1.0</version>
+      </dependency>
+      <dependency>
+         <groupId>org.glassfish</groupId>
+         <artifactId>javax.json</artifactId>
+         <version>1.0.2</version>
+         <type>jar</type>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.11</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+               <source>1.7</source>
+               <target>1.7</target>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+               <execution>
+                  <configuration>
+                     <includePom>true</includePom>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <!--create checksums -->
+         <plugin>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+               <createChecksum>true</createChecksum>
+            </configuration>
+         </plugin>
+         <!--license -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>1.5</version>
+            <configuration>
+               <verbose>false</verbose>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>add-apache-headers</id>
+                  <goals>
+                     <goal>update-file-header</goal>
+                  </goals>
+                  <phase>process-sources</phase>
+                  <configuration>
+                     <licenseName>apache_v2</licenseName>
+                     <excludes>
+                        <exclude>**/*.js</exclude>
+                        <exclude>**/*.css</exclude>
+                     </excludes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.4.1</version>
+            <configuration>
+               <tagNameFormat>v@{project.version}</tagNameFormat>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+               <execution>
+                  <id>sign-artifacts</id>
+                  <phase>verify</phase>
+                  <goals>
+                     <goal>sign</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+      <finalName>visualee</finalName>
+   </build>
+
+   <scm>
+      <connection>scm:git:git@github.com:Thomas-S-B/visualee.git</connection>
+      <url>scm:git:git@github.com:Thomas-S-B/visualee.git</url>
+      <developerConnection>scm:git:git@github.com:Thomas-S-B/visualee.git</developerConnection>
+      <tag>HEAD</tag>
+   </scm>
+
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+   </properties>
+
+   <distributionManagement>
+      <repository>
+         <id>nexus-releases</id>
+         <name>Nexus Release Repository</name>
+         <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      </repository>
+   </distributionManagement>
+</project>
