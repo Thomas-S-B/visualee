@@ -208,7 +208,6 @@ public abstract class Examiner {
       if (posGeneric > -1) {
          cleanedName = className.substring(0, posGeneric);
       }
-
       return cleanedName;
    }
 
@@ -218,7 +217,6 @@ public abstract class Examiner {
       if (token.startsWith("Instance<") || token.startsWith("Event<")) {
          className = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
       }
-
       return className;
    }
 
