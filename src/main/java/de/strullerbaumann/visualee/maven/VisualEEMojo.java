@@ -105,7 +105,9 @@ public class VisualEEMojo extends AbstractMojo {
             File sourceFolderDir = new File(sourceFolder);
             DependencyAnalyzer.getInstance().analyze(sourceFolderDir);
             getLog().info("Generating graphs");
-            GraphConfigurator.setGraphConfigs(graphs);
+            if (graphs != null) {
+               GraphConfigurator.setGraphConfigs(graphs);
+            }
             GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
             getLog().info("Done, visualization can be found in");
             getLog().info(outputdirectory.toString() + File.separatorChar + "index.html");
