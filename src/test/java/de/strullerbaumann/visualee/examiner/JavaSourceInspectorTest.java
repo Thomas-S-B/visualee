@@ -71,7 +71,7 @@ public class JavaSourceInspectorTest {
       javaSource.setSourceCode(sourceCode);
       JavaSourceContainer.getInstance().add(javaSource);
       JavaSourceInspector.getInstance().examine();
-      assertEquals(0, javaSource.getInjected().size());
+      assertEquals(0, javaSource.getDependencies().size());
    }
 
    @Test
@@ -97,7 +97,7 @@ public class JavaSourceInspectorTest {
       javaSource.setSourceCode(sourceCode);
       JavaSourceContainer.getInstance().add(javaSource);
       JavaSourceInspector.getInstance().examine();
-      assertEquals(0, javaSource.getInjected().size());
+      assertEquals(0, javaSource.getDependencies().size());
    }
 
    @Test

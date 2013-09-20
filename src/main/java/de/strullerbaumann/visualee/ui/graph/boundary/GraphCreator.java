@@ -71,6 +71,10 @@ public final class GraphCreator {
                  .addType(DependencyType.INJECT)
                  .addType(DependencyType.INSTANCE)
                  .addType(DependencyType.PRODUCES)));
+         put("graphConnectedInstanceProducesClasses", Arrays.asList("Only directly connected Instance and Produces classes of ", new DependencyFilter()
+                 .addType(DependencyType.INSTANCE)
+                 .addType(DependencyType.PRODUCES)
+                 .setDirectlyConnected(true)));
          put("graphResourcesClasses", Arrays.asList("Only Resource classes of ", new DependencyFilter()
                  .addType(DependencyType.RESOURCE)));
          put("graphJPAClasses", Arrays.asList("Only JPA classes of ", new DependencyFilter()
@@ -113,7 +117,7 @@ public final class GraphCreator {
       for (JavaSource myJavaClass : JavaSourceContainer.getInstance().getJavaSources()) {
          int target = myJavaClass.getId();
          int value = 1;
-         for (Dependency dependency : myJavaClass.getInjected()) {
+         for (Dependency dependency : myJavaClass.getDependencies()) {
             if (filter == null || filter.contains(dependency.getDependencyType())) {
                int source = dependency.getJavaSourceTo().getId();
                DependencyType type = dependency.getDependencyType();
@@ -127,7 +131,8 @@ public final class GraphCreator {
                }
                linksBuilder.add("value", value);
                linksBuilder.add("type", type.toString());
-               linksArray.add(linksBuilder);
+               // TODO wieder aktivieren
+               //linksArray.add(linksBuilder);
             }
          }
       }

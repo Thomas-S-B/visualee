@@ -31,6 +31,7 @@ import java.util.List;
 public class DependencyFilter {
 
    private List<DependencyType> filterTypes = new ArrayList<>();
+   private boolean directlyConnected = false;
 
    public DependencyFilter addType(DependencyType dependencyType) {
       filterTypes.add(dependencyType);
@@ -53,5 +54,14 @@ public class DependencyFilter {
 
    public List<DependencyType> getFilterTypes() {
       return filterTypes;
+   }
+
+   public boolean isDirectlyConnected() {
+      return directlyConnected;
+   }
+
+   public DependencyFilter setDirectlyConnected(boolean directlyConnected) {
+      this.directlyConnected = directlyConnected;
+      return this;
    }
 }

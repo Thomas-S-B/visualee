@@ -47,7 +47,7 @@ public class GraphCreatorTest {
       JavaSource javaSource = new JavaSource("MyTestClass");
       javaSource.setGroup(2);
       javaSource.setId(1);
-      javaSource.setInjected(new ArrayList<Dependency>());
+      javaSource.setDependencies(new ArrayList<Dependency>());
       javaSource.setPackagePath("de.test.test2");
       javaSource.setSourceCode(sourcecode);
 
@@ -70,7 +70,7 @@ public class GraphCreatorTest {
          String name = namePrefix + i;
          JavaSource javaSource = new JavaSource(name);
          List<Dependency> injected = new ArrayList<>();
-         javaSource.setInjected(injected);
+         javaSource.setDependencies(injected);
          JavaSourceContainer.getInstance().add(javaSource);
       }
 

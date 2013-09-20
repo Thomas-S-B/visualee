@@ -162,7 +162,7 @@ public abstract class Examiner {
          }
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
-      javaSource.getInjected().add(dependency);
+      javaSource.getDependencies().add(dependency);
    }
 
    protected static boolean isAJavaToken(String token) {

@@ -84,10 +84,10 @@ public class ExaminerInstanceTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.INSTANCE, dependency.getDependencyType());
       assertEquals("EscalationNotificationBroker", dependency.getJavaSourceFrom().getName());
       assertEquals("Transmitter", dependency.getJavaSourceTo().getName());
@@ -107,10 +107,10 @@ public class ExaminerInstanceTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.INSTANCE, dependency.getDependencyType());
       assertEquals("SnapshotProvider", dependency.getJavaSourceFrom().getName());
       assertEquals("DataCollector", dependency.getJavaSourceTo().getName());

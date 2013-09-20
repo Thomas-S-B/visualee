@@ -96,7 +96,7 @@ public class JavaSourceContainerTest {
          JavaSource javaSource = new JavaSource(name);
          List<Dependency> injected = new ArrayList<>();
          injected.add(new Dependency(DependencyType.INJECT, javaSource, javaSourceInj));
-         javaSource.setInjected(injected);
+         javaSource.setDependencies(injected);
          JavaSourceContainer.getInstance().add(javaSource);
       }
 
@@ -131,7 +131,7 @@ public class JavaSourceContainerTest {
             injected.add(new Dependency(type2, javaSource, javaSourceType2));
             count2++;
          }
-         javaSource.setInjected(injected);
+         javaSource.setDependencies(injected);
          JavaSourceContainer.getInstance().add(javaSource);
       }
 

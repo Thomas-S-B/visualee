@@ -96,10 +96,10 @@ public class ExaminerEventTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.EVENT, dependency.getDependencyType());
       assertEquals("TunguskaGate", dependency.getJavaSourceFrom().getName());
       assertEquals("BrowserWindow", dependency.getJavaSourceTo().getName());

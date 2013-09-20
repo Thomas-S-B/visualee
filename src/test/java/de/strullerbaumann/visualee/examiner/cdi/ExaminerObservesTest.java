@@ -92,8 +92,8 @@ public class ExaminerObservesTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getInjected().get(0);
-      assertEquals(1, javaSource.getInjected().size());
+      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
       assertEquals(DependencyType.OBSERVES, dependency.getDependencyType());
       assertEquals("SnapshotEscalator", dependency.getJavaSourceFrom().getName());
       assertEquals("Snapshot", dependency.getJavaSourceTo().getName());

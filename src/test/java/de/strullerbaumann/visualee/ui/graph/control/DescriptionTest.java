@@ -57,7 +57,7 @@ public class DescriptionTest {
       List<Dependency> dependencies = new ArrayList<>();
       dependencies.add(dependency12);
       dependencies.add(dependency13);
-      javaSource1.setInjected(dependencies);
+      javaSource1.setDependencies(dependencies);
 
       String actual = Description.generateDescription(javaSource1);
 

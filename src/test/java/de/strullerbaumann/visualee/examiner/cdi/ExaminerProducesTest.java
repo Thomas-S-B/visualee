@@ -91,8 +91,8 @@ public class ExaminerProducesTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getInjected().get(0);
-      assertEquals(1, javaSource.getInjected().size());
+      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
       assertEquals(DependencyType.PRODUCES, dependency.getDependencyType());
       assertEquals("DatabaseProducer", dependency.getJavaSourceFrom().getName());
       assertEquals("EntityManager", dependency.getJavaSourceTo().getName());
@@ -121,10 +121,10 @@ public class ExaminerProducesTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.PRODUCES, dependency.getDependencyType());
       assertEquals("LoggerProducer", dependency.getJavaSourceFrom().getName());
       assertEquals("Log", dependency.getJavaSourceTo().getName());

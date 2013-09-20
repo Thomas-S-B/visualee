@@ -93,8 +93,8 @@ public class ExaminerResourceTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getInjected().get(0);
-      assertEquals(1, javaSource.getInjected().size());
+      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
       assertEquals(DependencyType.RESOURCE, dependency.getDependencyType());
       assertEquals("DatabaseConnectionProducer", dependency.getJavaSourceFrom().getName());
       assertEquals("DataSource", dependency.getJavaSourceTo().getName());
@@ -114,8 +114,8 @@ public class ExaminerResourceTest {
               + "}\n";
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getInjected().get(0);
-      assertEquals(1, javaSource.getInjected().size());
+      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
       assertEquals(DependencyType.RESOURCE, dependency.getDependencyType());
       assertEquals("SimplifiedMessageReceiver", dependency.getJavaSourceFrom().getName());
       assertEquals("Queue", dependency.getJavaSourceTo().getName());
@@ -144,8 +144,8 @@ public class ExaminerResourceTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
-      dependency = javaSource.getInjected().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.RESOURCE, dependency.getDependencyType());
       assertEquals("ResourceCollector", dependency.getJavaSourceFrom().getName());
       assertEquals("TimerService", dependency.getJavaSourceTo().getName());

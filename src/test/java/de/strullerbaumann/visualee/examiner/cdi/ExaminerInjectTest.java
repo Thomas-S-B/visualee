@@ -91,14 +91,14 @@ public class ExaminerInjectTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(2, javaSource.getInjected().size());
+      assertEquals(2, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("TestClass", dependency.getJavaSourceTo().getName());
-      dependency = javaSource.getInjected().get(1);
+      dependency = javaSource.getDependencies().get(1);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("EntityManager", dependency.getJavaSourceTo().getName());
@@ -118,10 +118,10 @@ public class ExaminerInjectTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("ZeiterfassungEingabeModel", dependency.getJavaSourceFrom().getName());
       assertEquals("Date", dependency.getJavaSourceTo().getName());
@@ -151,14 +151,14 @@ public class ExaminerInjectTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
 
       Dependency dependency;
-      dependency = javaSource.getInjected().get(0);
+      dependency = javaSource.getDependencies().get(0);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("TestCDIServlet", dependency.getJavaSourceFrom().getName());
       assertEquals("UserTransaction", dependency.getJavaSourceTo().getName());
       // 1, ensure @Inject</title> and @Inject</h1> in the source are ignored
-      assertEquals(1, javaSource.getInjected().size());
+      assertEquals(1, javaSource.getDependencies().size());
    }
 }

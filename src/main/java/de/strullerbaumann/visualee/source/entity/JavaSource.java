@@ -9,9 +9,9 @@ package de.strullerbaumann.visualee.source.entity;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ public class JavaSource {
    private static final int HASH = 7;
    private static final int HASH_MULTIPLIER = 13;
    private File javaFile;
-   private List<Dependency> injected;
+   private List<Dependency> dependencies;
    // for D3.js, links need id's from the nodes (id's start with 0)
    private int id;
    // Nodes form the same package have the same group-number
@@ -53,13 +53,13 @@ public class JavaSource {
    public JavaSource(File javaFile) {
       this.javaFile = javaFile;
       this.name = javaFile.getName().substring(0, javaFile.getName().indexOf(".java"));
-      injected = new ArrayList<>();
+      dependencies = new ArrayList<>();
       sourceCode = "";
    }
 
    public JavaSource(String name) {
       this.name = name;
-      injected = new ArrayList<>();
+      dependencies = new ArrayList<>();
       sourceCode = "Not available";
    }
 
@@ -67,12 +67,12 @@ public class JavaSource {
       return javaFile;
    }
 
-   public List<Dependency> getInjected() {
-      return injected;
+   public List<Dependency> getDependencies() {
+      return dependencies;
    }
 
-   public void setInjected(List<Dependency> injected) {
-      this.injected = injected;
+   public void setDependencies(List<Dependency> dependencies) {
+      this.dependencies = dependencies;
    }
 
    public int getId() {

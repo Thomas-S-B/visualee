@@ -90,7 +90,7 @@ public final class Description {
          descriptionParts.put(type, new StringBuilder());
       }
 
-      for (Dependency dependency : javaSource.getInjected()) {
+      for (Dependency dependency : javaSource.getDependencies()) {
          StringBuilder descriptionPart = descriptionParts.get(dependency.getDependencyType());
          assert descriptionPart != null : "Unknown DependencyType";
          descriptionPart.append("<br/><nobr>");

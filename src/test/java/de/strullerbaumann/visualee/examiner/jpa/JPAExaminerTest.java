@@ -66,8 +66,8 @@ public class JPAExaminerTest {
               + "private Album album;\n";
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      dependency = javaSource.getInjected().get(0);
-      assertEquals(1, javaSource.getInjected().size());
+      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
       assertEquals(DependencyType.MANY_TO_ONE, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("Album", dependency.getJavaSourceTo().getName());
@@ -90,8 +90,8 @@ public class JPAExaminerTest {
               + "private Set<Group> groups;\n";
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      dependency = javaSource.getInjected().get(0);
-      assertEquals(1, javaSource.getInjected().size());
+      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, javaSource.getDependencies().size());
       assertEquals(DependencyType.MANY_TO_MANY, dependency.getDependencyType());
       assertEquals("User", dependency.getJavaSourceFrom().getName());
       assertEquals("Group", dependency.getJavaSourceTo().getName());
@@ -123,7 +123,7 @@ public class JPAExaminerTest {
 
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      assertEquals(0, javaSource.getInjected().size());
+      assertEquals(0, javaSource.getDependencies().size());
    }
 
    @Test
@@ -149,6 +149,6 @@ public class JPAExaminerTest {
 
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      assertEquals(0, javaSource.getInjected().size());
+      assertEquals(0, javaSource.getDependencies().size());
    }
 }

@@ -90,7 +90,6 @@ public class VisualEEMojo extends AbstractMojo {
          getLog().info(HEADER_FOOTER);
          getLog().info("VisualEE-Plugin");
          InputStream indexIS = getClass().getResourceAsStream("/html/index.html");
-         InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
          for (String exportFile : CSS_DIR_FILES) {
             FileManager.export(getClass(), CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
@@ -108,6 +107,7 @@ public class VisualEEMojo extends AbstractMojo {
             if (graphs != null) {
                GraphConfigurator.setGraphConfigs(graphs);
             }
+            InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
             GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
             getLog().info("Done, visualization can be found in");
             getLog().info(outputdirectory.toString() + File.separatorChar + "index.html");
