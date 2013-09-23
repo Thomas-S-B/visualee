@@ -25,6 +25,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,7 @@ public class GraphCreatorTest {
    }
 
    @Test
+   @Ignore
    public void testBuildJSONNode() {
       String name = "MyTestClass";
       String sourcecode = "test source code - Matt Pavolka Group - Something People Can Use";

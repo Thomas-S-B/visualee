@@ -21,6 +21,7 @@ package de.strullerbaumann.visualee.dependency.boundary;
  */
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public final class DependencyContainer {
    }
 
    /*
-    public static List<Dependency> getDependencies() {
+    public List<Dependency> getDependencies() {
     return dependencies;
     }
     */
@@ -63,10 +64,10 @@ public final class DependencyContainer {
    }
 
    // TODO UnitTest
-   private List<Dependency> findAllDependenciesWith(JavaSource javaSource2Find, DependencyType dependencyType) {
+   private List<Dependency> findAllDependenciesWith(JavaSource javaSource, DependencyType dependencyType) {
       List<Dependency> foundDependencies = new ArrayList<>();
       for (Dependency dependency : getDependenciesOfType(dependencyType)) {
-         if (dependency.getJavaSourceFrom() == javaSource2Find || dependency.getJavaSourceTo() == javaSource2Find) {
+         if (dependency.getJavaSourceFrom().equals(javaSource) || dependency.getJavaSourceTo().equals(javaSource)) {
             //TODO dies als SET stat mit List damit man sich das contains spart?
             if (!foundDependencies.contains(dependency)) {
                foundDependencies.add(dependency);
@@ -77,10 +78,27 @@ public final class DependencyContainer {
       return foundDependencies;
    }
 
+   public List<Dependency> getDependencies(DependencyFilter filter) {
+      List<Dependency> dependenciesFilter = new ArrayList<>();
+      if (filter == null) {
+         dependenciesFilter.addAll(dependencies);
+      } else {
+         for (DependencyType type : filter.getFilterTypes()) {
+            for (Dependency d : getDependenciesOfType(type)) {
+               if (!dependenciesFilter.contains(d)) {
+                  dependenciesFilter.add(d);
+               }
+            }
+         }
+      }
+
+      return dependenciesFilter;
+   }
+
    public List<Dependency> getDependenciesOfType(DependencyType dependencyType) {
       List<Dependency> dependenciesOfType = new ArrayList<>();
       for (Dependency dependency : dependencies) {
-         if (dependency.getDependencyType() == dependencyType) {
+         if (dependency.getDependencyType().equals(dependencyType)) {
             dependenciesOfType.add(dependency);
          }
       }
@@ -91,14 +109,41 @@ public final class DependencyContainer {
       return getRelevantClasses(null);
    }
 
-   // TODO UnitTest mit directlyConnected
+   // TODO besser machen
    public List<JavaSource> getRelevantClasses(DependencyFilter filter) {
       List<JavaSource> relevantClasses = new ArrayList<>();
 
       if (filter != null && filter.isDirectlyConnected()) {
-         //todo
-         List<JavaSource> producesClasses = getRelevantClasses(new DependencyFilter().addType(DependencyType.PRODUCES));
-         for (JavaSource producesClass : producesClasses) {
+         LogProvider.getInstance().info("Found Dependencies: " + getDependenciesOfType(filter.getFilterTypes().get(0)));
+         for (Dependency d : getDependenciesOfType(filter.getFilterTypes().get(0))) {
+            LogProvider.getInstance().info("+++++++++ examinig dependency: " + d);
+            //LogProvider.getInstance().info("Dependency: " + d);
+            JavaSource from = d.getJavaSourceFrom();
+            JavaSource to = d.getJavaSourceTo();
+            List<Dependency> injects = new ArrayList<>();
+            for (DependencyType dFilter : filter.getFilterTypes()) {
+               if (!dFilter.equals(filter.getFilterTypes().get(0))) {
+                  injects.addAll(findAllDependenciesWith(to, dFilter));
+               }
+            }
+            LogProvider.getInstance().info("founded " + injects + " for " + to);
+            if (injects.size() > 0) {
+               if (!relevantClasses.contains(from)) {
+                  relevantClasses.add(from);
+                  LogProvider.getInstance().info("## Added1: " + from);
+               }
+               if (!relevantClasses.contains(to)) {
+                  relevantClasses.add(to);
+                  LogProvider.getInstance().info("## Added2: " + to);
+               }
+               for (Dependency inject : injects) {
+                  LogProvider.getInstance().info("Inject Dependency: " + inject);
+                  //if (!relevantClasses.contains(inject.getJavaSourceFrom())) {
+                  relevantClasses.add(inject.getJavaSourceFrom());
+                  LogProvider.getInstance().info("## Added3: " + inject.getJavaSourceFrom());
+                  //}
+               }
+            }
          }
       } else {
          for (Dependency dependency : dependencies) {

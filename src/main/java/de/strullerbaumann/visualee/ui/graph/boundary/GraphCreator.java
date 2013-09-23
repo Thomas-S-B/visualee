@@ -50,7 +50,7 @@ import javax.json.JsonObjectBuilder;
 public final class GraphCreator {
 
    private static String htmlTemplate;
-   private static final Map<String, List> GRAPH_TITLES = Collections.unmodifiableMap(new HashMap<String, List>() {
+   private static final Map<String, List> GRAPHS = Collections.unmodifiableMap(new HashMap<String, List>() {
       {
          put("graphOnlyCDIJPA", Arrays.asList("Only CDI/JPA relevant classes of ", new DependencyFilter().filterAllTypes()));
          put("graphAllClasses", Arrays.asList("All classes of ", null));
@@ -68,13 +68,18 @@ public final class GraphCreator {
          put("graphInstanceProducesClasses", Arrays.asList("Only Instance and Produces classes of ", new DependencyFilter()
                  .addType(DependencyType.INSTANCE)
                  .addType(DependencyType.PRODUCES)));
-         put("graphInjectInstanceProducesClasses", Arrays.asList("Only Inject, Instance and Produces classes of ", new DependencyFilter()
+         put("graphConnectedInjectProducesClasses", Arrays.asList("Only directly connected Inject and Produces classes of ", new DependencyFilter()
+                 .addType(DependencyType.PRODUCES)
+                 .addType(DependencyType.INJECT)
+                 .setDirectlyConnected(true)));
+         put("graphConnectedInjectInstanceProducesClasses", Arrays.asList("Only directly connected Inject, Instance and Produces classes of ", new DependencyFilter()
+                 .addType(DependencyType.PRODUCES)
                  .addType(DependencyType.INJECT)
                  .addType(DependencyType.INSTANCE)
-                 .addType(DependencyType.PRODUCES)));
+                 .setDirectlyConnected(true)));
          put("graphConnectedInstanceProducesClasses", Arrays.asList("Only directly connected Instance and Produces classes of ", new DependencyFilter()
-                 .addType(DependencyType.INSTANCE)
                  .addType(DependencyType.PRODUCES)
+                 .addType(DependencyType.INSTANCE)
                  .setDirectlyConnected(true)));
          put("graphResourcesClasses", Arrays.asList("Only Resource classes of ", new DependencyFilter()
                  .addType(DependencyType.RESOURCE)));
@@ -88,8 +93,12 @@ public final class GraphCreator {
 
    private GraphCreator() {
    }
+   //todo besser machen
+   static int id;
 
    static JsonObjectBuilder buildJSONNode(JavaSource javaSource) {
+      javaSource.setId(id);
+      id++;
       JsonObjectBuilder node = Json.createObjectBuilder();
       node.add("name", javaSource.toString())
               .add("group", javaSource.getGroup())
@@ -99,37 +108,49 @@ public final class GraphCreator {
       return node;
    }
 
+   static void setIdsOnJavaSources(List<JavaSource> javaSources) {
+      int id = 0;
+      for (JavaSource javaSource : javaSources) {
+         javaSource.setId(id);
+         id++;
+      }
+   }
+
    static JsonArrayBuilder buildJSONNodes(DependencyFilter filter) {
+      //setIdsOnJavaSources();
+
       List<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
       JsonArrayBuilder nodesArray = Json.createArrayBuilder();
-      int id = 0;
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          if (filter == null || relevantClasses.contains(javaSource)) {
-            javaSource.setId(id);
             nodesArray.add(buildJSONNode(javaSource));
-            id++;
          }
       }
+
       return nodesArray;
    }
 
    static JsonArrayBuilder buildJSONLinks(DependencyFilter filter) {
+      // TODO einfacher machen
       JsonArrayBuilder linksArray = Json.createArrayBuilder();
-      //for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
-      for (JavaSource javaSource : DependencyContainer.getInstance().getRelevantClasses(filter)) {
-         int target = javaSource.getId();
-         int value = 1;
-         for (Dependency dependency : DependencyContainer.getInstance().getDependencies(javaSource)) {
-            if (filter == null || filter.contains(dependency.getDependencyType())) {
-               int source = dependency.getJavaSourceTo().getId();
-               DependencyType type = dependency.getDependencyType();
+      int value = 1;
+
+      List<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
+      for (JavaSource javaSource : relevantClasses) {
+         for (Dependency d : DependencyContainer.getInstance().getDependencies(javaSource)) {
+            DependencyType type = d.getDependencyType();
+            if (filter == null
+                    || ((relevantClasses.contains(d.getJavaSourceTo()) || relevantClasses.contains(d.getJavaSourceTo()))
+                    && filter.contains(type))) {
+               int source = d.getJavaSourceFrom().getId();
+               int target = d.getJavaSourceTo().getId();
                JsonObjectBuilder linksBuilder = Json.createObjectBuilder();
                if (DependencyType.isInverseDirection(type)) {
-                  linksBuilder.add("source", target);
-                  linksBuilder.add("target", source);
-               } else {
                   linksBuilder.add("source", source);
                   linksBuilder.add("target", target);
+               } else {
+                  linksBuilder.add("source", target);
+                  linksBuilder.add("target", source);
                }
                linksBuilder.add("value", value);
                linksBuilder.add("type", type.toString());
@@ -138,6 +159,7 @@ public final class GraphCreator {
          }
       }
       return linksArray;
+
    }
 
    public static Graph generateGraph(String fileName,
@@ -145,6 +167,7 @@ public final class GraphCreator {
            DependencyFilter filter,
            InputStream htmlTemplateIS,
            File outputdirectory) {
+      id = 0;
       Graph graph = new Graph();
       graph.setName(fileName);
       File jsonFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".json");
@@ -178,10 +201,10 @@ public final class GraphCreator {
       if (htmlTemplate == null) {
          htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
       }
-      for (String graphName : GRAPH_TITLES.keySet()) {
+      for (String graphName : GRAPHS.keySet()) {
          Graph graph = GraphCreator.generateGraph(graphName,
-                 (String) GRAPH_TITLES.get(graphName).get(0) + rootFolder.getPath(),
-                 (DependencyFilter) GRAPH_TITLES.get(graphName).get(1),
+                 (String) GRAPHS.get(graphName).get(0) + rootFolder.getPath(),
+                 (DependencyFilter) GRAPHS.get(graphName).get(1),
                  htmlTemplateIS,
                  outputdirectory);
          HTMLManager.generateHTML(graph, htmlTemplate);

@@ -20,6 +20,7 @@ package de.strullerbaumann.visualee.dependency.entity;
  * #L%
  */
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import java.util.Objects;
 
 /**
  *
@@ -62,5 +63,40 @@ public class Dependency {
 
    public void setJavaSourceTo(JavaSource javaSourceTo) {
       this.javaSourceTo = javaSourceTo;
+   }
+
+   @Override
+   public int hashCode() {
+      int hash = 7;
+      hash = 53 * hash + Objects.hashCode(this.dependencyType);
+      hash = 53 * hash + Objects.hashCode(this.javaSourceFrom);
+      hash = 53 * hash + Objects.hashCode(this.javaSourceTo);
+      return hash;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      final Dependency other = (Dependency) obj;
+      if (this.dependencyType != other.dependencyType) {
+         return false;
+      }
+      if (!Objects.equals(this.javaSourceFrom, other.javaSourceFrom)) {
+         return false;
+      }
+      if (!Objects.equals(this.javaSourceTo, other.javaSourceTo)) {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   public String toString() {
+      return "Dependency " + dependencyType + " from " + javaSourceFrom + " to " + javaSourceTo;
    }
 }
