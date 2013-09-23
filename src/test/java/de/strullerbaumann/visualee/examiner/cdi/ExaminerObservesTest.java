@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner.cdi;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.examiner.SourceCodeProvider;
@@ -41,6 +42,7 @@ public class ExaminerObservesTest {
    @Before
    public void init() {
       examiner = new ExaminerObserves();
+      DependencyContainer.getInstance().clear();
    }
 
    @Test
@@ -92,8 +94,8 @@ public class ExaminerObservesTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getDependencies().get(0);
-      assertEquals(1, javaSource.getDependencies().size());
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
       assertEquals(DependencyType.OBSERVES, dependency.getDependencyType());
       assertEquals("SnapshotEscalator", dependency.getJavaSourceFrom().getName());
       assertEquals("Snapshot", dependency.getJavaSourceTo().getName());

@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.ui.graph.control;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.examiner.JavaSourceInspector;
@@ -57,7 +58,7 @@ public class DescriptionTest {
       List<Dependency> dependencies = new ArrayList<>();
       dependencies.add(dependency12);
       dependencies.add(dependency13);
-      javaSource1.setDependencies(dependencies);
+      DependencyContainer.getInstance().addAll(dependencies);
 
       String actual = Description.generateDescription(javaSource1);
 

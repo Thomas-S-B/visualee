@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner.jpa;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.examiner.SourceCodeProvider;
@@ -66,8 +67,8 @@ public class JPAExaminerTest {
               + "private Album album;\n";
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      dependency = javaSource.getDependencies().get(0);
-      assertEquals(1, javaSource.getDependencies().size());
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
       assertEquals(DependencyType.MANY_TO_ONE, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("Album", dependency.getJavaSourceTo().getName());
@@ -90,8 +91,8 @@ public class JPAExaminerTest {
               + "private Set<Group> groups;\n";
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      dependency = javaSource.getDependencies().get(0);
-      assertEquals(1, javaSource.getDependencies().size());
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
       assertEquals(DependencyType.MANY_TO_MANY, dependency.getDependencyType());
       assertEquals("User", dependency.getJavaSourceFrom().getName());
       assertEquals("Group", dependency.getJavaSourceTo().getName());
@@ -123,7 +124,7 @@ public class JPAExaminerTest {
 
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      assertEquals(0, javaSource.getDependencies().size());
+      assertEquals(0, DependencyContainer.getInstance().getDependencies(javaSource).size());
    }
 
    @Test
@@ -149,6 +150,6 @@ public class JPAExaminerTest {
 
       javaSource.setSourceCode(sourceCode);
       jpaExaminer.examine(javaSource);
-      assertEquals(0, javaSource.getDependencies().size());
+      assertEquals(0, DependencyContainer.getInstance().getDependencies(javaSource).size());
    }
 }

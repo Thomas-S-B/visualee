@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.ui.graph.control;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import static de.strullerbaumann.visualee.dependency.entity.DependencyType.EJB;
@@ -90,7 +91,7 @@ public final class Description {
          descriptionParts.put(type, new StringBuilder());
       }
 
-      for (Dependency dependency : javaSource.getDependencies()) {
+      for (Dependency dependency : DependencyContainer.getInstance().getDependencies(javaSource)) {
          StringBuilder descriptionPart = descriptionParts.get(dependency.getDependencyType());
          assert descriptionPart != null : "Unknown DependencyType";
          descriptionPart.append("<br/><nobr>");

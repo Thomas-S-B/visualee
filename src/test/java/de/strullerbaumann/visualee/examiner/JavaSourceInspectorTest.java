@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import static org.junit.Assert.*;
@@ -71,7 +72,7 @@ public class JavaSourceInspectorTest {
       javaSource.setSourceCode(sourceCode);
       JavaSourceContainer.getInstance().add(javaSource);
       JavaSourceInspector.getInstance().examine();
-      assertEquals(0, javaSource.getDependencies().size());
+      assertEquals(0, DependencyContainer.getInstance().getDependencies(javaSource).size());
    }
 
    @Test
@@ -97,7 +98,7 @@ public class JavaSourceInspectorTest {
       javaSource.setSourceCode(sourceCode);
       JavaSourceContainer.getInstance().add(javaSource);
       JavaSourceInspector.getInstance().examine();
-      assertEquals(0, javaSource.getDependencies().size());
+      assertEquals(0, DependencyContainer.getInstance().getDependencies(javaSource).size());
    }
 
    @Test

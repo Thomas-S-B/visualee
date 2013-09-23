@@ -19,12 +19,9 @@ package de.strullerbaumann.visualee.source.boundary;
  * limitations under the License.
  * #L%
  */
-import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
-import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -69,30 +66,6 @@ public final class JavaSourceContainer {
 
    public JavaSource getJavaSourceByName(String n) {
       return javaSources.get(n);
-   }
-
-   public List<JavaSource> getRelevantClasses() {
-      return getRelevantClasses(null);
-   }
-
-   public List<JavaSource> getRelevantClasses(DependencyFilter filter) {
-      List<JavaSource> relevantClasses = new ArrayList<>();
-      for (JavaSource javaSource : getJavaSources()) {
-         if (javaSource.getInjected().size() > 0) {
-            for (Dependency dependency : javaSource.getInjected()) {
-               if (filter == null || filter.contains(dependency.getDependencyType())) {
-                  if (!relevantClasses.contains(dependency.getJavaSourceFrom())) {
-                     relevantClasses.add(dependency.getJavaSourceFrom());
-                  }
-                  if (!relevantClasses.contains(dependency.getJavaSourceTo())) {
-                     relevantClasses.add(dependency.getJavaSourceTo());
-                  }
-               }
-            }
-         }
-      }
-
-      return relevantClasses;
    }
 
    public void loadJavaFiles(File rootFolder) {

@@ -19,11 +19,8 @@ package de.strullerbaumann.visualee.ui.graph.boundary;
  * limitations under the License.
  * #L%
  */
-import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
-import java.util.ArrayList;
-import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -47,7 +44,6 @@ public class GraphCreatorTest {
       JavaSource javaSource = new JavaSource("MyTestClass");
       javaSource.setGroup(2);
       javaSource.setId(1);
-      javaSource.setDependencies(new ArrayList<Dependency>());
       javaSource.setPackagePath("de.test.test2");
       javaSource.setSourceCode(sourcecode);
 
@@ -69,8 +65,6 @@ public class GraphCreatorTest {
       for (int i = 0; i < count; i++) {
          String name = namePrefix + i;
          JavaSource javaSource = new JavaSource(name);
-         List<Dependency> injected = new ArrayList<>();
-         javaSource.setDependencies(injected);
          JavaSourceContainer.getInstance().add(javaSource);
       }
 

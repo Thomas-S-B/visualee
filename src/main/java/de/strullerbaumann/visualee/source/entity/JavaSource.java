@@ -9,9 +9,9 @@ package de.strullerbaumann.visualee.source.entity;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,6 @@ package de.strullerbaumann.visualee.source.entity;
  * limitations under the License.
  * #L%
  */
-import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.logging.LogProvider;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,8 +26,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -41,7 +38,7 @@ public class JavaSource {
    private static final int HASH = 7;
    private static final int HASH_MULTIPLIER = 13;
    private File javaFile;
-   private List<Dependency> dependencies;
+   // private List<Dependency> dependencies;
    // for D3.js, links need id's from the nodes (id's start with 0)
    private int id;
    // Nodes form the same package have the same group-number
@@ -53,13 +50,13 @@ public class JavaSource {
    public JavaSource(File javaFile) {
       this.javaFile = javaFile;
       this.name = javaFile.getName().substring(0, javaFile.getName().indexOf(".java"));
-      dependencies = new ArrayList<>();
+      //dependencies = new ArrayList<>();
       sourceCode = "";
    }
 
    public JavaSource(String name) {
       this.name = name;
-      dependencies = new ArrayList<>();
+      //dependencies = new ArrayList<>();
       sourceCode = "Not available";
    }
 
@@ -67,14 +64,19 @@ public class JavaSource {
       return javaFile;
    }
 
-   public List<Dependency> getDependencies() {
-      return dependencies;
-   }
+   /*
+    public List<Dependency> getDependencies() {
+    return dependencies;
+    }
 
-   public void setDependencies(List<Dependency> dependencies) {
-      this.dependencies = dependencies;
-   }
+    public void setDependencies(List<Dependency> dependencies) {
+    this.dependencies = dependencies;
+    }
 
+    public void addDependency(Dependency dependency) {
+    this.dependencies.add(dependency);
+    }
+    */
    public int getId() {
       return id;
    }

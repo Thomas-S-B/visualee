@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner.cdi;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
@@ -40,6 +41,7 @@ public class ExaminerResourceTest {
    @Before
    public void init() {
       examiner = new ExaminerResource();
+      DependencyContainer.getInstance().clear();
    }
 
    @Test
@@ -93,8 +95,8 @@ public class ExaminerResourceTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getDependencies().get(0);
-      assertEquals(1, javaSource.getDependencies().size());
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
       assertEquals(DependencyType.RESOURCE, dependency.getDependencyType());
       assertEquals("DatabaseConnectionProducer", dependency.getJavaSourceFrom().getName());
       assertEquals("DataSource", dependency.getJavaSourceTo().getName());
@@ -114,8 +116,8 @@ public class ExaminerResourceTest {
               + "}\n";
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      dependency = javaSource.getDependencies().get(0);
-      assertEquals(1, javaSource.getDependencies().size());
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
       assertEquals(DependencyType.RESOURCE, dependency.getDependencyType());
       assertEquals("SimplifiedMessageReceiver", dependency.getJavaSourceFrom().getName());
       assertEquals("Queue", dependency.getJavaSourceTo().getName());
@@ -144,8 +146,8 @@ public class ExaminerResourceTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getDependencies().size());
-      dependency = javaSource.getDependencies().get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
       assertEquals(DependencyType.RESOURCE, dependency.getDependencyType());
       assertEquals("ResourceCollector", dependency.getJavaSourceFrom().getName());
       assertEquals("TimerService", dependency.getJavaSourceTo().getName());

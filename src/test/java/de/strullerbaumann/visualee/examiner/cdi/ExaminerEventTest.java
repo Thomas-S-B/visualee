@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner.cdi;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
@@ -96,10 +97,10 @@ public class ExaminerEventTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getDependencies().size());
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
 
       Dependency dependency;
-      dependency = javaSource.getDependencies().get(0);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
       assertEquals(DependencyType.EVENT, dependency.getDependencyType());
       assertEquals("TunguskaGate", dependency.getJavaSourceFrom().getName());
       assertEquals("BrowserWindow", dependency.getJavaSourceTo().getName());

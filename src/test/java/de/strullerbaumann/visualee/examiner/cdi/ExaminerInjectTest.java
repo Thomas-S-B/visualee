@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner.cdi;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
@@ -40,6 +41,7 @@ public class ExaminerInjectTest {
    @Before
    public void init() {
       examiner = new ExaminerInject();
+      DependencyContainer.getInstance().clear();
    }
 
    @Test
@@ -91,14 +93,14 @@ public class ExaminerInjectTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(2, javaSource.getDependencies().size());
+      assertEquals(2, DependencyContainer.getInstance().getDependencies(javaSource).size());
 
       Dependency dependency;
-      dependency = javaSource.getDependencies().get(0);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("TestClass", dependency.getJavaSourceTo().getName());
-      dependency = javaSource.getDependencies().get(1);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(1);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("MyTestClass", dependency.getJavaSourceFrom().getName());
       assertEquals("EntityManager", dependency.getJavaSourceTo().getName());
@@ -118,10 +120,10 @@ public class ExaminerInjectTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getDependencies().size());
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
 
       Dependency dependency;
-      dependency = javaSource.getDependencies().get(0);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("ZeiterfassungEingabeModel", dependency.getJavaSourceFrom().getName());
       assertEquals("Date", dependency.getJavaSourceTo().getName());
@@ -151,14 +153,14 @@ public class ExaminerInjectTest {
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
-      assertEquals(1, javaSource.getDependencies().size());
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
 
       Dependency dependency;
-      dependency = javaSource.getDependencies().get(0);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
       assertEquals(DependencyType.INJECT, dependency.getDependencyType());
       assertEquals("TestCDIServlet", dependency.getJavaSourceFrom().getName());
       assertEquals("UserTransaction", dependency.getJavaSourceTo().getName());
       // 1, ensure @Inject</title> and @Inject</h1> in the source are ignored
-      assertEquals(1, javaSource.getDependencies().size());
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
    }
 }

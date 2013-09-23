@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.ui.graph.boundary;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
@@ -99,7 +100,7 @@ public final class GraphCreator {
    }
 
    static JsonArrayBuilder buildJSONNodes(DependencyFilter filter) {
-      List<JavaSource> relevantClasses = JavaSourceContainer.getInstance().getRelevantClasses(filter);
+      List<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
       JsonArrayBuilder nodesArray = Json.createArrayBuilder();
       int id = 0;
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
@@ -114,10 +115,11 @@ public final class GraphCreator {
 
    static JsonArrayBuilder buildJSONLinks(DependencyFilter filter) {
       JsonArrayBuilder linksArray = Json.createArrayBuilder();
-      for (JavaSource myJavaClass : JavaSourceContainer.getInstance().getJavaSources()) {
-         int target = myJavaClass.getId();
+      //for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
+      for (JavaSource javaSource : DependencyContainer.getInstance().getRelevantClasses(filter)) {
+         int target = javaSource.getId();
          int value = 1;
-         for (Dependency dependency : myJavaClass.getDependencies()) {
+         for (Dependency dependency : DependencyContainer.getInstance().getDependencies(javaSource)) {
             if (filter == null || filter.contains(dependency.getDependencyType())) {
                int source = dependency.getJavaSourceTo().getId();
                DependencyType type = dependency.getDependencyType();
@@ -131,8 +133,7 @@ public final class GraphCreator {
                }
                linksBuilder.add("value", value);
                linksBuilder.add("type", type.toString());
-               // TODO wieder aktivieren
-               //linksArray.add(linksBuilder);
+               linksArray.add(linksBuilder);
             }
          }
       }

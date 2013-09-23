@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.logging.LogProvider;
@@ -162,7 +163,7 @@ public abstract class Examiner {
          }
       }
       Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
-      javaSource.getDependencies().add(dependency);
+      DependencyContainer.getInstance().add(dependency);
    }
 
    protected static boolean isAJavaToken(String token) {
