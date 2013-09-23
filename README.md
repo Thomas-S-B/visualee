@@ -3,7 +3,7 @@ visualee
 
 A maven plugin to visualize a java ee project.
 
-Please look into the [wiki](/wiki).
+Please look into the [wiki](wiki).
 
 Some notes to the implementation:
 Visualee scans the java-source-files for relevant dependencies.
