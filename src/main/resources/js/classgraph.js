@@ -40,9 +40,7 @@ cdiTypes['MANY_TO_ONE'] = "Many to one >>";
 cdiTypes['MANY_TO_MANY'] = "Many to many >>";
 
 function searchNode(searchText) {
-   console.log(searchText);
    searchToken = searchText;
-   force.resume();
 }
 
 function setDistance(newDistance) {
@@ -151,6 +149,24 @@ function initGraph(graphJSON, width, height) {
          d.fixed = !d.fixed;
       })
               .call(force.drag);
+
+      // Searching
+      $("#searchText").keyup(function(d) {
+         markSearch();
+      });
+      $("#clearSearch").click(function(d) {
+         markSearch();
+      });
+      function markSearch() {
+         text.style("fill", function(d) {
+            if (stringContains(d.name, searchToken)) {
+               return "red"
+            } else {
+               return "black"
+            }
+            ;
+         })
+      }
 
       // Show/Hide tweak graph
       $("#tweakgraph-open").fadeOut(0);
@@ -280,37 +296,6 @@ function initGraph(graphJSON, width, height) {
       }
 
       function tick() {
-
-         //var found = false;
-         text.style("fill", function(d) {
-            if (stringContains(d.name, searchToken)) {
-               //highlight(0.1, d);
-               //found = true;
-               return "red"
-            } else {
-               return "black"
-            }
-            ;
-         })
-         /*
-          .style("font-size", function(d) {
-          if (stringContains(d.name, searchToken)) {
-          return "large"
-          } else {
-          return "small"
-          }
-          ;
-          })
-          */
-         /*
-          text.style("", function(d) {
-          if (!found) {
-          highlight(1, d);
-          }
-          ;
-          })
-          */
-
          var dx;
          var dy;
          var dr;
