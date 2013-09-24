@@ -100,7 +100,7 @@
             <artifactId>license-maven-plugin</artifactId>
             <version>1.5</version>
             <configuration>
-               <verbose>false</verbose>
+               <verbose>true</verbose>
             </configuration>
             <executions>
                <execution>

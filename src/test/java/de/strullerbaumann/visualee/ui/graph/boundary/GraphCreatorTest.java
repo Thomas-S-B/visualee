@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.ui.graph.boundary;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
@@ -28,7 +29,6 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,14 +41,14 @@ public class GraphCreatorTest {
    }
 
    @Test
-   @Ignore
    public void testBuildJSONNode() {
+      JavaSourceContainer.getInstance().clear();
+      DependencyContainer.getInstance().clear();
       String name = "MyTestClass";
       String sourcecode = "test source code - Matt Pavolka Group - Something People Can Use";
 
       JavaSource javaSource = new JavaSource("MyTestClass");
       javaSource.setGroup(2);
-      javaSource.setId(1);
       javaSource.setPackagePath("de.test.test2");
       javaSource.setSourceCode(sourcecode);
 
@@ -56,7 +56,6 @@ public class GraphCreatorTest {
       JsonObject node = job.build();
       assertEquals(name, node.getString("name"));
       assertEquals(2, node.getInt("group"));
-      assertEquals(1, node.getInt("id"));
       assertNotNull(node.getString("description"));
       assertEquals(sourcecode, node.getString("sourcecode"));
    }
