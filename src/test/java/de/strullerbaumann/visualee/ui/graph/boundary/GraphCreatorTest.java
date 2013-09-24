@@ -19,8 +19,11 @@ package de.strullerbaumann.visualee.ui.graph.boundary;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
+import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -72,5 +75,19 @@ public class GraphCreatorTest {
 
       JsonArray nodes = GraphCreator.buildJSONNodes(null).build();
       assertEquals(count, nodes.size());
+   }
+
+   @Test
+   public void testBuildJSONLinks() {
+      TestDataProvider.createSampleDependencies();
+      JsonArray links = GraphCreator.buildJSONLinks(null).build();
+      assertEquals(12, links.size());
+
+      DependencyFilter filter = new DependencyFilter()
+              .addType(DependencyType.PRODUCES)
+              .addType(DependencyType.INSTANCE)
+              .setDirectlyConnected(true);
+      links = GraphCreator.buildJSONLinks(filter).build();
+      assertEquals(8, links.size());
    }
 }

@@ -19,15 +19,18 @@ package de.strullerbaumann.visualee.logging;
  * limitations under the License.
  * #L%
  */
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.plugin.logging.Log;
 
 /**
  *
  * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
-public class LogProvider {
+public final class LogProvider {
 
    private static Log log;
+   private static final Logger LOGGER = Logger.getLogger(LogProvider.class.getName());
 
    private LogProvider() {
    }
@@ -47,7 +50,7 @@ public class LogProvider {
 
    public void info(String content) {
       if (log == null) {
-         System.out.println(content);
+         LOGGER.log(Level.INFO, content);
       } else {
          log.info(content);
       }
@@ -55,7 +58,7 @@ public class LogProvider {
 
    public void warn(String content) {
       if (log == null) {
-         System.out.println(content);
+         LOGGER.log(Level.WARNING, content);
       } else {
          log.warn(content);
       }
@@ -63,7 +66,7 @@ public class LogProvider {
 
    public void debug(String content) {
       if (log == null) {
-         System.out.println(content);
+         LOGGER.log(Level.FINE, content);
       } else {
          log.debug(content);
       }
@@ -71,7 +74,7 @@ public class LogProvider {
 
    public void error(String content, Throwable t) {
       if (log == null) {
-         System.err.println(content + t.getMessage());
+         LOGGER.log(Level.SEVERE, content, t);
       } else {
          log.error(content, t);
       }

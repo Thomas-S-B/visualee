@@ -25,6 +25,8 @@ var circleRSelected = 11;
 var MIN_SIZE = 300;
 var cdiTypeKeys = [];
 var cdiTypes = new Array();
+var popupVisible = false;
+var searchToken = "";
 cdiTypes["INJECT"] = "Is injected in";
 cdiTypes["EVENT"] = "Fires event";
 cdiTypes['OBSERVES'] = "Observes for";
@@ -36,6 +38,12 @@ cdiTypes['ONE_TO_MANY'] = "One to many >>";
 cdiTypes['ONE_TO_ONE'] = "One to one >>";
 cdiTypes['MANY_TO_ONE'] = "Many to one >>";
 cdiTypes['MANY_TO_MANY'] = "Many to many >>";
+
+function searchNode(searchText) {
+   console.log(searchText);
+   searchToken = searchText;
+   force.resume();
+}
 
 function setDistance(newDistance) {
    force.distance(newDistance)
@@ -129,6 +137,16 @@ function initGraph(graphJSON, width, height) {
               .on("mousedown", function(d) {
          d.fixed = true;
       })
+              .on("mouseover", function(d) {
+         if (!popupVisible) {
+            highlight(0.1, d);
+         }
+      })
+              .on("mouseout", function(d) {
+         if (!popupVisible) {
+            highlight(1, d);
+         }
+      })
               .on("click", function(d) {
          d.fixed = !d.fixed;
       })
@@ -158,12 +176,6 @@ function initGraph(graphJSON, width, height) {
       });
       $("#pop-up").on("resize", updatePopUpSize);
 
-      // Hide NodeInfos when click outside
-      /*
-       $("body").click(function(d) {
-       hideNodeInfos(d);
-       });
-       */
       $(".pop-up-close").click(function(d) {
          hideNodeInfos(d);
          return false;
@@ -179,30 +191,12 @@ function initGraph(graphJSON, width, height) {
       });
 
       function showNodeInfos(d) {
+         popupVisible = true;
          highlight(0.1, d);
-         // poppadding = 50;
          $("#pop-up").fadeOut(150, function() {
             $("#pop-up-title").html(d.name);
             $("#pop-description").html(d.description);
             $("#pop-sourcecode").html(d.sourcecode);
-            /*
-             if (d.x < $(window).width() / 2) {
-             popLeft = d.x + poppadding;
-             } else {
-             popLeft = d.x - $("#pop-up").width() - poppadding;
-             }
-             if (popLeft < 0) {
-             popLeft = poppadding;
-             }
-             popTop = d.y + 100;
-             if (popTop > $(window).height() - $("#pop-up").height()) {
-             popTop = $(window).height() - $("#pop-up").height() - poppadding;
-             }
-             $("#pop-up").css({
-             "left": popLeft,
-             "top": popTop
-             });
-             */
             $("#pop-up").fadeIn(150);
          });
          updatePopUpSize();
@@ -217,6 +211,7 @@ function initGraph(graphJSON, width, height) {
       function hideNodeInfos(d) {
          highlight(1, d);
          $("#pop-up").fadeOut(150);
+         popupVisible = false;
       }
 
       function highlight(opacity, d, o) {
@@ -276,7 +271,46 @@ function initGraph(graphJSON, width, height) {
          return cdiTypes[d.type];
       });
 
+
+      function stringContains(inputString, stringToFind) {
+         if (stringToFind.length < 1) {
+            return false;
+         }
+         return (inputString.toUpperCase().indexOf(stringToFind.toUpperCase()) !== -1);
+      }
+
       function tick() {
+
+         //var found = false;
+         text.style("fill", function(d) {
+            if (stringContains(d.name, searchToken)) {
+               //highlight(0.1, d);
+               //found = true;
+               return "red"
+            } else {
+               return "black"
+            }
+            ;
+         })
+         /*
+          .style("font-size", function(d) {
+          if (stringContains(d.name, searchToken)) {
+          return "large"
+          } else {
+          return "small"
+          }
+          ;
+          })
+          */
+         /*
+          text.style("", function(d) {
+          if (!found) {
+          highlight(1, d);
+          }
+          ;
+          })
+          */
+
          var dx;
          var dy;
          var dr;

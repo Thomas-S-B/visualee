@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -49,6 +50,7 @@ import javax.json.JsonObjectBuilder;
  */
 public final class GraphCreator {
 
+   private static int id;
    private static String htmlTemplate;
    private static final Map<String, List> GRAPHS = Collections.unmodifiableMap(new HashMap<String, List>() {
       {
@@ -93,8 +95,6 @@ public final class GraphCreator {
 
    private GraphCreator() {
    }
-   //todo besser machen
-   static int id;
 
    static JsonObjectBuilder buildJSONNode(JavaSource javaSource) {
       javaSource.setId(id);
@@ -108,18 +108,8 @@ public final class GraphCreator {
       return node;
    }
 
-   static void setIdsOnJavaSources(List<JavaSource> javaSources) {
-      int id = 0;
-      for (JavaSource javaSource : javaSources) {
-         javaSource.setId(id);
-         id++;
-      }
-   }
-
    static JsonArrayBuilder buildJSONNodes(DependencyFilter filter) {
-      //setIdsOnJavaSources();
-
-      List<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
+      Set<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
       JsonArrayBuilder nodesArray = Json.createArrayBuilder();
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          if (filter == null || relevantClasses.contains(javaSource)) {
@@ -131,17 +121,14 @@ public final class GraphCreator {
    }
 
    static JsonArrayBuilder buildJSONLinks(DependencyFilter filter) {
-      // TODO einfacher machen
       JsonArrayBuilder linksArray = Json.createArrayBuilder();
       int value = 1;
-
-      List<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
+      Set<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
       for (JavaSource javaSource : relevantClasses) {
          for (Dependency d : DependencyContainer.getInstance().getDependencies(javaSource)) {
             DependencyType type = d.getDependencyType();
             if (filter == null
-                    || ((relevantClasses.contains(d.getJavaSourceTo()) || relevantClasses.contains(d.getJavaSourceTo()))
-                    && filter.contains(type))) {
+                    || (relevantClasses.contains(d.getJavaSourceTo()) && filter.contains(type))) {
                int source = d.getJavaSourceFrom().getId();
                int target = d.getJavaSourceTo().getId();
                JsonObjectBuilder linksBuilder = Json.createObjectBuilder();
@@ -159,7 +146,6 @@ public final class GraphCreator {
          }
       }
       return linksArray;
-
    }
 
    public static Graph generateGraph(String fileName,

@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import java.util.Scanner;
@@ -93,9 +94,9 @@ public class ExaminerTest {
    @Test
    public void testGetClassBody() {
       JavaSource javaSource = new JavaSource("TestClass");
-      javaSource.setSourceCode(SourceCodeProvider.getTestSourceCode());
+      javaSource.setSourceCode(TestDataProvider.getTestSourceCode());
 
-      String expected = SourceCodeProvider.getTestSourceCodeBody();
+      String expected = TestDataProvider.getTestSourceCodeBody();
       String actual = ExaminerImpl.getClassBody(javaSource.getSourceCode());
 
       assertEquals(expected, actual);

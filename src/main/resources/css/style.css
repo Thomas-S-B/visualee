@@ -86,7 +86,7 @@ path.link.MANY_TO_MANY {
    stroke: #00f;
 }
 
-div#tweakgraph {
+div#tweakgraph, div#searching {
    font-size: medium;
    color:#000;
    padding: 5px 10px 5px 10px;

@@ -38,7 +38,6 @@ public class JavaSource {
    private static final int HASH = 7;
    private static final int HASH_MULTIPLIER = 13;
    private File javaFile;
-   // private List<Dependency> dependencies;
    // for D3.js, links need id's from the nodes (id's start with 0)
    private int id;
    // Nodes form the same package have the same group-number
@@ -50,13 +49,11 @@ public class JavaSource {
    public JavaSource(File javaFile) {
       this.javaFile = javaFile;
       this.name = javaFile.getName().substring(0, javaFile.getName().indexOf(".java"));
-      //dependencies = new ArrayList<>();
       sourceCode = "";
    }
 
    public JavaSource(String name) {
       this.name = name;
-      //dependencies = new ArrayList<>();
       sourceCode = "Not available";
    }
 
@@ -64,19 +61,6 @@ public class JavaSource {
       return javaFile;
    }
 
-   /*
-    public List<Dependency> getDependencies() {
-    return dependencies;
-    }
-
-    public void setDependencies(List<Dependency> dependencies) {
-    this.dependencies = dependencies;
-    }
-
-    public void addDependency(Dependency dependency) {
-    this.dependencies.add(dependency);
-    }
-    */
    public int getId() {
       return id;
    }

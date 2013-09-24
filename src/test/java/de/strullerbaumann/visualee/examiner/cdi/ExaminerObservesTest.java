@@ -22,7 +22,7 @@ package de.strullerbaumann.visualee.examiner.cdi;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.examiner.SourceCodeProvider;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -77,7 +77,7 @@ public class ExaminerObservesTest {
       String sourceCode;
 
       javaSource = new JavaSource("SnapshotEscalator");
-      sourceCode = SourceCodeProvider.getTestSourceCodeBeforeBody()
+      sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
               + "List<Script> scripts = this.scripting.activeScripts();\n"
               + "try {\n"

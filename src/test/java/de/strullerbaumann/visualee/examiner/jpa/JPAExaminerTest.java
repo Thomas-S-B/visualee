@@ -22,7 +22,7 @@ package de.strullerbaumann.visualee.examiner.jpa;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.examiner.SourceCodeProvider;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -60,7 +60,7 @@ public class JPAExaminerTest {
 
       // Many to one
       javaSource = new JavaSource("MyTestClass");
-      sourceCode = SourceCodeProvider.getTestSourceCodeBeforeBody()
+      sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "@ManyToOne(cascade = { CascadeType.DETACH })\n"
               + "@JoinColumn(name = \"ALBUMID\", nullable = false)\n"
               + "@NotNull(groups = PersistenceConstraint.class)\n"
@@ -83,7 +83,7 @@ public class JPAExaminerTest {
 
       // Many to many
       javaSource = new JavaSource("User");
-      sourceCode = SourceCodeProvider.getTestSourceCodeBeforeBody()
+      sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)\n"
               + "@JoinTable(name = \"USERS_GROUPS\", joinColumns = {\n"
               + "   @JoinColumn(name = \"USERID\", nullable = false)}, inverseJoinColumns = {\n"

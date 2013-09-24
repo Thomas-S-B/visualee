@@ -23,11 +23,12 @@ import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.boundary.*;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -45,7 +46,6 @@ public class DependencyContainerTest {
    }
 
    @Test
-   @Ignore
    public void testGetRelevantClasses() {
       JavaSourceContainer.getInstance().clear();
       int count = 10;
@@ -67,7 +67,6 @@ public class DependencyContainerTest {
    }
 
    @Test
-   @Ignore
    public void testGetRelevantClassesFilter() {
       JavaSourceContainer.getInstance().clear();
       int count = 10;
@@ -109,71 +108,25 @@ public class DependencyContainerTest {
 
    @Test
    public void testGetRelevantClassesDirectlyConnected() {
-      JavaSourceContainer.getInstance().clear();
-      int count = 10;
-
-      JavaSource producer = new JavaSource("Producer");
-      JavaSourceContainer.getInstance().add(producer);
-
-      JavaSource product1 = new JavaSource("Product1");
-      JavaSourceContainer.getInstance().add(product1);
-      JavaSource product2 = new JavaSource("Product2");
-      JavaSourceContainer.getInstance().add(product2);
-      JavaSource product3 = new JavaSource("Product3");
-      JavaSourceContainer.getInstance().add(product3);
-      JavaSource product4 = new JavaSource("Product4");
-      JavaSourceContainer.getInstance().add(product4);
-
-      JavaSource inject1 = new JavaSource("Inject1");
-      JavaSourceContainer.getInstance().add(inject1);
-      JavaSource inject2 = new JavaSource("Inject2");
-      JavaSourceContainer.getInstance().add(inject2);
-      JavaSource inject3 = new JavaSource("Inject3");
-      JavaSourceContainer.getInstance().add(inject3);
-      JavaSource inject4 = new JavaSource("Inject4");
-      JavaSourceContainer.getInstance().add(inject4);
-
-      Dependency dProducer_Product1 = new Dependency(DependencyType.PRODUCES, producer, product1);
-      DependencyContainer.getInstance().add(dProducer_Product1);
-      Dependency dProducer_Product2 = new Dependency(DependencyType.PRODUCES, producer, product2);
-      DependencyContainer.getInstance().add(dProducer_Product2);
-      Dependency dProducer_Product3 = new Dependency(DependencyType.PRODUCES, producer, product3);
-      DependencyContainer.getInstance().add(dProducer_Product3);
-      Dependency dProducer_Product4 = new Dependency(DependencyType.PRODUCES, producer, product4);
-      DependencyContainer.getInstance().add(dProducer_Product4);
-
-      Dependency dProduct1_Inject1 = new Dependency(DependencyType.INSTANCE, inject1, product1);
-      DependencyContainer.getInstance().add(dProduct1_Inject1);
-      Dependency dProduct2_Inject2 = new Dependency(DependencyType.INSTANCE, inject2, product2);
-      DependencyContainer.getInstance().add(dProduct2_Inject2);
-      Dependency dProduct3_Inject3 = new Dependency(DependencyType.INSTANCE, inject3, product3);
-      DependencyContainer.getInstance().add(dProduct3_Inject3);
-      Dependency dProduct4_Inject4 = new Dependency(DependencyType.INSTANCE, inject4, product4);
-      DependencyContainer.getInstance().add(dProduct4_Inject4);
-
       DependencyFilter filter = new DependencyFilter()
               .addType(DependencyType.PRODUCES)
               .addType(DependencyType.INSTANCE)
               .setDirectlyConnected(true);
-      //assertEquals(9, DependencyContainer.getInstance().getRelevantClasses(filter).size());
-
-      JavaSource notRelevant1 = new JavaSource("NotRelevant1");
-      JavaSourceContainer.getInstance().add(notRelevant1);
-      JavaSource notRelevant2 = new JavaSource("NotRelevant2");
-      JavaSourceContainer.getInstance().add(notRelevant2);
-      JavaSource notRelevant3 = new JavaSource("NotRelevant3");
-      JavaSourceContainer.getInstance().add(notRelevant3);
-
-      Dependency dInject1_notRelevant1 = new Dependency(DependencyType.INSTANCE, inject1, notRelevant1);
-      DependencyContainer.getInstance().add(dInject1_notRelevant1);
-      Dependency dInject1_notRelevant2 = new Dependency(DependencyType.INSTANCE, inject1, notRelevant2);
-      DependencyContainer.getInstance().add(dInject1_notRelevant2);
-
-      Dependency dInject3_notRelevant1 = new Dependency(DependencyType.INSTANCE, inject3, notRelevant1);
-      DependencyContainer.getInstance().add(dInject3_notRelevant1);
-      Dependency dInject3_notRelevant3 = new Dependency(DependencyType.INSTANCE, inject3, notRelevant3);
-      DependencyContainer.getInstance().add(dInject3_notRelevant3);
-
+      TestDataProvider.createSampleDependencies();
+      // only the nine JavaSources connected in the style "Producer-->ProductX-->InjectX" should be delivered
       assertEquals(9, DependencyContainer.getInstance().getRelevantClasses(filter).size());
+   }
+
+   @Test
+   public void testFindAllDependenciesWith() {
+      TestDataProvider.createSampleDependencies();
+      JavaSource producer = JavaSourceContainer.getInstance().getJavaSourceByName("Producer");
+      JavaSource product1 = JavaSourceContainer.getInstance().getJavaSourceByName("Product1");
+      Set<Dependency> foundedDependencies = DependencyContainer.getInstance().findAllDependenciesWith(producer, DependencyType.PRODUCES);
+      assertEquals(4, foundedDependencies.size());
+      foundedDependencies = DependencyContainer.getInstance().findAllDependenciesWith(producer, DependencyType.EVENT);
+      assertEquals(0, foundedDependencies.size());
+      foundedDependencies = DependencyContainer.getInstance().findAllDependenciesWith(product1, DependencyType.INSTANCE);
+      assertEquals(1, foundedDependencies.size());
    }
 }

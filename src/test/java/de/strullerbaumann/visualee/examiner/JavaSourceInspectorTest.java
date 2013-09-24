@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
@@ -37,7 +38,7 @@ public class JavaSourceInspectorTest {
    @Test
    public void testFindAndSetPackage() {
       JavaSource javaSource = new JavaSource("TestClass");
-      javaSource.setSourceCode(SourceCodeProvider.getTestSourceCode());
+      javaSource.setSourceCode(TestDataProvider.getTestSourceCode());
       Examiner.findAndSetPackage(javaSource);
 
       String expected = "de.strullerbaumann.visualee.resources";

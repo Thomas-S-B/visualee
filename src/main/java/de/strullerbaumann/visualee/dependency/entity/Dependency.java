@@ -28,6 +28,8 @@ import java.util.Objects;
  */
 public class Dependency {
 
+   private static final int HASH = 7;
+   private static final int HASH_MULTIPLIER = 53;
    private DependencyType dependencyType;
    private JavaSource javaSourceFrom;
    private JavaSource javaSourceTo;
@@ -67,10 +69,10 @@ public class Dependency {
 
    @Override
    public int hashCode() {
-      int hash = 7;
-      hash = 53 * hash + Objects.hashCode(this.dependencyType);
-      hash = 53 * hash + Objects.hashCode(this.javaSourceFrom);
-      hash = 53 * hash + Objects.hashCode(this.javaSourceTo);
+      int hash = HASH;
+      hash = HASH_MULTIPLIER * hash + Objects.hashCode(this.dependencyType);
+      hash = HASH_MULTIPLIER * hash + Objects.hashCode(this.javaSourceFrom);
+      hash = HASH_MULTIPLIER * hash + Objects.hashCode(this.javaSourceTo);
       return hash;
    }
 
