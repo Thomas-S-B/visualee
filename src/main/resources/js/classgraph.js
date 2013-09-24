@@ -160,12 +160,12 @@ function initGraph(graphJSON, width, height) {
       function markSearch() {
          text.style("fill", function(d) {
             if (stringContains(d.name, searchToken)) {
-               return "red"
+               return "red";
             } else {
-               return "black"
+               return "black";
             }
             ;
-         })
+         });
       }
 
       // Show/Hide tweak graph
@@ -262,7 +262,6 @@ function initGraph(graphJSON, width, height) {
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
-
       }
 
       var text = svg.append("svg:g").selectAll("g")
