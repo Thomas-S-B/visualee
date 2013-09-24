@@ -100,7 +100,7 @@
             <artifactId>license-maven-plugin</artifactId>
             <version>1.5</version>
             <configuration>
-               <verbose>true</verbose>
+               <verbose>false</verbose>
             </configuration>
             <executions>
                <execution>
@@ -137,8 +137,7 @@
             <executions>
                <execution>
                   <id>sign-artifacts</id>
-                  <!-- <phase>verify</phase> -->
-                  <phase>deploy</phase>
+                  <phase>verify</phase>
                   <goals>
                      <goal>sign</goal>
                   </goals>
