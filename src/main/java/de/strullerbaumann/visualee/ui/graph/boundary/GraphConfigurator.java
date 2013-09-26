@@ -35,7 +35,8 @@ public final class GraphConfigurator {
    private static final int DEFAULT_DISTANCE = 200;
    private static final int DEFAULT_LINKDISTANCE = 160;
    private static final int DEFAULT_GRAVITY = 15;
-   private static final int DEFAULT_GRAPHSIZE = 900;
+   private static final int DEFAULT_GRAPH_WIDTH = 900;
+   private static final int DEFAULT_GRAPH_HEIGHT = 800;
    private static final int DEFAULT_FONTSIZE = 90;
    private static Map<String, GraphConfig> graphConfigs = new HashMap<>();
 
@@ -54,7 +55,8 @@ public final class GraphConfigurator {
       graph.setDistance(DEFAULT_DISTANCE);
       graph.setLinkdistance(DEFAULT_LINKDISTANCE);
       graph.setGravity(DEFAULT_GRAVITY);
-      graph.setGraphSize(DEFAULT_GRAPHSIZE);
+      graph.setGraphWidth(DEFAULT_GRAPH_WIDTH);
+      graph.setGraphHeight(DEFAULT_GRAPH_HEIGHT);
       graph.setFontsize(DEFAULT_FONTSIZE);
       // Is there a default configuration?
       GraphConfig graphConfig = graphConfigs.get(DEFAULT_GRAPHNAME);
@@ -75,8 +77,11 @@ public final class GraphConfigurator {
          if (graphConfig.getGravity() > 0) {
             graph.setGravity(graphConfig.getGravity());
          }
-         if (graphConfig.getGraphsize() > 0) {
-            graph.setGraphSize(graphConfig.getGraphsize());
+         if (graphConfig.getGraphwidth() > 0) {
+            graph.setGraphWidth(graphConfig.getGraphwidth());
+         }
+         if (graphConfig.getGraphheight() > 0) {
+            graph.setGraphHeight(graphConfig.getGraphheight());
          }
          if (graphConfig.getFontsize() > 0) {
             graph.setFontsize(graphConfig.getFontsize());

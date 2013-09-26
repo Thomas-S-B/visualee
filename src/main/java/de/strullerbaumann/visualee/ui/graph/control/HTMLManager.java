@@ -78,7 +78,8 @@ public final class HTMLManager {
       html = html.replaceAll("DI_TEMPLATE_LINKDISTANCE", graph.getLinkdistanceString());
       html = html.replaceAll("DI_TEMPLATE_FONTSIZE", graph.getFontsizeString());
       html = html.replaceAll("DI_TEMPLATE_GRAVITY", graph.getGravityString());
-      html = html.replaceAll("DI_TEMPLATE_GRAPHSIZE", graph.getGraphSizeString());
+      html = html.replaceAll("DI_TEMPLATE_GRAPH_WIDTH", graph.getGraphWidthString());
+      html = html.replaceAll("DI_TEMPLATE_GRAPH_HEIGHT", graph.getGraphHeightString());
       SimpleDateFormat sdf = new SimpleDateFormat();
       sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
       html = html.replaceAll("DI_TEMPLATE_CREATIONDATE", "Created " + sdf.format(new Date()));

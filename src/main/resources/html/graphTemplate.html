@@ -34,16 +34,17 @@
 
       <script type="text/javascript">
          window.onload = function() {
-            initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_GRAPHSIZE, DI_TEMPLATE_GRAPHSIZE);
+            initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_GRAPH_WIDTH, DI_TEMPLATE_GRAPH_HEIGHT);
             printValue('sliderDistance', 'distanceValue');
             printValue('sliderLinkdistance', 'linkdistanceValue');
             printValue('sliderGravity', 'gravityValue');
-            printValue('sliderGraphSize', 'graphSizeValue');
+            printValue('sliderGraphWidth', 'graphWidthValue');
+            printValue('sliderGraphHeight', 'graphHeightValue');
             printValue('sliderFontSize', 'fontSizeValue');
             setDistance(sliderDistance.value);
             setLinkdistance(sliderLinkdistance.value);
             setGravity(sliderGravity.value);
-            setGraphSize(sliderGraphSize.value);
+            setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
             setFontSize(sliderFontSize.value);
          }
 
@@ -94,7 +95,8 @@
                   <td>Distance: <label id="distanceValue"></label></td>
                   <td>Linkdistance: <label id="linkdistanceValue"></label></td>
                   <td>Gravity: <label id="gravityValue"></label></td>
-                  <td>Graphsize: <label id="graphSizeValue"></label></td>
+                  <td>Width: <label id="graphWidthValue"></label></td>
+                  <td>Height: <label id="graphHeightValue"></label></td>
                   <td>Fontsize: <label id="fontSizeValue"></label>%</td>
                </tr>
                <tr>
@@ -114,9 +116,14 @@
             printValue('sliderGravity', 'gravityValue');"/>
                   </td>
                   <td>
-                     <input id="sliderGraphSize" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPHSIZE"
-                            onchange="setGraphSize(sliderGraphSize.value);
-            printValue('sliderGraphSize', 'graphSizeValue');"/>
+                     <input id="sliderGraphWidth" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPH_WIDTH"
+                            onchange="setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
+            printValue('sliderGraphWidth', 'graphWidthValue');"/>
+                  </td>
+                  <td>
+                     <input id="sliderGraphHeight" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPH_HEIGHT"
+                            onchange="setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
+            printValue('sliderGraphHeight', 'graphHeightValue');"/>
                   </td>
                   <td>
                      <input id="sliderFontSize" type ="range" min ="1" max="300" step ="1" value ="DI_TEMPLATE_FONTSIZE"

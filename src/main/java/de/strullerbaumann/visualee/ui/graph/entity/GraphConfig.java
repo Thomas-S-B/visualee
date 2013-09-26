@@ -28,7 +28,8 @@ public class GraphConfig {
    private int distance;
    private int linkdistance;
    private int gravity;
-   private int graphsize;
+   private int graphwidth;
+   private int graphheight;
    private int fontsize;
    private String name;
 
@@ -68,16 +69,28 @@ public class GraphConfig {
       this.gravity = gravity;
    }
 
-   public int getGraphsize() {
-      return graphsize;
+   public int getGraphwidth() {
+      return graphwidth;
    }
 
-   public String getGraphsizeString() {
-      return Integer.toString(graphsize);
+   public String getGraphwidthString() {
+      return Integer.toString(graphwidth);
    }
 
-   public void setGraphsize(int graphSize) {
-      this.graphsize = graphSize;
+   public void setGraphwidth(int graphwidth) {
+      this.graphwidth = graphwidth;
+   }
+
+   public int getGraphheight() {
+      return graphheight;
+   }
+
+   public String getGraphheightString() {
+      return Integer.toString(graphheight);
+   }
+
+   public void setGraphheight(int graphheight) {
+      this.graphheight = graphheight;
    }
 
    public int getFontsize() {

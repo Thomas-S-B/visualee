@@ -32,7 +32,8 @@ public class Graph {
    private int distance;
    private int linkdistance;
    private int gravity;
-   private int graphSize;
+   private int graphWidth;
+   private int graphHeight;
    private int fontsize;
    private File htmlFile;
    private InputStream htmlTemplateIS;
@@ -77,16 +78,28 @@ public class Graph {
       this.gravity = gravity;
    }
 
-   public int getGraphSize() {
-      return graphSize;
+   public int getGraphWidth() {
+      return graphWidth;
    }
 
-   public String getGraphSizeString() {
-      return Integer.toString(graphSize);
+   public String getGraphWidthString() {
+      return Integer.toString(graphWidth);
    }
 
-   public void setGraphSize(int graphSize) {
-      this.graphSize = graphSize;
+   public void setGraphWidth(int graphWidth) {
+      this.graphWidth = graphWidth;
+   }
+
+   public int getGraphHeight() {
+      return graphHeight;
+   }
+
+   public String getGraphHeightString() {
+      return Integer.toString(graphHeight);
+   }
+
+   public void setGraphHeight(int graphHeight) {
+      this.graphHeight = graphHeight;
    }
 
    public int getFontsize() {

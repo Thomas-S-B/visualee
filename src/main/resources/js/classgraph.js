@@ -57,8 +57,8 @@ function setGravity(newGravity) {
    force.gravity(newGravity / 2000).start();
 }
 
-function setGraphSize(newSize) {
-   force.size([newSize, newSize]).start();
+function setGraphSize(newWidth, newHeight) {
+   force.size([newWidth, newHeight]).start();
 }
 
 function setFontSize(newSize) {
