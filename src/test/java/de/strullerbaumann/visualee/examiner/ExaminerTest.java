@@ -19,9 +19,9 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
-import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import java.util.Scanner;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -63,6 +63,64 @@ public class ExaminerTest {
       inputString = "@Annoation";
       actual = ExaminerImpl.isAJavaToken(inputString);
       assertEquals(true, actual);
+   }
+
+   @Test
+   public void testCleanPrimitives() {
+      String inputString;
+      String actual;
+
+      inputString = "boolean";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Boolean", actual);
+
+      inputString = "char";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Character", actual);
+
+      inputString = "byte";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Byte", actual);
+
+      inputString = "short";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Short", actual);
+
+      inputString = "int";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Integer", actual);
+
+      inputString = "long";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Long", actual);
+
+      inputString = "float";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Float", actual);
+
+      inputString = "double";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Double", actual);
+
+      inputString = "doubleTrouble";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("doubleTrouble", actual);
+
+      inputString = "floatInTheBoat";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("floatInTheBoat", actual);
+
+      inputString = "Short";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Short", actual);
+
+      inputString = "";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("", actual);
+
+      inputString = "int[]";
+      actual = ExaminerImpl.cleanPrimitives(inputString);
+      assertEquals("Integer[]", actual);
    }
 
    @Test

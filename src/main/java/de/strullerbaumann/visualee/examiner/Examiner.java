@@ -151,7 +151,48 @@ public abstract class Examiner {
       return token;
    }
 
-   protected void createDependency(String className, DependencyType type, JavaSource javaSource) {
+   protected static String cleanPrimitives(String className) {
+      String cleanedClassName = className;
+      String arrayToken = "";
+      // e.g. int[] should be Integer[]
+      if (className.indexOf('[') > -1) {
+         cleanedClassName = className.substring(0, className.indexOf('['));
+         arrayToken = className.substring(className.indexOf('['));
+      }
+
+      switch (cleanedClassName) {
+         case "boolean":
+            cleanedClassName = "Boolean";
+            break;
+         case "char":
+            cleanedClassName = "Character";
+            break;
+         case "byte":
+            cleanedClassName = "Byte";
+            break;
+         case "short":
+            cleanedClassName = "Short";
+            break;
+         case "int":
+            cleanedClassName = "Integer";
+            break;
+         case "long":
+            cleanedClassName = "Long";
+            break;
+         case "float":
+            cleanedClassName = "Float";
+            break;
+         case "double":
+            cleanedClassName = "Double";
+            break;
+      }
+
+      return cleanedClassName + arrayToken;
+   }
+
+   protected void createDependency(String classNameIn, DependencyType type, JavaSource javaSource) {
+      //Need to convert primitives-names to wrapper-classnames (e.g. @Produces Integer xyz => @Inject int xyz
+      String className = cleanPrimitives(classNameIn);
       JavaSource injectedJavaSource = JavaSourceContainer.getInstance().getJavaSourceByName(className);
       if (injectedJavaSource == null) {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)

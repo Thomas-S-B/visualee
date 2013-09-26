@@ -156,8 +156,8 @@ public class DescriptionTest {
       String actual = Description.generateDescription(javaSource);
 
       assertTrue(actual.indexOf("ConfigurationStore is injected") > 0);
-      assertTrue(actual.indexOf("Produces int") > 0);
-      assertTrue(actual.indexOf("Produces boolean") > 0);
+      assertTrue(actual.indexOf("Produces Integer") > 0);
+      assertTrue(actual.indexOf("Produces Boolean") > 0);
       assertTrue(actual.indexOf("Produces String") > 0);
       assertTrue(actual.indexOf("Produces String[]") > 0);
    }
