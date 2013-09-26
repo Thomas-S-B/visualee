@@ -80,8 +80,9 @@
 
       </script>
 
-      <div id="searching">
-         Search:<input id="searchText" type ="text" onkeyup="searchNode(searchText.value);" />
+      <div id="searching" class="ui-widget">
+         <label for="searchText">Search: </label>
+         <input id="searchText" type ="text" onkeyup="searchNode(searchText.value);" />
          <input id="clearSearch" type ="button" value="Clear search" onclick="searchText.value = '';
             searchNode(searchText.value);"/>
       </div>
