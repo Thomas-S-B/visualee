@@ -97,6 +97,7 @@ public final class GraphCreator {
    }
 
    static JsonObjectBuilder buildJSONNode(JavaSource javaSource) {
+      // this id processing is necessary, because d3.js needs consecutive ids
       javaSource.setId(id);
       id++;
       JsonObjectBuilder node = Json.createObjectBuilder();
@@ -109,7 +110,7 @@ public final class GraphCreator {
    }
 
    static JsonArrayBuilder buildJSONNodes(DependencyFilter filter) {
-      Set<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
+      Set<JavaSource> relevantClasses = DependencyContainer.getInstance().getFilteredJavaSources(filter);
       JsonArrayBuilder nodesArray = Json.createArrayBuilder();
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          if (filter == null || relevantClasses.contains(javaSource)) {
@@ -123,7 +124,7 @@ public final class GraphCreator {
    static JsonArrayBuilder buildJSONLinks(DependencyFilter filter) {
       JsonArrayBuilder linksArray = Json.createArrayBuilder();
       int value = 1;
-      Set<JavaSource> relevantClasses = DependencyContainer.getInstance().getRelevantClasses(filter);
+      Set<JavaSource> relevantClasses = DependencyContainer.getInstance().getFilteredJavaSources(filter);
       for (JavaSource javaSource : relevantClasses) {
          for (Dependency d : DependencyContainer.getInstance().getDependencies(javaSource)) {
             DependencyType type = d.getDependencyType();

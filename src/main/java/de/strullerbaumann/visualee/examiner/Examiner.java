@@ -107,6 +107,7 @@ public abstract class Examiner {
       return token;
    }
 
+   // TODO einfacher
    protected static String scanAfterClosedParenthesis(String currentToken, Scanner scanner) {
       int countParenthesisOpen = countChar(currentToken, '(');
       int countParenthesisClose = countChar(currentToken, ')');

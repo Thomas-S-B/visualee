@@ -69,39 +69,36 @@ public final class DependencyContainer {
       return dependenciesOfType;
    }
 
-   public Set<JavaSource> getRelevantClasses() {
-      return getRelevantClasses(null);
-   }
-
-   public Set<JavaSource> getRelevantClasses(DependencyFilter filter) {
-      Set<JavaSource> relevantClasses = new HashSet<>();
+   //TODO einfacher
+   public Set<JavaSource> getFilteredJavaSources(DependencyFilter filter) {
+      Set<JavaSource> filteredJavaSources = new HashSet<>();
       if (filter != null && filter.isDirectlyConnected()) {
-         for (Dependency d : getDependenciesOfType(filter.getFilterTypes().get(0))) {
-            JavaSource from = d.getJavaSourceFrom();
+         DependencyType primaryType = filter.getFilterTypes().get(0);
+         for (Dependency d : getDependenciesOfType(primaryType)) {
             JavaSource to = d.getJavaSourceTo();
             List<Dependency> injects = new ArrayList<>();
             for (DependencyType dFilter : filter.getFilterTypes()) {
-               if (!dFilter.equals(filter.getFilterTypes().get(0))) {
+               if (!dFilter.equals(primaryType)) {
                   injects.addAll(findAllDependenciesWith(to, dFilter));
                }
             }
             if (injects.size() > 0) {
-               relevantClasses.add(from);
-               relevantClasses.add(to);
+               filteredJavaSources.add(d.getJavaSourceFrom());
+               filteredJavaSources.add(to);
                for (Dependency inject : injects) {
-                  relevantClasses.add(inject.getJavaSourceFrom());
+                  filteredJavaSources.add(inject.getJavaSourceFrom());
                }
             }
          }
       } else {
          for (Dependency dependency : dependencies) {
             if (filter == null || filter.contains(dependency.getDependencyType())) {
-               relevantClasses.add(dependency.getJavaSourceFrom());
-               relevantClasses.add(dependency.getJavaSourceTo());
+               filteredJavaSources.add(dependency.getJavaSourceFrom());
+               filteredJavaSources.add(dependency.getJavaSourceTo());
             }
          }
       }
-      return relevantClasses;
+      return filteredJavaSources;
    }
 
    Set<Dependency> findAllDependenciesWith(JavaSource javaSource, DependencyType dependencyType) {

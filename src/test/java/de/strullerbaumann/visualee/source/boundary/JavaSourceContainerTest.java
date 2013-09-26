@@ -78,9 +78,9 @@ public class JavaSourceContainerTest {
    @Test
    public void testAddNullJavaSource() {
       JavaSourceContainer.getInstance().clear();
-      JavaSource javaSource1 = null;
+      JavaSource javaSource = null;
+      JavaSourceContainer.getInstance().add(javaSource);
 
-      JavaSourceContainer.getInstance().add(javaSource1);
       assertEquals(0, JavaSourceContainer.getInstance().getJavaSources().size());
    }
 }

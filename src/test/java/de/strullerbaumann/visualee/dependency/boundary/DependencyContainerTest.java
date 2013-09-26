@@ -46,27 +46,6 @@ public class DependencyContainerTest {
    }
 
    @Test
-   public void testGetRelevantClasses() {
-      JavaSourceContainer.getInstance().clear();
-      int count = 10;
-
-      JavaSource javaSourceInj = new JavaSource("Testinject");
-      JavaSourceContainer.getInstance().add(javaSourceInj);
-
-      for (int i = 0; i < count; i++) {
-         String name = "Testclass " + i;
-         JavaSource javaSource = new JavaSource(name);
-         List<Dependency> injected = new ArrayList<>();
-         injected.add(new Dependency(DependencyType.INJECT, javaSource, javaSourceInj));
-         DependencyContainer.getInstance().addAll(injected);
-         JavaSourceContainer.getInstance().add(javaSource);
-      }
-
-      // + 1 because of the javaSourceInj
-      assertEquals(count + 1, DependencyContainer.getInstance().getRelevantClasses().size());
-   }
-
-   @Test
    public void testGetRelevantClassesFilter() {
       JavaSourceContainer.getInstance().clear();
       int count = 10;
@@ -99,11 +78,11 @@ public class DependencyContainerTest {
 
       // + 1 because of the injected javaSourceType1
       DependencyFilter filter1 = new DependencyFilter().addType(type1);
-      assertEquals(count1 + 1, DependencyContainer.getInstance().getRelevantClasses(filter1).size());
+      assertEquals(count1 + 1, DependencyContainer.getInstance().getFilteredJavaSources(filter1).size());
 
       // + 1 because of the injected javaSourceType2
       DependencyFilter filter2 = new DependencyFilter().addType(type2);
-      assertEquals(count2 + 1, DependencyContainer.getInstance().getRelevantClasses(filter2).size());
+      assertEquals(count2 + 1, DependencyContainer.getInstance().getFilteredJavaSources(filter2).size());
    }
 
    @Test
@@ -114,7 +93,7 @@ public class DependencyContainerTest {
               .setDirectlyConnected(true);
       TestDataProvider.createSampleDependencies();
       // only the nine JavaSources connected in the style "Producer-->ProductX-->InjectX" should be delivered
-      assertEquals(9, DependencyContainer.getInstance().getRelevantClasses(filter).size());
+      assertEquals(9, DependencyContainer.getInstance().getFilteredJavaSources(filter).size());
    }
 
    @Test

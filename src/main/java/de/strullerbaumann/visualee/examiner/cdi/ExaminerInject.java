@@ -64,7 +64,7 @@ public class ExaminerInject extends Examiner {
                   token = token.substring(token.indexOf('(') + 1);
                }
                String className = jumpOverJavaToken(token, scanner);
-               if (className.indexOf("Instance") < 0 && className.indexOf("Event") < 0) {
+               if (className.indexOf("Instance<") < 0 && className.indexOf("Event<") < 0) {
                   className = cleanupGeneric(className);
                   createDependency(className, DependencyType.INJECT, javaSource);
                }
