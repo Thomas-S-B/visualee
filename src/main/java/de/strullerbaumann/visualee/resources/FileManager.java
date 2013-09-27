@@ -79,16 +79,13 @@ public final class FileManager {
             copyFolder(srcFile, destFile);
          }
       } else {
-         OutputStream out;
-         try (InputStream in = new FileInputStream(src)) {
-            out = new FileOutputStream(dest);
+         try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             byte[] buffer = new byte[BUFFER_SIZE];
             int length;
             while ((length = in.read(buffer)) > 0) {
                out.write(buffer, 0, length);
             }
          }
-         out.close();
       }
    }
 
