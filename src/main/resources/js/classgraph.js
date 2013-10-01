@@ -17,6 +17,9 @@
  * limitations under the License.
  * #L%
  */
+
+'use strict';
+
 var force;
 var svg;
 var fontSize = 90;
@@ -69,7 +72,7 @@ function setFontSize(newSize) {
 
 function initCDITypeKeys() {
    var cdiTypeKeyIndex = 0;
-   for (key in cdiTypes) {
+   for (var key in cdiTypes) {
       cdiTypeKeys[cdiTypeKeyIndex] = key;
       cdiTypeKeyIndex++;
    }
@@ -118,7 +121,7 @@ function initGraph(graphJSON, width, height) {
       }
       );
 
-      fill = d3.scale.category20();
+      var fill = d3.scale.category20();
       var linkedByIndex = {};
       json.links.forEach(function(d) {
          linkedByIndex[d.source.index + "," + d.target.index] = 1;
@@ -232,11 +235,12 @@ function initGraph(graphJSON, width, height) {
 
       function highlight(opacity, d, o) {
          circle.style("stroke-opacity", function(o) {
-            thisOpacity = isConnected(d, o) ? 1 : opacity;
+            var thisOpacity = isConnected(d, o) ? 1 : opacity;
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
          circle.transition().attr("r", function(o) {
+            var thisR;
             if (opacity === 1) {
                thisR = circleRNormal;
                this.setAttribute('r', thisR);
@@ -247,8 +251,8 @@ function initGraph(graphJSON, width, height) {
             return thisR;
          });
 
-         text.style("stroke-opacity", function(o) {
-            thisOpacity = isConnected(d, o) ? 1 : opacity;
+         var thisOpacity = isConnected(d, o) ? 1 : opacity;
+         text.style("stroke-opacity", function(o, thisOpacity) {
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
@@ -257,8 +261,7 @@ function initGraph(graphJSON, width, height) {
             return o.source === d || o.target === d ? 1 : opacity;
          });
 
-         label.style("stroke-opacity", function(o) {
-            thisOpacity = isConnected(d, o) ? 1 : opacity;
+         label.style("stroke-opacity", function(o, thisOpacity) {
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
@@ -412,7 +415,12 @@ function initGraph(graphJSON, width, height) {
       }
 
       function isConnected(a, b) {
-         return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index === b.index;
+         var connected = false;
+         if (a === undefined || b === undefined) {
+         } else {
+            connected = linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index === b.index;
+         }
+         return connected;
       }
 
    });
