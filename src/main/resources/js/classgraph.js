@@ -18,7 +18,7 @@
  * #L%
  */
 
-'use strict';
+"use strict";
 
 var force;
 var svg;
@@ -27,20 +27,20 @@ var circleRNormal = 8;
 var circleRSelected = 11;
 var MIN_SIZE = 300;
 var cdiTypeKeys = [];
-var cdiTypes = new Array();
+var cdiTypes = [];
 var popupVisible = false;
 var searchToken = "";
-cdiTypes["INJECT"] = "Is injected in";
-cdiTypes["EVENT"] = "Fires event";
-cdiTypes['OBSERVES'] = "Observes for";
-cdiTypes['INSTANCE'] = "Injected instance";
-cdiTypes['PRODUCES'] = "Produces";
-cdiTypes['RESOURCE'] = "Resource";
-cdiTypes['EJB'] = "EJB";
-cdiTypes['ONE_TO_MANY'] = "One to many >>";
-cdiTypes['ONE_TO_ONE'] = "One to one >>";
-cdiTypes['MANY_TO_ONE'] = "Many to one >>";
-cdiTypes['MANY_TO_MANY'] = "Many to many >>";
+cdiTypes.INJECT = "Is injected in";
+cdiTypes.EVENT = "Fires event";
+cdiTypes.OBSERVES = "Observes for";
+cdiTypes.INSTANCE = "Injected instance";
+cdiTypes.PRODUCES = "Produces";
+cdiTypes.RESOURCE = "Resource";
+cdiTypes.EJB = "EJB";
+cdiTypes.ONE_TO_MANY = "One to many >>";
+cdiTypes.ONE_TO_ONE = "One to one >>";
+cdiTypes.MANY_TO_ONE = "Many to one >>";
+cdiTypes.MANY_TO_MANY = "Many to many >>";
 
 function searchNode(searchText) {
    searchToken = searchText;
@@ -71,8 +71,8 @@ function setFontSize(newSize) {
 }
 
 function initCDITypeKeys() {
-   var cdiTypeKeyIndex = 0;
-   for (var key in cdiTypes) {
+   var cdiTypeKeyIndex = 0, key;
+   for (key in cdiTypes) {
       cdiTypeKeys[cdiTypeKeyIndex] = key;
       cdiTypeKeyIndex++;
    }
@@ -121,8 +121,7 @@ function initGraph(graphJSON, width, height) {
       }
       );
 
-      var fill = d3.scale.category20();
-      var linkedByIndex = {};
+      var fill = d3.scale.category20(), linkedByIndex = {};
       json.links.forEach(function(d) {
          linkedByIndex[d.source.index + "," + d.target.index] = 1;
       });
@@ -154,31 +153,31 @@ function initGraph(graphJSON, width, height) {
               .call(force.drag);
 
       // Searching
-      $("#searchText").keyup(function(d) {
+      $("#searchText").keyup(function() {
          markSearch();
       });
-      $("#clearSearch").click(function(d) {
+      $("#clearSearch").click(function() {
          markSearch();
       });
       function markSearch() {
          text.style("fill", function(d) {
             if (stringContains(d.name, searchToken)) {
                return "red";
-            } else {
-               return "black";
             }
-            ;
+            return "black";
+
+
          });
       }
 
       // Show/Hide tweak graph
       $("#tweakgraph-open").fadeOut(0);
-      $("#tweakgraph-open").click(function(d) {
+      $("#tweakgraph-open").click(function() {
          $("#tweakgraph-close").fadeIn(450);
          $("#tweakgraph-open").fadeOut(0);
          $("#tweakgraph-sliders").slideDown(250);
       });
-      $("#tweakgraph-close").click(function(d) {
+      $("#tweakgraph-close").click(function() {
          $("#tweakgraph-close").fadeOut(0);
          $("#tweakgraph-open").fadeIn(450);
          $("#tweakgraph-sliders").slideUp(250);
@@ -212,7 +211,7 @@ function initGraph(graphJSON, width, height) {
       function showNodeInfos(d) {
          popupVisible = true;
          highlight(0.1, d);
-         $("#pop-up").fadeOut(150, function() {
+         $("#pop-up").fadeOut(150, function(d) {
             $("#pop-up-title").html(d.name);
             $("#pop-description").html(d.description);
             $("#pop-sourcecode").html(d.sourcecode);
@@ -251,8 +250,9 @@ function initGraph(graphJSON, width, height) {
             return thisR;
          });
 
-         var thisOpacity = isConnected(d, o) ? 1 : opacity;
+
          text.style("stroke-opacity", function(o, thisOpacity) {
+            var thisOpacity = isConnected(d, o) ? 1 : opacity;
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
@@ -262,6 +262,7 @@ function initGraph(graphJSON, width, height) {
          });
 
          label.style("stroke-opacity", function(o, thisOpacity) {
+            var thisOpacity = isConnected(d, o) ? 1 : opacity;
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
