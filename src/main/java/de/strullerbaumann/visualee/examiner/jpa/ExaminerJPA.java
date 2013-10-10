@@ -41,33 +41,6 @@ public class ExaminerJPA extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
-      // Examine class body
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               // Find the associated Class
-               token = scanAfterClosedParenthesis(token, scanner);
-               while (scanner.hasNext() && (isAJavaToken(token))) {
-                  if (token.indexOf('(') > - 1) {
-                     token = scanAfterClosedParenthesis(token, scanner);
-                  } else {
-                     token = scanner.next();
-                  }
-               }
-               if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
-                  // e.g. Set<Group> becomes Group
-                  token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
-               }
-               createDependency(token, type, javaSource);
-            }
-         }
-      }
-   }
-
-   @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
       if (token.indexOf("@OneToOne") > -1) {
@@ -83,5 +56,50 @@ public class ExaminerJPA extends Examiner {
          type = DependencyType.MANY_TO_MANY;
       }
       return type;
+   }
+
+   /*
+    @Override
+    public void examine(JavaSource javaSource) {
+    // Examine class body
+    try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
+    while (scanner.hasNext()) {
+    String token = scanner.next();
+    DependencyType type = getTypeFromToken(token);
+    if (isRelevantType(type)) {
+    // Find the associated Class
+    token = scanAfterClosedParenthesis(token, scanner);
+    while (scanner.hasNext() && (isAJavaToken(token))) {
+    if (token.indexOf('(') > - 1) {
+    token = scanAfterClosedParenthesis(token, scanner);
+    } else {
+    token = scanner.next();
+    }
+    }
+    if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
+    // e.g. Set<Group> becomes Group
+    token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
+    }
+    createDependency(token, type, javaSource);
+    }
+    }
+    }
+    }
+    */
+   @Override
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
+      String token = scanAfterClosedParenthesis(currentToken, scanner);
+      while (scanner.hasNext() && (isAJavaToken(token))) {
+         if (token.indexOf('(') > - 1) {
+            token = scanAfterClosedParenthesis(token, scanner);
+         } else {
+            token = scanner.next();
+         }
+      }
+      if (token.indexOf('<') > - 1 && token.indexOf('>') > - 1) {
+         // e.g. Set<Group> becomes Group
+         token = token.substring(token.indexOf('<') + 1, token.indexOf('>'));
+      }
+      createDependency(token, type, javaSource);
    }
 }

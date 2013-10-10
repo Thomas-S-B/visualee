@@ -114,12 +114,12 @@ function initGraph(graphJSON, width, height) {
               .data(force.links())
               .enter().append("svg:path")
               .attr("class", function(d) {
-         return "link " + d.type;
-      })
+                 return "link " + d.type;
+              })
               .attr("marker-end", function(d) {
-         return "url(#" + d.type + ")";
-      }
-      );
+                 return "url(#" + d.type + ")";
+              }
+              );
 
       var fill = d3.scale.category20(), linkedByIndex = {};
       json.links.forEach(function(d) {
@@ -131,25 +131,25 @@ function initGraph(graphJSON, width, height) {
               .enter().append("svg:circle")
               .attr("r", circleRNormal)
               .style("fill", function(d) {
-         return fill(d.group);
-      })
+                 return fill(d.group);
+              })
               .on("dblclick", showNodeInfos)
               .on("mousedown", function(d) {
-         d.fixed = true;
-      })
+                 d.fixed = true;
+              })
               .on("mouseover", function(d) {
-         if (!popupVisible) {
-            highlight(0.1, d);
-         }
-      })
+                 if (!popupVisible) {
+                    highlight(0.1, d);
+                 }
+              })
               .on("mouseout", function(d) {
-         if (!popupVisible) {
-            highlight(1, d);
-         }
-      })
+                 if (!popupVisible) {
+                    highlight(1, d);
+                 }
+              })
               .on("click", function(d) {
-         d.fixed = !d.fixed;
-      })
+                 d.fixed = !d.fixed;
+              })
               .call(force.drag);
 
       // Searching
@@ -165,8 +165,11 @@ function initGraph(graphJSON, width, height) {
                return "red";
             }
             return "black";
-
-
+         }).style("font-weight", function(d) {
+            if (stringContains(d.name, searchToken)) {
+               return "bold";
+            }
+            return "normal";
          });
       }
 
@@ -211,7 +214,7 @@ function initGraph(graphJSON, width, height) {
       function showNodeInfos(d) {
          popupVisible = true;
          highlight(0.1, d);
-         $("#pop-up").fadeOut(150, function(d) {
+         $("#pop-up").fadeOut(150, function() {
             $("#pop-up-title").html(d.name);
             $("#pop-description").html(d.description);
             $("#pop-sourcecode").html(d.sourcecode);
@@ -276,8 +279,8 @@ function initGraph(graphJSON, width, height) {
               .attr("y", ".31em")
               .style("font-size", "110%")
               .text(function(d) {
-         return d.name;
-      });
+                 return d.name;
+              });
 
       var label = svg.append("svg:g").selectAll("label")
               .data(force.links())
@@ -287,8 +290,8 @@ function initGraph(graphJSON, width, height) {
               .attr("y", ".31em")
               .style("font-size", "80%")
               .text(function(d) {
-         return cdiTypes[d.type];
-      });
+                 return cdiTypes[d.type];
+              });
 
 
       function stringContains(inputString, stringToFind) {

@@ -47,25 +47,17 @@ public class ExaminerInstance extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               token = jumpOverJavaToken(token, scanner);
-               if (token.startsWith("Instance<")) {
-                  token = extractClassInstanceOrEvent(token);
-                  token = jumpOverJavaToken(token, scanner);
-                  if (token.indexOf('(') > - 1) {
-                     token = token.substring(token.indexOf('(') + 1);
-                  }
-                  String className = jumpOverJavaToken(token, scanner);
-                  className = cleanupGeneric(className);
-                  createDependency(className, DependencyType.INSTANCE, javaSource);
-               }
-            }
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
+      String token = jumpOverJavaToken(currentToken, scanner);
+      if (token.startsWith("Instance<")) {
+         token = extractClassInstanceOrEvent(token);
+         token = jumpOverJavaToken(token, scanner);
+         if (token.indexOf('(') > - 1) {
+            token = token.substring(token.indexOf('(') + 1);
          }
+         String className = jumpOverJavaToken(token, scanner);
+         className = cleanupGeneric(className);
+         createDependency(className, DependencyType.INSTANCE, javaSource);
       }
    }
 }

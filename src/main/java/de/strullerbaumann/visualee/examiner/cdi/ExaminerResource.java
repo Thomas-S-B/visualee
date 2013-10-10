@@ -46,22 +46,14 @@ public class ExaminerResource extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
-      // http://docs.oracle.com/javaee/6/api/javax/annotation/Resource.html
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               if (token.indexOf('(') > - 1) {
-                  token = scanAfterClosedParenthesis(token, scanner);
-               }
-               token = jumpOverJavaToken(token, scanner);
-               token = extractClassInstanceOrEvent(token);
-               String className = cleanupGeneric(token);
-               createDependency(className, type, javaSource);
-            }
-         }
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
+      String token = currentToken;
+      if (token.indexOf('(') > - 1) {
+         token = scanAfterClosedParenthesis(token, scanner);
       }
+      token = jumpOverJavaToken(token, scanner);
+      token = extractClassInstanceOrEvent(token);
+      String className = cleanupGeneric(token);
+      createDependency(className, type, javaSource);
    }
 }

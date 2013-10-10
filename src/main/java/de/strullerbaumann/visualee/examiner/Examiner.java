@@ -54,7 +54,24 @@ public abstract class Examiner {
 
    protected abstract DependencyType getTypeFromToken(String token);
 
-   public abstract void examine(JavaSource javaSource);
+   protected abstract void examineDetail(JavaSource javaSource, Scanner scanner, String token, DependencyType type);
+
+   public void examine(JavaSource javaSource) {
+      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
+         while (scanner.hasNext()) {
+            String token = scanner.next();
+            // TODO in Template Method?
+            //ignore @Inject if it's in quotes
+            while (token.contains("\"") && countChar(token, '"') < 2) {
+               token = scanAfterQuote(token, scanner);
+            }
+            DependencyType type = getTypeFromToken(token);
+            if (isRelevantType(type)) {
+               examineDetail(javaSource, scanner, token, type);
+            }
+         }
+      }
+   }
 
    protected static Scanner getSourceCodeScanner(String sourceCode) {
       Scanner scanner = new Scanner(sourceCode);
@@ -144,7 +161,7 @@ public abstract class Examiner {
          if (scanner.hasNext()) {
             token = scanner.next();
          } else {
-            break whilestack;
+            break;
          }
       } while (stack.size() > 0);
 

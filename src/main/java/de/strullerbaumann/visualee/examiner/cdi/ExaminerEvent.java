@@ -47,26 +47,18 @@ public class ExaminerEvent extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               token = jumpOverJavaToken(token, scanner);
-               // e.g. the token is now e.g. Event<GlassfishAuthenticator>
-               if (token.startsWith("Event<")) {
-                  token = extractClassInstanceOrEvent(token);
-                  token = jumpOverJavaToken(token, scanner);
-                  if (token.indexOf('(') > - 1) {
-                     token = token.substring(token.indexOf('(') + 1);
-                  }
-                  String className = jumpOverJavaToken(token, scanner);
-                  className = cleanupGeneric(className);
-                  createDependency(className, DependencyType.EVENT, javaSource);
-               }
-            }
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
+      String token = jumpOverJavaToken(currentToken, scanner);
+      // e.g. the token is now e.g. Event<GlassfishAuthenticator>
+      if (token.startsWith("Event<")) {
+         token = extractClassInstanceOrEvent(token);
+         token = jumpOverJavaToken(token, scanner);
+         if (token.indexOf('(') > - 1) {
+            token = token.substring(token.indexOf('(') + 1);
          }
+         String className = jumpOverJavaToken(token, scanner);
+         className = cleanupGeneric(className);
+         createDependency(className, DependencyType.EVENT, javaSource);
       }
    }
 }

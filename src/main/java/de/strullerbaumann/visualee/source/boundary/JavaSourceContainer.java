@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class JavaSourceContainer {
 
-   private static Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
+   private static final Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
 
    private static class JavaSourceContainerHolder {
 

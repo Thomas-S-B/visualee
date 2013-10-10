@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public final class DependencyContainer {
 
-   private static List<Dependency> dependencies = new ArrayList<>();
+   private static final List<Dependency> dependencies = new ArrayList<>();
 
    private static class DependencyContainerHolder {
 

@@ -23,7 +23,7 @@ import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import java.util.Scanner;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -370,6 +370,10 @@ public class ExaminerTest {
       @Override
       protected DependencyType getTypeFromToken(String token) {
          return null;
+      }
+
+      @Override
+      protected void examineDetail(JavaSource javaSource, Scanner scanner, String token, DependencyType type) {
       }
    }
 }

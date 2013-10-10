@@ -22,8 +22,8 @@ package de.strullerbaumann.visualee.examiner.cdi;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,6 +91,46 @@ public class ExaminerObservesTest {
               + "}\n"
               + "}\n";
 
+
+      javaSource.setSourceCode(sourceCode);
+      examiner.examine(javaSource);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
+      assertEquals(DependencyType.OBSERVES, dependency.getDependencyType());
+      assertEquals("SnapshotEscalator", dependency.getJavaSourceFrom().getName());
+      assertEquals("Snapshot", dependency.getJavaSourceTo().getName());
+   }
+
+   @Test
+   public void testObservesNotify() {
+      JavaSource javaSource;
+      Dependency dependency;
+      String sourceCode;
+
+      javaSource = new JavaSource("SnapshotEscalator");
+      sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
+              + "public void escalate(@Observes(notifyObserver=IF_EXISTS) @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
+              + "}\n";
+
+      javaSource.setSourceCode(sourceCode);
+      examiner.examine(javaSource);
+      dependency = DependencyContainer.getInstance().getDependencies(javaSource).get(0);
+      assertEquals(1, DependencyContainer.getInstance().getDependencies(javaSource).size());
+      assertEquals(DependencyType.OBSERVES, dependency.getDependencyType());
+      assertEquals("SnapshotEscalator", dependency.getJavaSourceFrom().getName());
+      assertEquals("Snapshot", dependency.getJavaSourceTo().getName());
+   }
+
+   @Test
+   public void testObservesDuring() {
+      JavaSource javaSource;
+      Dependency dependency;
+      String sourceCode;
+
+      javaSource = new JavaSource("SnapshotEscalator");
+      sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
+              + "public void escalate(@Observes(during=BEFORE_COMPLETION) @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
+              + "}\n";
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);

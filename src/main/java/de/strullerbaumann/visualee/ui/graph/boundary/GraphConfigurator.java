@@ -38,7 +38,7 @@ public final class GraphConfigurator {
    private static final int DEFAULT_GRAPH_WIDTH = 900;
    private static final int DEFAULT_GRAPH_HEIGHT = 800;
    private static final int DEFAULT_FONTSIZE = 90;
-   private static Map<String, GraphConfig> graphConfigs = new HashMap<>();
+   private static final Map<String, GraphConfig> graphConfigs = new HashMap<>();
 
    private GraphConfigurator() {
    }

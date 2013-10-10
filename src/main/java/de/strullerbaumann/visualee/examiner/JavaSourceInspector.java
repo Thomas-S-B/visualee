@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public final class JavaSourceInspector {
 
-   private static List<Examiner> examiners = new ArrayList<>();
+   private static final List<Examiner> examiners = new ArrayList<>();
 
    private static class JavaSourceExaminerHolder {
 

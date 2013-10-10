@@ -46,18 +46,9 @@ public class ExaminerObserves extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
-      // http://docs.oracle.com/javaee/6/api/javax/enterprise/event/Observes.html
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               String className = jumpOverJavaToken(token, scanner);
-               className = cleanupGeneric(className);
-               createDependency(className, type, javaSource);
-            }
-         }
-      }
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
+      String className = jumpOverJavaToken(currentToken, scanner);
+      className = cleanupGeneric(className);
+      createDependency(className, type, javaSource);
    }
 }

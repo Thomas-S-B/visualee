@@ -51,12 +51,12 @@ public final class FileManager {
       File[] files = dir.listFiles();
       List<File> matches = new ArrayList<>();
       if (files != null) {
-         for (int i = 0; i < files.length; i++) {
-            if (files[i].getName().toLowerCase().endsWith(extension)) {
-               matches.add(files[i]);
+         for (File file : files) {
+            if (file.getName().toLowerCase().endsWith(extension)) {
+               matches.add(file);
             }
-            if (files[i].isDirectory()) {
-               matches.addAll(searchFiles(files[i], extension));
+            if (file.isDirectory()) {
+               matches.addAll(searchFiles(file, extension));
             }
          }
       }
@@ -114,7 +114,7 @@ public final class FileManager {
                os.write(buffer, 0, length);
             }
          }
-      } catch (Exception exc) {
+      } catch (IOException exc) {
          LogProvider.getInstance().error("Can't export " + fileName + " from " + sourceFolder + " (jar) to " + targetFolder, exc);
       }
    }

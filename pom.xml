@@ -52,7 +52,7 @@
       <dependency>
          <groupId>org.glassfish</groupId>
          <artifactId>javax.json</artifactId>
-         <version>1.0.2</version>
+         <version>1.0.3</version>
          <type>jar</type>
       </dependency>
       <dependency>
@@ -127,26 +127,39 @@
                <tagNameFormat>v@{project.version}</tagNameFormat>
             </configuration>
          </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.4</version>
-            <configuration>
-               <skip>false</skip>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>sign-artifacts</id>
-                  <phase>verify</phase>
-                  <goals>
-                     <goal>sign</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
       </plugins>
       <finalName>visualee</finalName>
    </build>
+
+   <profiles>
+      <profile>
+         <id>release-sign-artifacts</id>
+         <activation>
+            <property>
+               <name>performRelease</name>
+               <value>true</value>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <version>1.4</version>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 
    <scm>
       <connection>scm:git:git@github.com:Thomas-S-B/visualee.git</connection>
