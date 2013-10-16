@@ -30,7 +30,6 @@ import java.io.InputStream;
 public class Graph {
 
    private int distance;
-   private int linkdistance;
    private int gravity;
    private int graphWidth;
    private int graphHeight;
@@ -52,18 +51,6 @@ public class Graph {
 
    public void setDistance(int distance) {
       this.distance = distance;
-   }
-
-   public int getLinkdistance() {
-      return linkdistance;
-   }
-
-   public String getLinkdistanceString() {
-      return Integer.toString(linkdistance);
-   }
-
-   public void setLinkdistance(int linkdistance) {
-      this.linkdistance = linkdistance;
    }
 
    public int getGravity() {

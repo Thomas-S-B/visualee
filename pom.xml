@@ -126,7 +126,7 @@
             <configuration>
                <tagNameFormat>v@{project.version}</tagNameFormat>
             </configuration>
-         </plugin>
+         </plugin>   
       </plugins>
       <finalName>visualee</finalName>
    </build>

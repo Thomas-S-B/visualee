@@ -32,8 +32,7 @@ import java.util.Map;
 public final class GraphConfigurator {
 
    private static final String DEFAULT_GRAPHNAME = "default";
-   private static final int DEFAULT_DISTANCE = 200;
-   private static final int DEFAULT_LINKDISTANCE = 160;
+   private static final int DEFAULT_DISTANCE = 160;
    private static final int DEFAULT_GRAVITY = 15;
    private static final int DEFAULT_GRAPH_WIDTH = 900;
    private static final int DEFAULT_GRAPH_HEIGHT = 800;
@@ -53,7 +52,6 @@ public final class GraphConfigurator {
    public static void configGraph(Graph graph) {
       // First set Attributes with defaults
       graph.setDistance(DEFAULT_DISTANCE);
-      graph.setLinkdistance(DEFAULT_LINKDISTANCE);
       graph.setGravity(DEFAULT_GRAVITY);
       graph.setGraphWidth(DEFAULT_GRAPH_WIDTH);
       graph.setGraphHeight(DEFAULT_GRAPH_HEIGHT);
@@ -70,9 +68,6 @@ public final class GraphConfigurator {
       if (graphConfig != null) {
          if (graphConfig.getDistance() > 0) {
             graph.setDistance(graphConfig.getDistance());
-         }
-         if (graphConfig.getLinkdistance() > 0) {
-            graph.setLinkdistance(graphConfig.getLinkdistance());
          }
          if (graphConfig.getGravity() > 0) {
             graph.setGravity(graphConfig.getGravity());

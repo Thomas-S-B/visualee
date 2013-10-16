@@ -60,10 +60,10 @@ public abstract class Examiner {
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
             String token = scanner.next();
-            // TODO in Template Method?
-            //ignore @Inject if it's in quotes
+            //ignore relevant Annotaions (e.g. @Inject) if they are in quotes
             while (token.contains("\"") && countChar(token, '"') < 2) {
-               token = scanAfterQuote(token, scanner);
+               scanAfterQuote(token, scanner);
+               token = scanner.next();
             }
             DependencyType type = getTypeFromToken(token);
             if (isRelevantType(type)) {
@@ -124,7 +124,7 @@ public abstract class Examiner {
       return token;
    }
 
-   // TODO einfacher
+   // TODO simplify
    protected static String scanAfterClosedParenthesis(String currentToken, Scanner scanner) {
       int countParenthesisOpen = countChar(currentToken, '(');
       int countParenthesisClose = countChar(currentToken, ')');

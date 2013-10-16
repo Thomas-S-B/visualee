@@ -47,29 +47,17 @@ public class ExaminerInject extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            //ignore @Inject if it's in quotes
-            while (token.contains("\"") && countChar(token, '"') < 2) {
-               token = scanAfterQuote(token, scanner);
-            }
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               token = jumpOverJavaToken(token, scanner);
-               // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
-               if (token.indexOf('(') > - 1) {
-                  // Greeter(PhraseBuilder becomes PhraseBuilder
-                  token = token.substring(token.indexOf('(') + 1);
-               }
-               String className = jumpOverJavaToken(token, scanner);
-               if (className.indexOf("Instance<") < 0 && className.indexOf("Event<") < 0) {
-                  className = cleanupGeneric(className);
-                  createDependency(className, DependencyType.INJECT, javaSource);
-               }
-            }
-         }
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
+      String token = jumpOverJavaToken(currentToken, scanner);
+      // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+      if (token.indexOf('(') > - 1) {
+         // Greeter(PhraseBuilder becomes PhraseBuilder
+         token = token.substring(token.indexOf('(') + 1);
+      }
+      String className = jumpOverJavaToken(token, scanner);
+      if (className.indexOf("Instance<") < 0 && className.indexOf("Event<") < 0) {
+         className = cleanupGeneric(className);
+         createDependency(className, type, javaSource);
       }
    }
 }

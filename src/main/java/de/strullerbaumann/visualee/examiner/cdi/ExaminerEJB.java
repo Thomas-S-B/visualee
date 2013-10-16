@@ -46,23 +46,15 @@ public class ExaminerEJB extends Examiner {
    }
 
    @Override
-   public void examine(JavaSource javaSource) {
+   public void examineDetail(JavaSource javaSource, Scanner scanner, String currentToken, DependencyType type) {
       //http://docs.oracle.com/javaee/6/api/javax/ejb/EJB.html
-      try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
-         while (scanner.hasNext()) {
-            String token = scanner.next();
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               token = jumpOverJavaToken(token, scanner);
-               // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
-               if (token.indexOf('(') > - 1) {
-                  // Greeter(PhraseBuilder becomes PhraseBuilder
-                  token = token.substring(token.indexOf('(') + 1);
-               }
-               String className = jumpOverJavaToken(token, scanner);
-               createDependency(className, DependencyType.EJB, javaSource);
-            }
-         }
+      String token = jumpOverJavaToken(currentToken, scanner);
+      // possible tokens now are e.g. Principal, Greeter(PhraseBuilder, Event<Person>, AsyncService ...
+      if (token.indexOf('(') > - 1) {
+         // Greeter(PhraseBuilder becomes PhraseBuilder
+         token = token.substring(token.indexOf('(') + 1);
       }
+      String className = jumpOverJavaToken(token, scanner);
+      createDependency(className, type, javaSource);
    }
 }

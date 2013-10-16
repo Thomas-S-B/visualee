@@ -26,7 +26,6 @@ package de.strullerbaumann.visualee.ui.graph.entity;
 public class GraphConfig {
 
    private int distance;
-   private int linkdistance;
    private int gravity;
    private int graphwidth;
    private int graphheight;
@@ -43,18 +42,6 @@ public class GraphConfig {
 
    public void setDistance(int distance) {
       this.distance = distance;
-   }
-
-   public int getLinkdistance() {
-      return linkdistance;
-   }
-
-   public String getLinkdistanceString() {
-      return Integer.toString(linkdistance);
-   }
-
-   public void setLinkdistance(int linkdistance) {
-      this.linkdistance = linkdistance;
    }
 
    public int getGravity() {

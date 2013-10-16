@@ -47,13 +47,7 @@ function searchNode(searchText) {
 }
 
 function setDistance(newDistance) {
-   force.distance(newDistance)
-           .start();
-}
-
-function setLinkdistance(newLinkdistance) {
-   force.linkDistance(newLinkdistance)
-           .start();
+   force.distance(newDistance).linkDistance(newDistance).start();
 }
 
 function setGravity(newGravity) {

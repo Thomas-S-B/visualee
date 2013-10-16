@@ -69,7 +69,7 @@ public final class DependencyContainer {
       return dependenciesOfType;
    }
 
-   //TODO einfacher
+   //TODO simplify
    public Set<JavaSource> getFilteredJavaSources(DependencyFilter filter) {
       Set<JavaSource> filteredJavaSources = new HashSet<>();
       if (filter != null && filter.isDirectlyConnected()) {

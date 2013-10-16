@@ -75,7 +75,6 @@ public final class HTMLManager {
       html = html.replaceAll("DI_TEMPLATE_JSON_FILE", graph.getJsonFile().getName());
       html = html.replaceAll("DI_TEMPLATE_TITLE", graph.getTitle());
       html = html.replaceAll("DI_TEMPLATE_DISTANCE", graph.getDistanceString());
-      html = html.replaceAll("DI_TEMPLATE_LINKDISTANCE", graph.getLinkdistanceString());
       html = html.replaceAll("DI_TEMPLATE_FONTSIZE", graph.getFontsizeString());
       html = html.replaceAll("DI_TEMPLATE_GRAVITY", graph.getGravityString());
       html = html.replaceAll("DI_TEMPLATE_GRAPH_WIDTH", graph.getGraphWidthString());

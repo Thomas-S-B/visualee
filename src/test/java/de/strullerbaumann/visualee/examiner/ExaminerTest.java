@@ -224,6 +224,17 @@ public class ExaminerTest {
       expected = "=";
       actual = scanner.next();
       assertEquals(expected, actual);
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "LOG.log(Level.FINE, \"Added {0} to watch channel {1}\", new Object[]{browserWindow.hashCode(), browserWindow.getChannel()});";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      scanner.next(); //LOG.log(Level.FINE,
+      currentToken = scanner.next(); //"Added...
+      ExaminerImpl.scanAfterQuote(currentToken, scanner);
+      expected = "new";
+      actual = scanner.next();
+      assertEquals(expected, actual);
    }
 
    @Test
