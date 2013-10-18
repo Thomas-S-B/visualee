@@ -21,7 +21,6 @@ package de.strullerbaumann.visualee.ui.graph.entity;
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import java.io.File;
-import java.io.InputStream;
 
 /**
  *
@@ -35,7 +34,6 @@ public class Graph {
    private int graphHeight;
    private int fontsize;
    private File htmlFile;
-   private InputStream htmlTemplateIS;
    private File jsonFile;
    private String name;
    private String title;
@@ -107,14 +105,6 @@ public class Graph {
 
    public void setHtmlFile(File htmlFile) {
       this.htmlFile = htmlFile;
-   }
-
-   public InputStream getHtmlTemplateIS() {
-      return htmlTemplateIS;
-   }
-
-   public void setHtmlTemplateIS(InputStream htmlTemplateIS) {
-      this.htmlTemplateIS = htmlTemplateIS;
    }
 
    public File getJsonFile() {

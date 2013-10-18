@@ -23,12 +23,17 @@ import de.strullerbaumann.visualee.logging.LogProvider;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -46,31 +51,32 @@ public final class FileManager {
     * @param extension
     * @return
     */
-   public static List<File> searchFiles(File dir, String extension) {
-      File[] files = dir.listFiles();
-      List<File> matches = new ArrayList<>();
-      if (files != null) {
-         for (File file : files) {
-            if (file.getName().toLowerCase().endsWith(extension)) {
-               matches.add(file);
+   public static List<Path> searchFiles(String dir, final String extension) {
+      final List<Path> files = new ArrayList<>();
+      try {
+         Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+               if (file.getFileName().toString().toLowerCase().endsWith(extension)) {
+                  files.add(file);
+               }
+               return FileVisitResult.CONTINUE;
             }
-            if (file.isDirectory()) {
-               matches.addAll(searchFiles(file, extension));
-            }
-         }
+         });
+      } catch (IOException ex) {
+         Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
       }
-      return matches;
+      return files;
    }
 
    /**
     * Exports Files from the jar to a given directory
     *
-    * @param clazz
     * @param sourceFolder
     * @param fileName
     * @param targetFolder
     */
-   public static void export(Class clazz, String sourceFolder, String fileName, File targetFolder) {
+   public static void export(String sourceFolder, String fileName, File targetFolder) {
       if (!targetFolder.exists()) {
          targetFolder.mkdir();
       }
@@ -78,8 +84,8 @@ public final class FileManager {
       if (!dstResourceFolder.exists()) {
          dstResourceFolder.mkdir();
       }
-      try (InputStream in = clazz.getResourceAsStream(sourceFolder + fileName)) {
-         Path out = FileSystems.getDefault().getPath(targetFolder + sourceFolder + fileName);
+      try (InputStream in = FileManager.class.getResourceAsStream(sourceFolder + fileName)) {
+         Path out = Paths.get(targetFolder + sourceFolder + fileName);
          Files.copy(in, out, StandardCopyOption.REPLACE_EXISTING);
       } catch (IOException exc) {
          LogProvider.getInstance().error("Can't export " + fileName + " from " + sourceFolder + " (jar) to " + targetFolder, exc);

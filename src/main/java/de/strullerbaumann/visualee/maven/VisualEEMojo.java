@@ -27,7 +27,6 @@ import de.strullerbaumann.visualee.ui.graph.boundary.GraphCreator;
 import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
 import de.strullerbaumann.visualee.ui.graph.entity.GraphConfig;
 import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -89,26 +88,24 @@ public class VisualEEMojo extends AbstractMojo {
       if (isThisRootDir()) {
          getLog().info(HEADER_FOOTER);
          getLog().info("VisualEE-Plugin");
-         InputStream indexIS = getClass().getResourceAsStream("/html/index.html");
          for (String exportFile : CSS_DIR_FILES) {
-            FileManager.export(getClass(), CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
+            FileManager.export(CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
          for (String exportFile : JS_DIR_FILES) {
-            FileManager.export(getClass(), JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
+            FileManager.export(JS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
          //Examine all java-files in projectroot
          String sourceFolder = mavenSession.getExecutionRootDirectory();
          if (sourceFolder != null) {
-            HTMLManager.generateIndexHTML(outputdirectory, indexIS, sourceFolder);
+            HTMLManager.generateIndexHTML(outputdirectory, "/html/index.html", sourceFolder);
             getLog().info("Analyzing sourcefolder: " + sourceFolder);
-            File sourceFolderDir = new File(sourceFolder);
-            DependencyAnalyzer.getInstance().analyze(sourceFolderDir);
+            DependencyAnalyzer.getInstance().analyze(sourceFolder);
             getLog().info("Generating graphs");
             if (graphs != null) {
                GraphConfigurator.setGraphConfigs(graphs);
             }
-            InputStream graphTemplateIS = getClass().getResourceAsStream("/html/graphTemplate.html");
-            GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, graphTemplateIS);
+            File sourceFolderDir = new File(sourceFolder);
+            GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, "/html/graphTemplate.html");
             getLog().info("Done, visualization can be found in");
             getLog().info(outputdirectory.toString() + File.separatorChar + "index.html");
             getLog().info(HEADER_FOOTER);

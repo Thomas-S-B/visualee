@@ -22,7 +22,8 @@ package de.strullerbaumann.visualee.source.entity;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class JavaSourceTest {
    @Test
    public void testConstructor() {
       String expected = "test2myTestJavaFile";
-      File javaFile = new File("/test1/" + expected + ".java");
+      Path javaFile = Paths.get("/test1/" + expected + ".java");
       JavaSource javaSource = new JavaSource(javaFile);
       assertEquals(expected, javaSource.getName());
    }

@@ -40,8 +40,9 @@ public final class HTMLManager {
    private HTMLManager() {
    }
 
-   public static String loadHTMLTemplate(InputStream graphTemplate, String htmlName) {
+   public static String loadHTMLTemplate(String graphTemplatePath) {
       //InputStream because html is accessed via getResource->jar in the plugin
+      InputStream graphTemplate = HTMLManager.class.getResourceAsStream(graphTemplatePath);
       StringBuilder htmlTemplateBuilder = new StringBuilder();
       try (BufferedReader br = new BufferedReader(new InputStreamReader(graphTemplate))) {
          String line;
@@ -50,14 +51,14 @@ public final class HTMLManager {
             htmlTemplateBuilder.append(System.lineSeparator());
          }
       } catch (IOException ex) {
-         LogProvider.getInstance().error("can't load " + htmlName, ex);
+         LogProvider.getInstance().error("can't load " + graphTemplatePath, ex);
       }
 
       return htmlTemplateBuilder.toString();
    }
 
-   public static void generateIndexHTML(File outputdirectory, InputStream indexHtmlIS, String title) {
-      String indexHtml = loadHTMLTemplate(indexHtmlIS, "index.html");
+   public static void generateIndexHTML(File outputdirectory, String indexHtmlTemplate, String title) {
+      String indexHtml = loadHTMLTemplate(indexHtmlTemplate);
       indexHtml = indexHtml.replaceAll("INDEX_PROJECT_TITLE", title);
       SimpleDateFormat sdf = new SimpleDateFormat();
       sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");

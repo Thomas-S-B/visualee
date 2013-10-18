@@ -29,7 +29,6 @@ import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
 import de.strullerbaumann.visualee.examiner.cdi.ExaminerResource;
 import de.strullerbaumann.visualee.examiner.jpa.ExaminerJPA;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
-import java.io.File;
 
 /**
  *
@@ -49,7 +48,7 @@ public final class DependencyAnalyzer {
       return DependencyAnalyzerHolder.INSTANCE;
    }
 
-   public void analyze(File rootFolder) {
+   public void analyze(String rootFolder) {
       JavaSourceContainer.getInstance().clear();
       JavaSourceContainer.getInstance().loadJavaFiles(rootFolder);
 

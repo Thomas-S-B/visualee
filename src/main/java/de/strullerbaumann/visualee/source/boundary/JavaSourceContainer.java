@@ -21,7 +21,7 @@ package de.strullerbaumann.visualee.source.boundary;
  */
 import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -68,12 +68,23 @@ public final class JavaSourceContainer {
       return javaSources.get(n);
    }
 
-   public void loadJavaFiles(File rootFolder) {
-      final List<File> javaFiles = FileManager.searchFiles(rootFolder, ".java");
-      for (File javaFile : javaFiles) {
+   /*
+    public void loadJavaFiles(File rootFolder) {
+    final List<File> javaFiles = FileManager.searchFiles(rootFolder, ".java");
+    for (File javaFile : javaFiles) {
+    JavaSource javaSource = new JavaSource(javaFile);
+    JavaSourceContainer.getInstance().add(javaSource);
+    javaSource.loadSourceCode();
+    }
+    }
+    */
+   public void loadJavaFiles(String rootFolder) {
+      final List<Path> javaFiles = FileManager.searchFiles(rootFolder, ".java");
+      for (Path javaFile : javaFiles) {
          JavaSource javaSource = new JavaSource(javaFile);
          JavaSourceContainer.getInstance().add(javaSource);
          javaSource.loadSourceCode();
       }
    }
+
 }

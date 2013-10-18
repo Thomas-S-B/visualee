@@ -20,12 +20,11 @@ package de.strullerbaumann.visualee.source.entity;
  * #L%
  */
 import de.strullerbaumann.visualee.logging.LogProvider;
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -37,7 +36,7 @@ public class JavaSource {
 
    private static final int HASH = 7;
    private static final int HASH_MULTIPLIER = 13;
-   private File javaFile;
+   private Path javaFile;
    // for D3.js, links need id's from the nodes (id's start with 0)
    private int id;
    // Nodes form the same package have the same group-number
@@ -46,9 +45,9 @@ public class JavaSource {
    private String sourceCode;
    private String name;
 
-   public JavaSource(File javaFile) {
+   public JavaSource(Path javaFile) {
       this.javaFile = javaFile;
-      this.name = javaFile.getName().substring(0, javaFile.getName().indexOf(".java"));
+      this.name = javaFile.getFileName().toString().substring(0, javaFile.getFileName().toString().indexOf(".java"));
       sourceCode = "";
    }
 
@@ -57,7 +56,7 @@ public class JavaSource {
       sourceCode = "Not available";
    }
 
-   public File getJavaFile() {
+   public Path getJavaFile() {
       return javaFile;
    }
 
@@ -141,12 +140,12 @@ public class JavaSource {
       if (this.getJavaFile() == null) {
          return;
       }
+      Path pathJavaSource = this.getJavaFile();
       StringBuilder loadedSourceCode = new StringBuilder();
-      Path pathJavaSource = this.getJavaFile().toPath();
-      try (BufferedReader reader = Files.newBufferedReader(pathJavaSource, Charset.defaultCharset())) {
-         String inputLine;
-         while ((inputLine = reader.readLine()) != null) {
-            loadedSourceCode.append(inputLine).append('\n');
+      try {
+         List<String> sourceCodeLines = Files.readAllLines(pathJavaSource, UTF_8);
+         for (String sourceCodeLine : sourceCodeLines) {
+            loadedSourceCode.append(sourceCodeLine).append('\n');
          }
       } catch (IOException ex) {
          LogProvider.getInstance().error("Problems while reading " + this.getJavaFile(), ex);
@@ -168,9 +167,6 @@ public class JavaSource {
          return false;
       }
       final JavaSource other = (JavaSource) obj;
-      if (!Objects.equals(this.name, other.name)) {
-         return false;
-      }
-      return true;
+      return Objects.equals(this.name, other.name);
    }
 }

@@ -31,7 +31,6 @@ import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
 import de.strullerbaumann.visualee.ui.graph.entity.Graph;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,7 +50,7 @@ import javax.json.JsonObjectBuilder;
 public final class GraphCreator {
 
    private static int id;
-   private static String htmlTemplate;
+   private static String graphTemplate;
    private static final Map<String, List> GRAPHS = Collections.unmodifiableMap(new HashMap<String, List>() {
       {
          put("graphOnlyCDIJPA", Arrays.asList("Only CDI/JPA relevant classes of ", new DependencyFilter().filterAllTypes()));
@@ -152,7 +151,6 @@ public final class GraphCreator {
    public static Graph generateGraph(String fileName,
            String title,
            DependencyFilter filter,
-           InputStream htmlTemplateIS,
            File outputdirectory) {
       id = 0;
       Graph graph = new Graph();
@@ -161,7 +159,6 @@ public final class GraphCreator {
       graph.setJsonFile(jsonFile);
       File htmlFile = new File(outputdirectory.toString() + File.separatorChar + fileName + ".html");
       graph.setHtmlFile(htmlFile);
-      graph.setHtmlTemplateIS(htmlTemplateIS);
       graph.setTitle(title);
       GraphConfigurator.configGraph(graph);
       JsonObjectBuilder builder = Json.createObjectBuilder();
@@ -180,21 +177,20 @@ public final class GraphCreator {
       return graph;
    }
 
-   public static void generateGraphs(File rootFolder, File outputdirectory, InputStream htmlTemplateIS) {
+   public static void generateGraphs(File rootFolder, File outputdirectory, String graphTemplatePath) {
       if (!outputdirectory.exists()) {
          outputdirectory.mkdir();
       }
-      // Load HTML-Template, if not already done (Maven modules)
-      if (htmlTemplate == null) {
-         htmlTemplate = HTMLManager.loadHTMLTemplate(htmlTemplateIS, "graphTemplate");
+      // Load graph-Template, if not already done (Maven modules)
+      if (graphTemplate == null) {
+         graphTemplate = HTMLManager.loadHTMLTemplate(graphTemplatePath);
       }
       for (String graphName : GRAPHS.keySet()) {
          Graph graph = GraphCreator.generateGraph(graphName,
                  (String) GRAPHS.get(graphName).get(0) + rootFolder.getPath(),
                  (DependencyFilter) GRAPHS.get(graphName).get(1),
-                 htmlTemplateIS,
                  outputdirectory);
-         HTMLManager.generateHTML(graph, htmlTemplate);
+         HTMLManager.generateHTML(graph, graphTemplate);
       }
    }
 }

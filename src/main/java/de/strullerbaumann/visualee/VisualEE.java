@@ -20,7 +20,6 @@ package de.strullerbaumann.visualee;
  * #L%
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
-import java.io.File;
 
 /**
  *
@@ -32,7 +31,7 @@ public final class VisualEE {
    }
 
    public static void main(String args[]) {
-      File sourceFolderDir = new File("/home/thomas/NetBeansProjects/spring-petclinic");
-      DependencyAnalyzer.getInstance().analyze(sourceFolderDir);
+      //File sourceFolderDir = new File(args[0]);
+      DependencyAnalyzer.getInstance().analyze("");
    }
 }

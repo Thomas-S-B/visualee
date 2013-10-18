@@ -22,6 +22,7 @@
 
 var force;
 var svg;
+var transDuration = 150;
 var fontSize = 90;
 var circleRNormal = 8;
 var circleRSelected = 11;
@@ -30,6 +31,7 @@ var cdiTypeKeys = [];
 var cdiTypes = [];
 var popupVisible = false;
 var searchToken = "";
+var dVisible;
 cdiTypes.INJECT = "Is injected in";
 cdiTypes.EVENT = "Fires event";
 cdiTypes.OBSERVES = "Observes for";
@@ -115,6 +117,31 @@ function initGraph(graphJSON, width, height) {
               }
               );
 
+      var text = svg.append("svg:g").selectAll("g")
+              .data(force.nodes())
+              .enter().append("svg:g");
+      text.append("svg:text")
+              .attr("x", 10)
+              .attr("y", ".31em")
+              .style("font-size", "110%")
+              .style("text-shadow", "0.1em 0.1em 0.05em #aaa")
+              .text(function(d) {
+                 return d.name;
+              });
+
+      var label = svg.append("svg:g").selectAll("label")
+              .data(force.links())
+              .enter()
+              .append("svg:text")
+              .attr("class", "labeltext")
+              .attr("x", 10)
+              .attr("y", ".31em")
+              .style("font-size", "80%")
+              .style("text-shadow", "0.05em 0.05em 0.05em #aaa")
+              .text(function(d) {
+                 return cdiTypes[d.type];
+              });
+
       var fill = d3.scale.category20(), linkedByIndex = {};
       json.links.forEach(function(d) {
          linkedByIndex[d.source.index + "," + d.target.index] = 1;
@@ -138,7 +165,7 @@ function initGraph(graphJSON, width, height) {
               })
               .on("mouseout", function(d) {
                  if (!popupVisible) {
-                    highlight(1, d);
+                    markSearch();
                  }
               })
               .on("click", function(d) {
@@ -154,17 +181,29 @@ function initGraph(graphJSON, width, height) {
          markSearch();
       });
       function markSearch() {
-         text.style("fill", function(d) {
-            if (stringContains(d.name, searchToken)) {
-               return "red";
-            }
-            return "black";
-         }).style("font-weight", function(d) {
-            if (stringContains(d.name, searchToken)) {
-               return "bold";
-            }
-            return "normal";
-         });
+         dVisible = [];
+         unHighlightAll();
+         if (searchToken.length > 0) {
+            text.style("fill", function(d) {
+               if (stringContains(d.name, searchToken)) {
+                  highlightSelected(d);
+                  return "red";
+               }
+               return "black";
+            }).style("font-weight", function(d) {
+               if (stringContains(d.name, searchToken)) {
+                  return "bold";
+               }
+               return "normal";
+            });
+         } else {
+            highlightAll();
+            text.style("fill", function(d) {
+               return "black";
+            }).style("font-weight", function(d) {
+               return "normal";
+            });
+         }
       }
 
       // Show/Hide tweak graph
@@ -205,6 +244,15 @@ function initGraph(graphJSON, width, height) {
          });
       });
 
+      function getViewport() {
+         var $w = $(window);
+         return {
+            l: $w.scrollLeft(),
+            t: $w.scrollTop(),
+            w: $w.width(),
+            h: $w.height()
+         }
+      }
       function showNodeInfos(d) {
          popupVisible = true;
          highlight(0.1, d);
@@ -214,6 +262,24 @@ function initGraph(graphJSON, width, height) {
             $("#pop-sourcecode").html(d.sourcecode);
             $("#pop-up").fadeIn(150);
          });
+
+         // esnure nodeInfos is in the visible viewport
+         var position = $("#pop-up").position();
+         var width = $("#pop-up").width();
+         var height = $("#pop-up").height();
+         if (position.left + width > getViewport().l + getViewport().w) {
+            $("#pop-up").css({left: getViewport().l});
+         }
+         if (position.left < getViewport().l) {
+            $("#pop-up").css({left: getViewport().l});
+         }
+         if (position.top + height > getViewport().t + getViewport().h) {
+            $("#pop-up").css({top: getViewport().t});
+         }
+         if (position.top < getViewport().t) {
+            $("#pop-up").css({top: getViewport().t});
+         }
+
          updatePopUpSize();
       }
 
@@ -224,68 +290,132 @@ function initGraph(graphJSON, width, height) {
       }
 
       function hideNodeInfos(d) {
-         highlight(1, d);
+         markSearch();
          $("#pop-up").fadeOut(150);
          popupVisible = false;
       }
 
       function highlight(opacity, d, o) {
-         circle.style("stroke-opacity", function(o) {
+         d3.selectAll("circle").transition().duration(transDuration).style("stroke-opacity", function(o) {
             var thisOpacity = isConnected(d, o) ? 1 : opacity;
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
-         circle.transition().attr("r", function(o) {
+
+         d3.selectAll("circle").transition().duration(transDuration).attr("r", function(o) {
             var thisR;
             if (opacity === 1) {
                thisR = circleRNormal;
-               this.setAttribute('r', thisR);
             } else {
                thisR = isConnected(d, o) ? circleRSelected : circleRNormal;
-               this.setAttribute('r', thisR);
             }
             return thisR;
          });
 
-
-         text.style("stroke-opacity", function(o, thisOpacity) {
+         text.style("stroke-opacity", function(o) {
             var thisOpacity = isConnected(d, o) ? 1 : opacity;
             this.setAttribute('fill-opacity', thisOpacity);
             return thisOpacity;
          });
 
-         path.style("stroke-opacity", function(o) {
+         d3.selectAll("path.link").transition().duration(transDuration).style("opacity", function(o) {
             return o.source === d || o.target === d ? 1 : opacity;
          });
 
-         label.style("stroke-opacity", function(o, thisOpacity) {
-            var thisOpacity = isConnected(d, o) ? 1 : opacity;
-            this.setAttribute('fill-opacity', thisOpacity);
-            return thisOpacity;
+         d3.selectAll("text.labeltext").transition().duration(transDuration).style("opacity", function(o) {
+            return o.source === d || o.target === d ? 1 : opacity;
          });
       }
 
-      var text = svg.append("svg:g").selectAll("g")
-              .data(force.nodes())
-              .enter().append("svg:g");
-      text.append("svg:text")
-              .attr("x", 10)
-              .attr("y", ".31em")
-              .style("font-size", "110%")
-              .text(function(d) {
-                 return d.name;
-              });
+      function unHighlightAll(o) {
+         setOpacityOfAll(o, 0.1);
+      }
 
-      var label = svg.append("svg:g").selectAll("label")
-              .data(force.links())
-              .enter().append("svg:g");
-      label.append("svg:text")
-              .attr("x", 10)
-              .attr("y", ".31em")
-              .style("font-size", "80%")
-              .text(function(d) {
-                 return cdiTypes[d.type];
-              });
+      function highlightAll(o) {
+         setOpacityOfAll(o, 1);
+      }
+
+      function setOpacityOfAll(o, opacity, r) {
+         d3.selectAll("circle").style("stroke-opacity", function(o) {
+            this.setAttribute('fill-opacity', opacity);
+            return opacity;
+         });
+         d3.selectAll("circle").attr("r", function(o) {
+            return circleRNormal;
+         });
+         text.style("stroke-opacity", function(o) {
+            this.setAttribute('fill-opacity', opacity);
+            return opacity;
+         });
+         d3.selectAll("path.link").style("opacity", opacity);
+         d3.selectAll("text.labeltext").style("opacity", opacity);
+      }
+
+      function highlightSelected(d, o) {
+         d3.selectAll("circle").style("stroke-opacity", function(o) {
+            if (isConnected(d, o)) {
+               this.setAttribute('fill-opacity', 1);
+               dVisible.push(o);
+               dVisible.push(d);
+            }
+            return 1;
+         });
+
+         text.style("stroke-opacity", function(o) {
+            if (isConnected(d, o)) {
+               this.setAttribute('fill-opacity', 1);
+            }
+            return 1;
+         });
+
+         d3.selectAll("circle").attr("r", function(o) {
+            return circleRNormal;
+         });
+
+         d3.selectAll("path.link").style("opacity", function(o) {
+            var thisOpacity = this.style.opacity;
+            var sourceIsVisible = false;
+            for (var i = 0, visible; visible = dVisible[i]; i++) {
+               if (o.source === visible) {
+                  sourceIsVisible = true;
+                  break;
+               }
+            }
+            var targetIsVisible = false;
+            for (var i = 0, visible; visible = dVisible[i]; i++) {
+               if (o.target === visible) {
+                  targetIsVisible = true;
+                  break;
+               }
+            }
+            if (sourceIsVisible && targetIsVisible) {
+               thisOpacity = 1;
+            }
+            return thisOpacity;
+         });
+
+         d3.selectAll("text.labeltext").style("opacity", function(o) {
+            var thisOpacity = this.style.opacity;
+            var sourceIsVisible = false;
+            for (var i = 0, visible; visible = dVisible[i]; i++) {
+               if (o.source === visible) {
+                  sourceIsVisible = true;
+                  break;
+               }
+            }
+            var targetIsVisible = false;
+            for (var i = 0, visible; visible = dVisible[i]; i++) {
+               if (o.target === visible) {
+                  targetIsVisible = true;
+                  break;
+               }
+            }
+            if (sourceIsVisible && targetIsVisible) {
+               thisOpacity = 1;
+            }
+            return thisOpacity;
+         });
+      }
 
 
       function stringContains(inputString, stringToFind) {
