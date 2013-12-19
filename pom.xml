@@ -7,7 +7,7 @@
    </parent>
    <groupId>de.struller-baumann</groupId>
    <artifactId>visualee</artifactId>
-   <version>0.26</version>
+   <version>0.27-SNAPSHOT</version>
    <packaging>maven-plugin</packaging>
 
    <name>visualee</name>
@@ -165,7 +165,7 @@
       <connection>scm:git:git@github.com:Thomas-S-B/visualee.git</connection>
       <url>scm:git:git@github.com:Thomas-S-B/visualee.git</url>
       <developerConnection>scm:git:git@github.com:Thomas-S-B/visualee.git</developerConnection>
-      <tag>v0.26</tag>
+      <tag>v0.17</tag>
    </scm>
 
    <properties>
