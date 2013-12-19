@@ -30,105 +30,106 @@
       <script type="text/javascript" src="js/classgraph.js"></script>
    </head>
    <body>
-      <h1>DI_TEMPLATE_TITLE</h1>
+      <div id="topPanel">
+         <h1>DI_TEMPLATE_TITLE</h1>
+         <div id="created" class="created">DI_TEMPLATE_CREATIONDATE</div>
+         <script type="text/javascript">
+            window.onload = function() {
+               initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_GRAPH_WIDTH, DI_TEMPLATE_GRAPH_HEIGHT);
+               printValue('sliderDistance', 'distanceValue');
+               printValue('sliderGravity', 'gravityValue');
+               printValue('sliderGraphWidth', 'graphWidthValue');
+               printValue('sliderGraphHeight', 'graphHeightValue');
+               printValue('sliderFontSize', 'fontSizeValue');
+               setDistance(sliderDistance.value);
+               setGravity(sliderGravity.value);
+               setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
+               setFontSize(sliderFontSize.value);
+            }
 
-      <script type="text/javascript">
-         window.onload = function() {
-            initGraph("DI_TEMPLATE_JSON_FILE", DI_TEMPLATE_GRAPH_WIDTH, DI_TEMPLATE_GRAPH_HEIGHT);
-            printValue('sliderDistance', 'distanceValue');
-            printValue('sliderGravity', 'gravityValue');
-            printValue('sliderGraphWidth', 'graphWidthValue');
-            printValue('sliderGraphHeight', 'graphHeightValue');
-            printValue('sliderFontSize', 'fontSizeValue');
-            setDistance(sliderDistance.value);
-            setGravity(sliderGravity.value);
-            setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
-            setFontSize(sliderFontSize.value);
-         }
+            function printValue(sliderID, label) {
+               var x = document.getElementById(label);
+               var y = document.getElementById(sliderID);
+               x.innerHTML = y.value;
+            }
 
-         function printValue(sliderID, label) {
-            var x = document.getElementById(label);
-            var y = document.getElementById(sliderID);
-            x.innerHTML = y.value;
-         }
+            $(document).ready(function() {
+               var originalSize = $('#pop-sourcecode').css('font-size');
+               $(".resetFont").click(function() {
+                  $('#pop-sourcecode').css('font-size', originalSize);
+                  return false;
+               });
 
-         $(document).ready(function() {
-            var originalSize = $('#pop-sourcecode').css('font-size');
-            $(".resetFont").click(function() {
-               $('#pop-sourcecode').css('font-size', originalSize);
-               return false;
+               $(".increaseFont").click(function() {
+                  var currentSize = $('#pop-sourcecode').css('font-size');
+                  var currentSize = parseFloat(currentSize) * 1.1;
+                  $('#pop-sourcecode').css('font-size', currentSize);
+
+                  return false;
+               });
+
+               $(".decreaseFont").click(function() {
+                  var currentSize = $('#pop-sourcecode').css('font-size');
+                  var currentSize = parseFloat(currentSize) * 0.9;
+                  $('#pop-sourcecode').css('font-size', currentSize);
+
+                  return false;
+               });
             });
 
-            $(".increaseFont").click(function() {
-               var currentSize = $('#pop-sourcecode').css('font-size');
-               var currentSize = parseFloat(currentSize) * 1.1;
-               $('#pop-sourcecode').css('font-size', currentSize);
+         </script>
 
-               return false;
-            });
+         <div id="searching" class="ui-widget">
+            <label for="searchText">Search: </label>
+            <input id="searchText" type ="text" onkeyup="searchNode(searchText.value);" />
+            <input id="clearSearch" type ="button" value="Clear search" onclick="searchText.value = '';
+                  searchNode(searchText.value);"/>
+         </div>
 
-            $(".decreaseFont").click(function() {
-               var currentSize = $('#pop-sourcecode').css('font-size');
-               var currentSize = parseFloat(currentSize) * 0.9;
-               $('#pop-sourcecode').css('font-size', currentSize);
+         <div id="tweakgraph">
+            <div id="tweakgraph-open">Tweak graph (click here to show)</div>
+            <div id="tweakgraph-close">Tweak graph (click here to hide)</div>
+            <div id="tweakgraph-sliders">
+               <table>
+                  <tr>
+                     <td>Distance: <label id="distanceValue"></label></td>
+                     <td>Gravity: <label id="gravityValue"></label></td>
+                     <td>Width: <label id="graphWidthValue"></label></td>
+                     <td>Height: <label id="graphHeightValue"></label></td>
+                     <td>Fontsize: <label id="fontSizeValue"></label>%</td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <input id="sliderDistance" type ="range" min ="10" max="800" step ="3" value ="DI_TEMPLATE_DISTANCE"
+                               onchange="setDistance(sliderDistance.value);
+                                     printValue('sliderDistance', 'distanceValue');"/>
+                     </td>
+                     <td>
+                        <input id="sliderGravity" type ="range" min ="1" max="100" step ="1" value ="DI_TEMPLATE_GRAVITY"
+                               onchange="setGravity(sliderGravity.value);
+                                     printValue('sliderGravity', 'gravityValue');"/>
+                     </td>
+                     <td>
+                        <input id="sliderGraphWidth" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPH_WIDTH"
+                               onchange="setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
+                                     printValue('sliderGraphWidth', 'graphWidthValue');"/>
+                     </td>
+                     <td>
+                        <input id="sliderGraphHeight" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPH_HEIGHT"
+                               onchange="setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
+                                     printValue('sliderGraphHeight', 'graphHeightValue');"/>
+                     </td>
+                     <td>
+                        <input id="sliderFontSize" type ="range" min ="1" max="300" step ="1" value ="DI_TEMPLATE_FONTSIZE"
+                               onchange="setFontSize(sliderFontSize.value);
+                                     printValue('sliderFontSize', 'fontSizeValue');"/>
+                     </td>
+                  </tr>
+               </table>
 
-               return false;
-            });
-         });
-
-      </script>
-
-      <div id="searching" class="ui-widget">
-         <label for="searchText">Search: </label>
-         <input id="searchText" type ="text" onkeyup="searchNode(searchText.value);" />
-         <input id="clearSearch" type ="button" value="Clear search" onclick="searchText.value = '';
-               searchNode(searchText.value);"/>
-      </div>
-
-      <div id="tweakgraph">
-         <div id="tweakgraph-open">Tweak graph (click here to show)</div>
-         <div id="tweakgraph-close">Tweak graph (click here to hide)</div>
-         <div id="tweakgraph-sliders">
-            <table>
-               <tr>
-                  <td>Distance: <label id="distanceValue"></label></td>
-                  <td>Gravity: <label id="gravityValue"></label></td>
-                  <td>Width: <label id="graphWidthValue"></label></td>
-                  <td>Height: <label id="graphHeightValue"></label></td>
-                  <td>Fontsize: <label id="fontSizeValue"></label>%</td>
-               </tr>
-               <tr>
-                  <td>
-                     <input id="sliderDistance" type ="range" min ="10" max="800" step ="3" value ="DI_TEMPLATE_DISTANCE"
-                            onchange="setDistance(sliderDistance.value);
-                                  printValue('sliderDistance', 'distanceValue');"/>
-                  </td>
-                  <td>
-                     <input id="sliderGravity" type ="range" min ="1" max="100" step ="1" value ="DI_TEMPLATE_GRAVITY"
-                            onchange="setGravity(sliderGravity.value);
-                                  printValue('sliderGravity', 'gravityValue');"/>
-                  </td>
-                  <td>
-                     <input id="sliderGraphWidth" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPH_WIDTH"
-                            onchange="setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
-                                  printValue('sliderGraphWidth', 'graphWidthValue');"/>
-                  </td>
-                  <td>
-                     <input id="sliderGraphHeight" type ="range" min ="10" max="10000" step ="50" value ="DI_TEMPLATE_GRAPH_HEIGHT"
-                            onchange="setGraphSize(sliderGraphWidth.value, sliderGraphHeight.value);
-                                  printValue('sliderGraphHeight', 'graphHeightValue');"/>
-                  </td>
-                  <td>
-                     <input id="sliderFontSize" type ="range" min ="1" max="300" step ="1" value ="DI_TEMPLATE_FONTSIZE"
-                            onchange="setFontSize(sliderFontSize.value);
-                                  printValue('sliderFontSize', 'fontSizeValue');"/>
-                  </td>
-               </tr>
-            </table>
-
+            </div>
          </div>
       </div>
-
       <div id="pop-up">
          <div id="pop-up-buttons">
             <div class="pop-up-close">X</div>
@@ -150,7 +151,5 @@
       </div>
 
       <div id="canvasGraph"></div>
-
-      <div id="created" class="created">DI_TEMPLATE_CREATIONDATE</div>
    </body>
 </html>

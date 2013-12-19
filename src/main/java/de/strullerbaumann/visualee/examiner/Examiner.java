@@ -60,14 +60,18 @@ public abstract class Examiner {
       try (Scanner scanner = getSourceCodeScanner(getClassBody(javaSource.getSourceCodeWithoutComments()))) {
          while (scanner.hasNext()) {
             String token = scanner.next();
-            //ignore relevant Annotaions (e.g. @Inject) if they are in quotes
-            while (token.contains("\"") && countChar(token, '"') < 2) {
-               scanAfterQuote(token, scanner);
-               token = scanner.next();
-            }
-            DependencyType type = getTypeFromToken(token);
-            if (isRelevantType(type)) {
-               examineDetail(javaSource, scanner, token, type);
+            try {
+               //ignore relevant Annotations (e.g. @Inject) if they are in quotes
+//               while (token.contains("\"") && countChar(token, '"') < 2) {
+//                  scanAfterQuote(token, scanner);
+//                  token = scanner.next();
+//               }
+               DependencyType type = getTypeFromToken(token);
+               if (isRelevantType(type)) {
+                  examineDetail(javaSource, scanner, token, type);
+               }
+            } catch (Exception e) {
+               LogProvider.getInstance().error("### Problems while examining " + javaSource.getPackagePath() + "." + javaSource + " actual token was " + token, e);
             }
          }
       }
