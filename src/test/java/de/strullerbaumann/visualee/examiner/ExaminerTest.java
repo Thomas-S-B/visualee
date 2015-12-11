@@ -310,6 +310,27 @@ public class ExaminerTest {
    }
 
    @Test
+   public void testJumpOverTokenInsufficientTokens(){
+      JavaSource javaSource;
+      String sourceCode;
+      String actual;
+      String expected;
+      Scanner scanner;
+      String currentToken;
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "public";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now public
+      try {
+          actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
+      } catch (IllegalArgumentException iae) {
+          assertEquals("Insufficient number of tokens to jump over", iae.getMessage());
+      }
+   }
+
+   @Test
    public void testCleanupGeneric() {
       String inputString;
       String actual;
