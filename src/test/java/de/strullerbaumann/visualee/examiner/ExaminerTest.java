@@ -407,6 +407,21 @@ public class ExaminerTest {
       assertEquals("de.test1.test2.test3.test4", javaSource.getPackagePath());
    }
 
+   @Test
+   public void testFindAndSetPackageInsufficientTokens() {
+      JavaSource javaSource;
+      String sourceCode;
+
+      javaSource = new JavaSource("MyTestClass");
+      sourceCode = "package";
+      javaSource.setSourceCode(sourceCode);
+      try{
+          Examiner.findAndSetPackage(javaSource);
+      } catch (IllegalArgumentException iae) {
+          assertEquals("Insufficient number of tokens to set package", iae.getMessage());
+      }
+   }
+
    public class ExaminerImpl extends Examiner {
 
       @Override
