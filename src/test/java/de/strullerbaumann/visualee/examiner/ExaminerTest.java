@@ -280,6 +280,25 @@ public class ExaminerTest {
    }
 
    @Test
+   public void testScanAfterClosedParenthesisInsufficientTokens() {
+      JavaSource javaSource;
+      String sourceCode;
+      Scanner scanner;
+      String currentToken;
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "@NotNull(groups";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now @NotNull((groups
+      try {
+          ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
+      } catch (IllegalArgumentException iae) {
+          assertEquals("Insufficient number of tokens to scan after closed parenthesis", iae.getMessage());
+      }
+   }
+
+   @Test
    public void testJumpOverJavaToken() {
       JavaSource javaSource;
       String sourceCode;

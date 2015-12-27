@@ -141,6 +141,9 @@ public abstract class Examiner {
       for (int iCount = 0; iCount < countParenthesisOpen - countParenthesisClose; iCount++) {
          stack.push(1);
       }
+      if (!scanner.hasNext()) {
+         throw new IllegalArgumentException("Insufficient number of tokens to scan after closed parenthesis");
+      }
       String token = scanner.next();
 
       whilestack:
