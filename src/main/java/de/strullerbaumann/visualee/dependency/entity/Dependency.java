@@ -91,10 +91,7 @@ public class Dependency {
       if (!Objects.equals(this.javaSourceFrom, other.javaSourceFrom)) {
          return false;
       }
-      if (!Objects.equals(this.javaSourceTo, other.javaSourceTo)) {
-         return false;
-      }
-      return true;
+      return Objects.equals(this.javaSourceTo, other.javaSourceTo);
    }
 
    @Override
