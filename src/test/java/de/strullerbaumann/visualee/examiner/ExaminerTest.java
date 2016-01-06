@@ -280,6 +280,25 @@ public class ExaminerTest {
    }
 
    @Test
+   public void testScanAfterClosedParenthesisInsufficientTokens() {
+      JavaSource javaSource;
+      String sourceCode;
+      Scanner scanner;
+      String currentToken;
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "@NotNull(groups";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now @NotNull((groups
+      try {
+          ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
+      } catch (IllegalArgumentException iae) {
+          assertEquals("Insufficient number of tokens to scan after closed parenthesis", iae.getMessage());
+      }
+   }
+
+   @Test
    public void testJumpOverJavaToken() {
       JavaSource javaSource;
       String sourceCode;
@@ -307,6 +326,27 @@ public class ExaminerTest {
       expected = "Album2";
       actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
       assertEquals(expected, actual);
+   }
+
+   @Test
+   public void testJumpOverTokenInsufficientTokens(){
+      JavaSource javaSource;
+      String sourceCode;
+      String actual;
+      String expected;
+      Scanner scanner;
+      String currentToken;
+
+      javaSource = new JavaSource("TestClass");
+      sourceCode = "public";
+      javaSource.setSourceCode(sourceCode);
+      scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
+      currentToken = scanner.next(); // now public
+      try {
+          actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
+      } catch (IllegalArgumentException iae) {
+          assertEquals("Insufficient number of tokens to jump over", iae.getMessage());
+      }
    }
 
    @Test
@@ -365,6 +405,21 @@ public class ExaminerTest {
       javaSource.setSourceCode(sourceCode);
       Examiner.findAndSetPackage(javaSource);
       assertEquals("de.test1.test2.test3.test4", javaSource.getPackagePath());
+   }
+
+   @Test
+   public void testFindAndSetPackageInsufficientTokens() {
+      JavaSource javaSource;
+      String sourceCode;
+
+      javaSource = new JavaSource("MyTestClass");
+      sourceCode = "package";
+      javaSource.setSourceCode(sourceCode);
+      try{
+          Examiner.findAndSetPackage(javaSource);
+      } catch (IllegalArgumentException iae) {
+          assertEquals("Insufficient number of tokens to set package", iae.getMessage());
+      }
    }
 
    public class ExaminerImpl extends Examiner {

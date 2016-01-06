@@ -141,6 +141,9 @@ public abstract class Examiner {
       for (int iCount = 0; iCount < countParenthesisOpen - countParenthesisClose; iCount++) {
          stack.push(1);
       }
+      if (!scanner.hasNext()) {
+         throw new IllegalArgumentException("Insufficient number of tokens to scan after closed parenthesis");
+      }
       String token = scanner.next();
 
       whilestack:
@@ -239,6 +242,9 @@ public abstract class Examiner {
    protected static String jumpOverJavaToken(String token, Scanner scanner) {
       String nextToken = token;
       while (isAJavaToken(nextToken)) {
+         if (!scanner.hasNext()) {
+            throw new IllegalArgumentException("Insufficient number of tokens to jump over");
+         }
          if (nextToken.startsWith("@") && nextToken.indexOf('(') > -1 && !nextToken.endsWith(")")) {
             nextToken = scanAfterClosedParenthesis(nextToken, scanner);
          } else {
@@ -253,6 +259,9 @@ public abstract class Examiner {
       while (scanner.hasNext()) {
          String token = scanner.next();
          if (javaSource.getPackagePath() == null && token.equals("package")) {
+            if (!scanner.hasNext()) {
+               throw new IllegalArgumentException("Insufficient number of tokens to set package");
+            }
             token = scanner.next();
             if (token.endsWith(";")) {
                String packagePath = token.substring(0, token.indexOf(';'));

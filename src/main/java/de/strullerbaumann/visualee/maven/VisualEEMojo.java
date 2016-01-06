@@ -95,6 +95,7 @@ public class VisualEEMojo extends AbstractMojo {
       if (isThisRootDir()) {
          getLog().info(HEADER_FOOTER);
          getLog().info("VisualEE-Plugin");
+         checkCreateDirs(outputdirectory);
          for (String exportFile : CSS_DIR_FILES) {
             FileManager.export(CSS_DIR, exportFile, outputdirectory.getAbsoluteFile());
          }
@@ -127,7 +128,16 @@ public class VisualEEMojo extends AbstractMojo {
       }
    }
 
-   protected boolean isThisRootDir() {
+    /**
+     * checks is the directory exists or creates it assuming it cannot be null
+     */
+    protected void checkCreateDirs(File dirPath) {
+        if (!dirPath.exists()) {
+            dirPath.mkdirs();
+        }
+    }
+
+    protected boolean isThisRootDir() {
       return mavenSession.getExecutionRootDirectory().equalsIgnoreCase(basedir.toString());
    }
 }
