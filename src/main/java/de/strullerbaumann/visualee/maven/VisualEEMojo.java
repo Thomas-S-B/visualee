@@ -22,6 +22,7 @@ package de.strullerbaumann.visualee.maven;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
 import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.resources.FileManager;
+import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.ui.graph.boundary.GraphConfigurator;
 import de.strullerbaumann.visualee.ui.graph.boundary.GraphCreator;
 import de.strullerbaumann.visualee.ui.graph.control.HTMLManager;
@@ -63,6 +64,12 @@ public class VisualEEMojo extends AbstractMojo {
     */
    private File outputdirectory;
    /**
+    * Encoding of the Javasource-Files, which are examined
+    *
+    * @parameter default-value="UTF-8"
+    */
+   private String encoding;
+   /**
     * Graphs Properties.
     *
     * @parameter
@@ -98,9 +105,13 @@ public class VisualEEMojo extends AbstractMojo {
          String sourceFolder = mavenSession.getExecutionRootDirectory();
          if (sourceFolder != null) {
             HTMLManager.generateIndexHTML(outputdirectory, "/html/index.html", sourceFolder);
+            getLog().info("Using encoding        : " + encoding);
             getLog().info("Analyzing sourcefolder: " + sourceFolder);
             DependencyAnalyzer.getInstance().analyze(sourceFolder);
             getLog().info("Generating graphs");
+            if (encoding != null) {
+               JavaSourceContainer.setEncoding(encoding);
+            }
             if (graphs != null) {
                GraphConfigurator.setGraphConfigs(graphs);
             }

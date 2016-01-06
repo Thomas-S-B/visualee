@@ -9,9 +9,9 @@ package de.strullerbaumann.visualee.source.entity;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,8 +20,9 @@ package de.strullerbaumann.visualee.source.entity;
  * #L%
  */
 import de.strullerbaumann.visualee.logging.LogProvider;
+import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import java.io.IOException;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -143,12 +144,14 @@ public class JavaSource {
       Path pathJavaSource = this.getJavaFile();
       StringBuilder loadedSourceCode = new StringBuilder();
       try {
-         List<String> sourceCodeLines = Files.readAllLines(pathJavaSource, UTF_8);
+         List<String> sourceCodeLines = Files.readAllLines(pathJavaSource, JavaSourceContainer.getEncoding());
          for (String sourceCodeLine : sourceCodeLines) {
             loadedSourceCode.append(sourceCodeLine).append('\n');
          }
       } catch (IOException ex) {
          LogProvider.getInstance().error("Problems while reading " + this.getJavaFile(), ex);
+      } catch (UnsupportedCharsetException ex) {
+         LogProvider.getInstance().error("Not valid encoding is configured in the pom.", ex);
       }
       setSourceCode(loadedSourceCode.toString());
    }

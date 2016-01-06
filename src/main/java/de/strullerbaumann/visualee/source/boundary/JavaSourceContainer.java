@@ -9,9 +9,9 @@ package de.strullerbaumann.visualee.source.boundary;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,8 @@ package de.strullerbaumann.visualee.source.boundary;
  */
 import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class JavaSourceContainer {
 
+   private static String encoding = Charset.defaultCharset().name();
    private static final Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
 
    private static class JavaSourceContainerHolder {
@@ -68,16 +71,6 @@ public final class JavaSourceContainer {
       return javaSources.get(n);
    }
 
-   /*
-    public void loadJavaFiles(File rootFolder) {
-    final List<File> javaFiles = FileManager.searchFiles(rootFolder, ".java");
-    for (File javaFile : javaFiles) {
-    JavaSource javaSource = new JavaSource(javaFile);
-    JavaSourceContainer.getInstance().add(javaSource);
-    javaSource.loadSourceCode();
-    }
-    }
-    */
    public void loadJavaFiles(String rootFolder) {
       final List<Path> javaFiles = FileManager.searchFiles(rootFolder, ".java");
       for (Path javaFile : javaFiles) {
@@ -85,6 +78,14 @@ public final class JavaSourceContainer {
          JavaSourceContainer.getInstance().add(javaSource);
          javaSource.loadSourceCode();
       }
+   }
+
+   public static Charset getEncoding() throws UnsupportedCharsetException {
+      return Charset.forName(encoding);
+   }
+
+   public static void setEncoding(String aEncoding) {
+      encoding = aEncoding;
    }
 
 }
