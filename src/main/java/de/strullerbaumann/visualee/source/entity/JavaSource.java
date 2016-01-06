@@ -149,7 +149,7 @@ public class JavaSource {
             loadedSourceCode.append(sourceCodeLine).append('\n');
          }
       } catch (IOException ex) {
-         LogProvider.getInstance().error("Problems while reading " + this.getJavaFile(), ex);
+         LogProvider.getInstance().error("Problems (is encoding valid?) while reading " + this.getJavaFile(), ex);
       } catch (UnsupportedCharsetException ex) {
          LogProvider.getInstance().error("Not valid encoding is configured in the pom.", ex);
       }

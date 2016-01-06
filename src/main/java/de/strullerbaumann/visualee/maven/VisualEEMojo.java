@@ -106,6 +106,7 @@ public class VisualEEMojo extends AbstractMojo {
          if (sourceFolder != null) {
             HTMLManager.generateIndexHTML(outputdirectory, "/html/index.html", sourceFolder);
             getLog().info("Using encoding        : " + encoding);
+            JavaSourceContainer.setEncoding(encoding);
             getLog().info("Analyzing sourcefolder: " + sourceFolder);
             DependencyAnalyzer.getInstance().analyze(sourceFolder);
             getLog().info("Generating graphs");
