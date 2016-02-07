@@ -22,8 +22,9 @@ package de.strullerbaumann.visualee.examiner.jpa;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
-import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -59,7 +60,7 @@ public class JPAExaminerTest {
       String sourceCode;
 
       // Many to one
-      javaSource = new JavaSource("MyTestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("MyTestClass");
       sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "@ManyToOne(cascade = { CascadeType.DETACH })\n"
               + "@JoinColumn(name = \"ALBUMID\", nullable = false)\n"
@@ -82,7 +83,7 @@ public class JPAExaminerTest {
       String sourceCode;
 
       // Many to many
-      javaSource = new JavaSource("User");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("User");
       sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "@ManyToMany(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.LAZY)\n"
               + "@JoinTable(name = \"USERS_GROUPS\", joinColumns = {\n"
@@ -104,7 +105,7 @@ public class JPAExaminerTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("Cocktail");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("Cocktail");
       sourceCode = "//@Entity\n"
               + "//@Access(AccessType.FIELD)\n"
               + "public class Cocktail implements Comparable<Cocktail>\n"
@@ -133,7 +134,7 @@ public class JPAExaminerTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("CocktailModel");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("CocktailModel");
       sourceCode = "@Model\n"
               + "public class CocktailModel implements Serializable\n"
               + "{\n"

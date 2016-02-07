@@ -23,6 +23,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -77,7 +78,7 @@ public class ExaminerInjectTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("MyTestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("MyTestClass");
       sourceCode = "public abstract class MyTestClass<K, E extends SingleIdEntity<K>> implements CrudAccessor<K, E>, Serializable {\n"
               + "protected EntityManager entityManager;\n"
               + "private Class<E> entityClass;\n"
@@ -114,7 +115,7 @@ public class ExaminerInjectTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("ZeiterfassungEingabeModel");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("ZeiterfassungEingabeModel");
       sourceCode = "public class ZeiterfassungEingabeModel implements Serializable\n"
               + "{\n"
               + "@Inject\n"
@@ -133,12 +134,12 @@ public class ExaminerInjectTest {
    }
 
    @Test
-   @Ignore
+   @Ignore  //Deactivated exotic test and implemention
    public void testFindAndSetAttributesInjectIgnoreQuotes() {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("TestCDIServlet");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestCDIServlet");
       sourceCode = "public class TestCDIServlet extends HttpServlet {\n"
               + "@Inject UserTransaction ut;\n"
               + "protected void processRequest(HttpServletRequest request, HttpServletResponse response)\n"
@@ -174,7 +175,7 @@ public class ExaminerInjectTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("Events");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("Events");
       sourceCode = "     @Stateless\n"
               + "public class Events {\n"
               + " @Inject\n"

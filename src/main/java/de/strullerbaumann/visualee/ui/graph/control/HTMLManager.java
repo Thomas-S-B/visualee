@@ -19,6 +19,8 @@ package de.strullerbaumann.visualee.ui.graph.control;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.filter.boundary.FilterContainer;
+import de.strullerbaumann.visualee.filter.entity.Filter;
 import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.ui.graph.entity.Graph;
 import java.io.BufferedReader;
@@ -63,11 +65,28 @@ public final class HTMLManager {
       SimpleDateFormat sdf = new SimpleDateFormat();
       sdf.applyPattern("dd.MM.yyyy ' - ' HH:mm:ss");
       indexHtml = indexHtml.replaceAll("INDEX_CREATIONDATE", "Created " + sdf.format(new Date()));
+
+      StringBuilder activeFiltersContent = new StringBuilder();
+
+      if (FilterContainer.getInstance().getFilters().size() > 0) {
+         activeFiltersContent.append("<ul>");
+         for (Filter filter : FilterContainer.getInstance().getFilters()) {
+            activeFiltersContent.append("<li>");
+            activeFiltersContent.append(filter.toString());
+            activeFiltersContent.append("</li>");
+         }
+         activeFiltersContent.append("</ul>");
+      } else {
+         activeFiltersContent.append("No filters configured.");
+      }
+
+      indexHtml = indexHtml.replaceAll("ACTIVEFILTERS_CONTENT", activeFiltersContent.toString());
+
       File htmlFile = new File(outputdirectory.getAbsolutePath() + "/index.html");
       try (PrintStream ps = new PrintStream(htmlFile)) {
          ps.println(indexHtml);
       } catch (FileNotFoundException ex) {
-         LogProvider.getInstance().error("Didn't found index.html", ex);
+         LogProvider.getInstance().error("Didn't found index.html template", ex);
       }
    }
 

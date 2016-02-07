@@ -23,6 +23,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +75,7 @@ public class ExaminerInstanceTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("EscalationNotificationBroker");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("EscalationNotificationBroker");
       sourceCode = "@Singleton\n"
               + "@ConcurrencyManagement(ConcurrencyManagementType.BEAN)\n"
               + "public class EscalationNotificationBroker {\n"
@@ -100,7 +101,7 @@ public class ExaminerInstanceTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("SnapshotProvider");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("SnapshotProvider");
       sourceCode = "public class EscalationNotificationBroker {\n"
               + "@Inject\n"
               + "   @SnapshotDataCollector"

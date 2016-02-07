@@ -25,6 +25,7 @@ import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Scanner;
@@ -77,7 +78,7 @@ public abstract class Examiner {
       }
    }
 
-   protected static Scanner getSourceCodeScanner(String sourceCode) {
+   public static Scanner getSourceCodeScanner(String sourceCode) {
       Scanner scanner = new Scanner(sourceCode);
       scanner.useDelimiter("[ \t\r\n]+");
       return scanner;
@@ -91,7 +92,7 @@ public abstract class Examiner {
          while (scanner.hasNext()) {
             String token = scanner.next();
             if (!isInBodyNow) {
-               if (token.indexOf("class ") > -1) {
+               if (token.contains("class ")) {
                   isInBodyNow = true;
                }
             } else {
@@ -142,7 +143,7 @@ public abstract class Examiner {
          stack.push(1);
       }
       if (!scanner.hasNext()) {
-         throw new IllegalArgumentException("Insufficient number of tokens to scan after closed parenthesis");
+         throw new IllegalArgumentException("Insufficient number of tokens to scan after closed parenthesis in token " + currentToken);
       }
       String token = scanner.next();
 
@@ -212,27 +213,41 @@ public abstract class Examiner {
       return cleanedClassName + arrayToken;
    }
 
+   //### TODO simplifizieren, Möglichkeit schaffen, dass neue JavaSourcen über eine Factory gebaut werden
+   // und dann kann man da den isOK an einer Stelle einbauen. Also new JavaSource suchen und diese in die Factory
+   // JavaSourceFactory.getForName(String className) oder so und die liefert null wenn gefiltert
+   // Schaffen das JAvaSOurce nicht direkt instanziiert werden kann siehe
+   // http://stackoverflow.com/questions/1326230/avoid-instantiating-a-class-in-java
    protected void createDependency(String classNameIn, DependencyType type, JavaSource javaSource) {
       //Need to convert primitives-names to wrapper-classnames (e.g. @Produces Integer xyz => @Inject int xyz
       String className = cleanPrimitives(classNameIn);
       JavaSource injectedJavaSource = JavaSourceContainer.getInstance().getJavaSourceByName(className);
       if (injectedJavaSource == null) {
          // Generate a new JavaSource, which is not explicit in the sources (e.g. Integer, String etc.)
-         injectedJavaSource = new JavaSource(className);
-         JavaSourceContainer.getInstance().add(injectedJavaSource);
-         if (isAValidClassName(className)) {
-            LogProvider.getInstance().debug("Created new JavaSource with name: " + className);
+         //### TODO injectedJavaSource = new JavaSource(className);
+         injectedJavaSource = JavaSourceFactory.getInstance().newJavaSource(className);
+         //### TODO auch sollen keine Dummies mehr angelegt werden da soll der Filter auch greifen
+         if (injectedJavaSource != null) {
+            JavaSourceContainer.getInstance().add(injectedJavaSource);
+            if (isAValidClassName(className)) {
+               LogProvider.getInstance().debug("Created new JavaSource with name: " + className);
+            } else {
+               LogProvider.getInstance().debug("Created new JavaSource (type=" + type.name() + ") with a suspicious name: " + className + " - Found in " + javaSource.getFullClassName());
+            }
          } else {
-            LogProvider.getInstance().debug("Created new JavaSource (type=" + type.name() + ") with a suspicious name: " + className + " - Found in " + javaSource.getFullClassName());
+            LogProvider.getInstance().debug("Didn't created new JavaSource, because of filter, with name: " + className);
          }
       }
-      Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
-      DependencyContainer.getInstance().add(dependency);
+      //### TODO Dependency nur anlegen,  wenn JavaSource nicht gefiltert
+      if (injectedJavaSource != null) {
+         Dependency dependency = new Dependency(type, javaSource, injectedJavaSource);
+         DependencyContainer.getInstance().add(dependency);
+      }
    }
 
    protected static boolean isAJavaToken(String token) {
       for (String javaToken : JAVA_TOKENS) {
-         if (token.indexOf(javaToken) > - 1) {
+         if (token.contains(javaToken)) {
             return true;
          }
       }
@@ -243,32 +258,15 @@ public abstract class Examiner {
       String nextToken = token;
       while (isAJavaToken(nextToken)) {
          if (!scanner.hasNext()) {
-            throw new IllegalArgumentException("Insufficient number of tokens to jump over");
-         }
-         if (nextToken.startsWith("@") && nextToken.indexOf('(') > -1 && !nextToken.endsWith(")")) {
+            //### TODO LogProvider.getInstance().error("Insufficient number of tokens to jump over in sourcecodetoken " + token, new IllegalArgumentException());
+            throw new IllegalArgumentException("Insufficient number of tokens to jump over in sourcecodetoken " + token);
+         } else if (nextToken.startsWith("@") && nextToken.indexOf('(') > -1 && !nextToken.endsWith(")")) {
             nextToken = scanAfterClosedParenthesis(nextToken, scanner);
          } else {
             nextToken = scanner.next();
          }
       }
       return nextToken;
-   }
-
-   protected static void findAndSetPackage(JavaSource javaSource) {
-      Scanner scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
-      while (scanner.hasNext()) {
-         String token = scanner.next();
-         if (javaSource.getPackagePath() == null && token.equals("package")) {
-            if (!scanner.hasNext()) {
-               throw new IllegalArgumentException("Insufficient number of tokens to set package");
-            }
-            token = scanner.next();
-            if (token.endsWith(";")) {
-               String packagePath = token.substring(0, token.indexOf(';'));
-               javaSource.setPackagePath(packagePath);
-            }
-         }
-      }
    }
 
    protected static String cleanupGeneric(String className) {

@@ -39,7 +39,7 @@ public class ExaminerResource extends Examiner {
    @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
-      if (token.indexOf("@Resource(") > -1 || "@Resource".equals(token)) {
+      if (token.contains("@Resource(") || "@Resource".equals(token)) {
          type = DependencyType.RESOURCE;
       }
       return type;

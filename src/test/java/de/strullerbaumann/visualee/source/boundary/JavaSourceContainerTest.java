@@ -21,6 +21,7 @@ package de.strullerbaumann.visualee.source.boundary;
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,11 +43,11 @@ public class JavaSourceContainerTest {
    @Test
    public void testGetJavaSourceByName() {
       JavaSourceContainer.getInstance().clear();
-      JavaSource javaSource1 = new JavaSource("DataPoint");
+      JavaSource javaSource1 = JavaSourceFactory.getInstance().newJavaSource("DataPoint");
       JavaSourceContainer.getInstance().add(javaSource1);
-      JavaSource javaSource2 = new JavaSource("int");
+      JavaSource javaSource2 = JavaSourceFactory.getInstance().newJavaSource("int");
       JavaSourceContainer.getInstance().add(javaSource2);
-      JavaSource javaSource3 = new JavaSource("MyTestClass");
+      JavaSource javaSource3 = JavaSourceFactory.getInstance().newJavaSource("MyTestClass");
       JavaSourceContainer.getInstance().add(javaSource3);
 
       assertNotNull(JavaSourceContainer.getInstance().getJavaSourceByName("MyTestClass"));
@@ -61,11 +62,11 @@ public class JavaSourceContainerTest {
    public void testAddJavaSourceDoublette() {
       JavaSourceContainer.getInstance().clear();
       String name = "DataPoint";
-      JavaSource javaSource1 = new JavaSource(name);
+      JavaSource javaSource1 = JavaSourceFactory.getInstance().newJavaSource(name);
       String sourceCode1 = "Test source code for JavaSource1 (listen to Brian Blade - Season of change";
       javaSource1.setSourceCode(sourceCode1);
       JavaSourceContainer.getInstance().add(javaSource1);
-      JavaSource javaSource2 = new JavaSource(name);
+      JavaSource javaSource2 = JavaSourceFactory.getInstance().newJavaSource(name);
       javaSource2.setSourceCode("");
       JavaSourceContainer.getInstance().add(javaSource2);
 

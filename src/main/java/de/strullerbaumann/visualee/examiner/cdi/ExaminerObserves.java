@@ -39,7 +39,7 @@ public class ExaminerObserves extends Examiner {
    @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
-      if (token.indexOf("@Observes") > -1) {
+      if (token.contains("@Observes")) {
          type = DependencyType.OBSERVES;
       }
       return type;

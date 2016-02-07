@@ -100,6 +100,15 @@ div#tweakgraph-open:hover, div#tweakgraph-close:hover {
    cursor: default;
 }
 
+label#activeFilters {
+   font-size: large;
+   padding: 0px 0px 0px 25px;
+}
+div#activeFilters-content {
+   font-size: small;
+   padding: 0px 0px 0px 25px;
+}
+
 label#help {
    font-size: large;
    padding: 0px 0px 0px 25px;

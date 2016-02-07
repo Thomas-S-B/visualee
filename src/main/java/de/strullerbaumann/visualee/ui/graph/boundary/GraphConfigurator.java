@@ -37,15 +37,15 @@ public final class GraphConfigurator {
    private static final int DEFAULT_GRAPH_WIDTH = 900;
    private static final int DEFAULT_GRAPH_HEIGHT = 800;
    private static final int DEFAULT_FONTSIZE = 90;
-   private static final Map<String, GraphConfig> graphConfigs = new HashMap<>();
+   private static final Map<String, GraphConfig> GRAPHCONFIGS = new HashMap<>();
 
    private GraphConfigurator() {
    }
 
    public static void setGraphConfigs(List<GraphConfig> graphConfigsList) {
-      graphConfigs.clear();
+      GRAPHCONFIGS.clear();
       for (GraphConfig graphConfig : graphConfigsList) {
-         graphConfigs.put(graphConfig.getName(), graphConfig);
+         GRAPHCONFIGS.put(graphConfig.getName(), graphConfig);
       }
    }
 
@@ -57,10 +57,10 @@ public final class GraphConfigurator {
       graph.setGraphHeight(DEFAULT_GRAPH_HEIGHT);
       graph.setFontsize(DEFAULT_FONTSIZE);
       // Is there a default configuration?
-      GraphConfig graphConfig = graphConfigs.get(DEFAULT_GRAPHNAME);
+      GraphConfig graphConfig = GRAPHCONFIGS.get(DEFAULT_GRAPHNAME);
       setGraphConfig(graph, graphConfig);
       // Is there a indiviual configuration?
-      graphConfig = graphConfigs.get(graph.getName());
+      graphConfig = GRAPHCONFIGS.get(graph.getName());
       setGraphConfig(graph, graphConfig);
    }
 

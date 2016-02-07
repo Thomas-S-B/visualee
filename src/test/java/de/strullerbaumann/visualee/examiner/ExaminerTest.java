@@ -20,10 +20,13 @@ package de.strullerbaumann.visualee.examiner;
  * #L%
  */
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.filter.boundary.FilterContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import java.util.Scanner;
 import static org.junit.Assert.assertEquals;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -33,6 +36,11 @@ import org.junit.Test;
 public class ExaminerTest {
 
    public ExaminerTest() {
+   }
+
+   @BeforeClass
+   public static void setUpClass() {
+      FilterContainer.getInstance().clear();
    }
 
    @Test
@@ -151,7 +159,7 @@ public class ExaminerTest {
 
    @Test
    public void testGetClassBody() {
-      JavaSource javaSource = new JavaSource("TestClass");
+      JavaSource javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       javaSource.setSourceCode(TestDataProvider.getTestSourceCode());
 
       String expected = TestDataProvider.getTestSourceCodeBody();
@@ -191,7 +199,7 @@ public class ExaminerTest {
       Scanner scanner;
       String currentToken;
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "out.println(\"<h1>UserTransaction obtained using @Inject</h1>\");\n"
               + "mytoken";
       javaSource.setSourceCode(sourceCode);
@@ -202,7 +210,7 @@ public class ExaminerTest {
       actual = scanner.next();
       assertEquals(expected, actual);
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "out.println(\"<title>UserTransaction obtained using @Inject</title>\");\n"
               + "out.println(\"<h1>UserTransaction obtained using @Inject</h1>);\n"
               + "mytoken";
@@ -214,7 +222,7 @@ public class ExaminerTest {
       actual = scanner.next();
       assertEquals(expected, actual);
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@NotNull((groups = PersistenceConstraint.class) saddas)\n"
               + "private Album2 album;\n";
       javaSource.setSourceCode(sourceCode);
@@ -225,7 +233,7 @@ public class ExaminerTest {
       actual = scanner.next();
       assertEquals(expected, actual);
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "LOG.log(Level.FINE, \"Added {0} to watch channel {1}\", new Object[]{browserWindow.hashCode(), browserWindow.getChannel()});";
       javaSource.setSourceCode(sourceCode);
       scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
@@ -246,7 +254,7 @@ public class ExaminerTest {
       Scanner scanner;
       String currentToken;
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@NotNull(groups = PersistenceConstraint.class)\n"
               + "private Album album;\n";
       javaSource.setSourceCode(sourceCode);
@@ -257,7 +265,7 @@ public class ExaminerTest {
       actual = scanner.next();
       assertEquals(expected, actual);
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@NotNull((groups = PersistenceConstraint.class) saddas)\n"
               + "private Album2 album;\n";
       javaSource.setSourceCode(sourceCode);
@@ -268,7 +276,7 @@ public class ExaminerTest {
       actual = scanner.next();   // scan after private
       assertEquals(expected, actual);
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@Resource(mappedName=\"java:global/jms/myQueue2\")\n"
               + "private Album2 album;\n";
       javaSource.setSourceCode(sourceCode);
@@ -279,23 +287,19 @@ public class ExaminerTest {
       assertEquals(expected, actual);
    }
 
-   @Test
+   @Test(expected = IllegalArgumentException.class)
    public void testScanAfterClosedParenthesisInsufficientTokens() {
       JavaSource javaSource;
       String sourceCode;
       Scanner scanner;
       String currentToken;
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@NotNull(groups";
       javaSource.setSourceCode(sourceCode);
       scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
       currentToken = scanner.next(); // now @NotNull((groups
-      try {
-          ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
-      } catch (IllegalArgumentException iae) {
-          assertEquals("Insufficient number of tokens to scan after closed parenthesis", iae.getMessage());
-      }
+      ExaminerImpl.scanAfterClosedParenthesis(currentToken, scanner);
    }
 
    @Test
@@ -307,7 +311,7 @@ public class ExaminerTest {
       Scanner scanner;
       String currentToken;
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@NotNull(groups = PersistenceConstraint.class)\n"
               + "private Album album;\n";
       javaSource.setSourceCode(sourceCode);
@@ -317,7 +321,7 @@ public class ExaminerTest {
       actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
       assertEquals(expected, actual);
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "@NotNull((groups = PersistenceConstraint.class) saddas)\n"
               + "protected Album2 album;\n";
       javaSource.setSourceCode(sourceCode);
@@ -328,25 +332,20 @@ public class ExaminerTest {
       assertEquals(expected, actual);
    }
 
-   @Test
-   public void testJumpOverTokenInsufficientTokens(){
+   @Test(expected = IllegalArgumentException.class)
+   public void testJumpOverTokenInsufficientTokens() {
       JavaSource javaSource;
       String sourceCode;
-      String actual;
-      String expected;
       Scanner scanner;
       String currentToken;
 
-      javaSource = new JavaSource("TestClass");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TestClass");
       sourceCode = "public";
       javaSource.setSourceCode(sourceCode);
       scanner = Examiner.getSourceCodeScanner(javaSource.getSourceCode());
       currentToken = scanner.next(); // now public
-      try {
-          actual = ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
-      } catch (IllegalArgumentException iae) {
-          assertEquals("Insufficient number of tokens to jump over", iae.getMessage());
-      }
+
+      ExaminerImpl.jumpOverJavaToken(currentToken, scanner);
    }
 
    @Test
@@ -379,47 +378,6 @@ public class ExaminerTest {
       inputString = "TestClass";
       actual = ExaminerImpl.cleanupGeneric(inputString);
       assertEquals("TestClass", actual);
-   }
-
-   @Test
-   public void testFindAndSetPackage() {
-      JavaSource javaSource;
-      String sourceCode;
-
-      javaSource = new JavaSource("MyTestClass");
-      sourceCode = "package de.test1.test2.test3;\n"
-              + "public class MyTestClass {\n"
-              + "private Class<E> entityClass;\n"
-              + "}\n";
-      javaSource.setSourceCode(sourceCode);
-      Examiner.findAndSetPackage(javaSource);
-      assertEquals("de.test1.test2.test3", javaSource.getPackagePath());
-
-      //Ignore token package which is not defining a package
-      javaSource = new JavaSource("MyTestClass");
-      sourceCode = "// package as a comment\n"
-              + "package de.test1.test2.test3.test4;\n"
-              + "public class MyTestClass {\n"
-              + "private Class<E> entityClass;\n"
-              + "}\n";
-      javaSource.setSourceCode(sourceCode);
-      Examiner.findAndSetPackage(javaSource);
-      assertEquals("de.test1.test2.test3.test4", javaSource.getPackagePath());
-   }
-
-   @Test
-   public void testFindAndSetPackageInsufficientTokens() {
-      JavaSource javaSource;
-      String sourceCode;
-
-      javaSource = new JavaSource("MyTestClass");
-      sourceCode = "package";
-      javaSource.setSourceCode(sourceCode);
-      try{
-          Examiner.findAndSetPackage(javaSource);
-      } catch (IllegalArgumentException iae) {
-          assertEquals("Insufficient number of tokens to set package", iae.getMessage());
-      }
    }
 
    public class ExaminerImpl extends Examiner {

@@ -21,6 +21,7 @@ package de.strullerbaumann.visualee.source.boundary;
  */
 import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Path;
@@ -36,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class JavaSourceContainer {
 
    private static String encoding = Charset.defaultCharset().name();
-   private static final Map<String, JavaSource> javaSources = new ConcurrentHashMap<>();
+   private static final Map<String, JavaSource> JAVASOURCES = new ConcurrentHashMap<>();
 
    private static class JavaSourceContainerHolder {
 
@@ -51,32 +52,33 @@ public final class JavaSourceContainer {
    }
 
    public Collection<JavaSource> getJavaSources() {
-      return javaSources.values();
+      return JAVASOURCES.values();
    }
 
    public void clear() {
-      javaSources.clear();
+      JAVASOURCES.clear();
    }
 
    public void add(JavaSource javaSource) {
       if (javaSource == null) {
          return;
       }
-      if (!javaSources.containsKey(javaSource.getName())) {
-         javaSources.put(javaSource.getName(), javaSource);
+      if (!JAVASOURCES.containsKey(javaSource.getName())) {
+         JAVASOURCES.put(javaSource.getName(), javaSource);
       }
    }
 
    public JavaSource getJavaSourceByName(String n) {
-      return javaSources.get(n);
+      return JAVASOURCES.get(n);
    }
 
    public void loadJavaFiles(String rootFolder) {
       final List<Path> javaFiles = FileManager.searchFiles(rootFolder, ".java");
       for (Path javaFile : javaFiles) {
-         JavaSource javaSource = new JavaSource(javaFile);
-         JavaSourceContainer.getInstance().add(javaSource);
-         javaSource.loadSourceCode();
+         JavaSource javaSource = JavaSourceFactory.getInstance().newJavaSourceByFilename(javaFile);
+         if (javaSource != null) {
+            JavaSourceContainer.getInstance().add(javaSource);
+         }
       }
    }
 

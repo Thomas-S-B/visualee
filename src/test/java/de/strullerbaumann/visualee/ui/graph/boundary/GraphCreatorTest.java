@@ -24,6 +24,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyFilter;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -47,7 +48,7 @@ public class GraphCreatorTest {
       String name = "MyTestClass";
       String sourcecode = "test source code - Matt Pavolka Group - Something People Can Use";
 
-      JavaSource javaSource = new JavaSource("MyTestClass");
+      JavaSource javaSource = JavaSourceFactory.getInstance().newJavaSource("MyTestClass");
       javaSource.setGroup(2);
       javaSource.setPackagePath("de.test.test2");
       javaSource.setSourceCode(sourcecode);
@@ -68,7 +69,7 @@ public class GraphCreatorTest {
       String namePrefix = "Testclass ";
       for (int i = 0; i < count; i++) {
          String name = namePrefix + i;
-         JavaSource javaSource = new JavaSource(name);
+         JavaSource javaSource = JavaSourceFactory.getInstance().newJavaSource(name);
          JavaSourceContainer.getInstance().add(javaSource);
       }
 

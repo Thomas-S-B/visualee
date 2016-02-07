@@ -20,6 +20,10 @@ package de.strullerbaumann.visualee.maven;
  * #L%
  */
 import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
+import de.strullerbaumann.visualee.filter.boundary.FilterConfigurator;
+import de.strullerbaumann.visualee.filter.boundary.FilterContainer;
+import de.strullerbaumann.visualee.filter.entity.Filter;
+import de.strullerbaumann.visualee.filter.entity.FilterConfig;
 import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.resources.FileManager;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
@@ -75,6 +79,14 @@ public class VisualEEMojo extends AbstractMojo {
     * @parameter
     */
    private List<GraphConfig> graphs;
+
+   /**
+    * Filters Properties.
+    *
+    * @parameter
+    */
+   private List<FilterConfig> filters;
+
    private static final String JS_DIR = "/js/";
    private static final String CSS_DIR = "/css/";
    private static final String[] CSS_DIR_FILES = {
@@ -105,18 +117,34 @@ public class VisualEEMojo extends AbstractMojo {
          //Examine all java-files in projectroot
          String sourceFolder = mavenSession.getExecutionRootDirectory();
          if (sourceFolder != null) {
-            HTMLManager.generateIndexHTML(outputdirectory, "/html/index.html", sourceFolder);
-            getLog().info("Using encoding        : " + encoding);
-            JavaSourceContainer.setEncoding(encoding);
-            getLog().info("Analyzing sourcefolder: " + sourceFolder);
-            DependencyAnalyzer.getInstance().analyze(sourceFolder);
-            getLog().info("Generating graphs");
+            // Set encoding
             if (encoding != null) {
                JavaSourceContainer.setEncoding(encoding);
             }
+            getLog().info("Using encoding: " + JavaSourceContainer.getEncoding());
+
+            // Set filters
+            if (filters != null) {
+               FilterConfigurator.setFilterConfigs(filters);
+               getLog().info("Active filters: ");
+               for (Filter filter : FilterContainer.getInstance().getFilters()) {
+                  getLog().info("   " + filter);
+               }
+            } else {
+               getLog().info("No filters configured.");
+            }
+
+            HTMLManager.generateIndexHTML(outputdirectory, "/html/index.html", sourceFolder);
+
+            getLog().info("Analyzing sourcefolder: " + sourceFolder);
+            DependencyAnalyzer.getInstance().analyze(sourceFolder);
+            getLog().info("Generating graphs");
+
+            // Set graphs
             if (graphs != null) {
                GraphConfigurator.setGraphConfigs(graphs);
             }
+
             File sourceFolderDir = new File(sourceFolder);
             GraphCreator.generateGraphs(sourceFolderDir, outputdirectory, "/html/graphTemplate.html");
             getLog().info("Done, visualization can be found in");
@@ -128,16 +156,18 @@ public class VisualEEMojo extends AbstractMojo {
       }
    }
 
-    /**
-     * checks is the directory exists or creates it assuming it cannot be null
-     */
-    protected void checkCreateDirs(File dirPath) {
-        if (!dirPath.exists()) {
-            dirPath.mkdirs();
-        }
-    }
+   /**
+    * checks is the directory exists or creates it assuming it cannot be null
+    *
+    * @param dirPath
+    */
+   protected void checkCreateDirs(File dirPath) {
+      if (!dirPath.exists()) {
+         dirPath.mkdirs();
+      }
+   }
 
-    protected boolean isThisRootDir() {
+   protected boolean isThisRootDir() {
       return mavenSession.getExecutionRootDirectory().equalsIgnoreCase(basedir.toString());
    }
 }

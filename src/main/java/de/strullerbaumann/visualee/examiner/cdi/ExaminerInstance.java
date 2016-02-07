@@ -40,7 +40,7 @@ public class ExaminerInstance extends Examiner {
    @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
-      if (token.indexOf("@Inject") > -1) {
+      if (token.contains("@Inject")) {
          type = DependencyType.INJECT;
       }
       return type;

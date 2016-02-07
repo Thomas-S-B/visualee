@@ -5,6 +5,7 @@ import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 
 /*
  * #%L
@@ -90,25 +91,25 @@ public final class TestDataProvider {
       JavaSourceContainer.getInstance().clear();
       DependencyContainer.getInstance().clear();
 
-      JavaSource producer = new JavaSource("Producer");
+      JavaSource producer = JavaSourceFactory.getInstance().newJavaSource("Producer");
       JavaSourceContainer.getInstance().add(producer);
 
-      JavaSource product1 = new JavaSource("Product1");
+      JavaSource product1 = JavaSourceFactory.getInstance().newJavaSource("Product1");
       JavaSourceContainer.getInstance().add(product1);
-      JavaSource product2 = new JavaSource("Product2");
+      JavaSource product2 = JavaSourceFactory.getInstance().newJavaSource("Product2");
       JavaSourceContainer.getInstance().add(product2);
-      JavaSource product3 = new JavaSource("Product3");
+      JavaSource product3 = JavaSourceFactory.getInstance().newJavaSource("Product3");
       JavaSourceContainer.getInstance().add(product3);
-      JavaSource product4 = new JavaSource("Product4");
+      JavaSource product4 = JavaSourceFactory.getInstance().newJavaSource("Product4");
       JavaSourceContainer.getInstance().add(product4);
 
-      JavaSource instance1 = new JavaSource("Instance1");
+      JavaSource instance1 = JavaSourceFactory.getInstance().newJavaSource("Instance1");
       JavaSourceContainer.getInstance().add(instance1);
-      JavaSource instance2 = new JavaSource("Instance2");
+      JavaSource instance2 = JavaSourceFactory.getInstance().newJavaSource("Instance2");
       JavaSourceContainer.getInstance().add(instance2);
-      JavaSource instance3 = new JavaSource("Instance3");
+      JavaSource instance3 = JavaSourceFactory.getInstance().newJavaSource("Instance3");
       JavaSourceContainer.getInstance().add(instance3);
-      JavaSource instance4 = new JavaSource("Instance4");
+      JavaSource instance4 = JavaSourceFactory.getInstance().newJavaSource("Instance4");
       JavaSourceContainer.getInstance().add(instance4);
 
       Dependency dProducer_Product1 = new Dependency(DependencyType.PRODUCES, producer, product1);
@@ -130,11 +131,11 @@ public final class TestDataProvider {
       DependencyContainer.getInstance().add(dProduct4_Instance4);
 
       //Add some not relevant (direct connected) JavaSources
-      JavaSource notRelevant1 = new JavaSource("NotRelevant1");
+      JavaSource notRelevant1 = JavaSourceFactory.getInstance().newJavaSource("NotRelevant1");
       JavaSourceContainer.getInstance().add(notRelevant1);
-      JavaSource notRelevant2 = new JavaSource("NotRelevant2");
+      JavaSource notRelevant2 = JavaSourceFactory.getInstance().newJavaSource("NotRelevant2");
       JavaSourceContainer.getInstance().add(notRelevant2);
-      JavaSource notRelevant3 = new JavaSource("NotRelevant3");
+      JavaSource notRelevant3 = JavaSourceFactory.getInstance().newJavaSource("NotRelevant3");
       JavaSourceContainer.getInstance().add(notRelevant3);
 
       Dependency dInject1_notRelevant1 = new Dependency(DependencyType.INSTANCE, instance1, notRelevant1);

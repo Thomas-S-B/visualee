@@ -23,6 +23,7 @@ import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.boundary.*;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,15 +56,15 @@ public class DependencyContainerTest {
       DependencyType type1 = DependencyType.INJECT;
       DependencyType type2 = DependencyType.EJB;
 
-      JavaSource javaSourceType1 = new JavaSource("Testinject");
+      JavaSource javaSourceType1 = JavaSourceFactory.getInstance().newJavaSource("Testinject");
       JavaSourceContainer.getInstance().add(javaSourceType1);
 
-      JavaSource javaSourceType2 = new JavaSource("TestEjb");
+      JavaSource javaSourceType2 = JavaSourceFactory.getInstance().newJavaSource("TestEjb");
       JavaSourceContainer.getInstance().add(javaSourceType2);
 
       for (int i = 0; i < count; i++) {
          String name = "Testclass " + i;
-         JavaSource javaSource = new JavaSource(name);
+         JavaSource javaSource = JavaSourceFactory.getInstance().newJavaSource(name);
          List<Dependency> injected = new ArrayList<>();
          if (i % 2 > 0) {
             injected.add(new Dependency(type1, javaSource, javaSourceType1));

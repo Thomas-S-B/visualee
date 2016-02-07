@@ -61,6 +61,11 @@
       <a href="graphAllClasses.html" target="_blank">All classes</a>
       <br/>
       <br/>
+      <label id="activeFilters">Active filters</label>
+      <div id="activeFilters-content">
+         ACTIVEFILTERS_CONTENT
+      </div>
+      <br/>
       <label id="help">Help</label>
       <div id="help-content">
          Open information of a class = > Doubleclick on a class
@@ -74,11 +79,15 @@
       </div>
 
       <script>
-         window.onload = function() {
-            $("#help-content").toggle();
-         };
-         $("#help").click(function(d) {
-            $("#help-content").fadeToggle("fast", "linear");
+//         window.onload = function () {
+//            $("#activeFilters-content").toggle();
+//            $("#help-content").toggle();
+//         };
+         $("#activeFilters").click(function (d) {
+            $("#activeFilters-content").slideToggle("fast");
+         });
+         $("#help").click(function (d) {
+            $("#help-content").slideToggle("fast");
          });
       </script>
 

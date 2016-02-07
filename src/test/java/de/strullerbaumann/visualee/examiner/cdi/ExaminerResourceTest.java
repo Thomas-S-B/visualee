@@ -23,6 +23,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +80,7 @@ public class ExaminerResourceTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("DatabaseConnectionProducer");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("DatabaseConnectionProducer");
       sourceCode = "package de.gedoplan.buch.eedemos.cdi.producer;\n"
               + "import javax.annotation.Resource;\n"
               + "import javax.enterprise.context.ApplicationScoped;\n"
@@ -108,7 +109,7 @@ public class ExaminerResourceTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("SimplifiedMessageReceiver");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("SimplifiedMessageReceiver");
       sourceCode = "package de.x.y;\n"
               + "public class SimplifiedMessageReceiver {\n"
               + "@Resource(mappedName=\"java:global/jms/myQueue2\")\n"
@@ -129,7 +130,7 @@ public class ExaminerResourceTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("ResourceCollector");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("ResourceCollector");
       sourceCode = "@SnapshotDataCollector\n"
               + "public class ResourceCollector extends AbstractRestDataCollector<List<ConnectionPool>> {\n"
               + "    private static final String RESOURCES = \"resources\";\n"

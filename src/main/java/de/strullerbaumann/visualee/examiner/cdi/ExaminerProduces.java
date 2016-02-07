@@ -42,7 +42,7 @@ public class ExaminerProduces extends Examiner {
       // Identify @Produces form Inject (@Produces form WS is @Produces(...)
       // Inject: http://docs.oracle.com/javaee/6/api/javax/enterprise/inject/Produces.html
       // WS: http://docs.oracle.com/javaee/6/api/javax/ws/rs/Produces.html
-      if (token.indexOf("@Produces") > -1 && token.indexOf("@Produces(") < 0) {
+      if (token.contains("@Produces") && !token.contains("@Produces(")) {
          type = DependencyType.PRODUCES;
       }
       return type;

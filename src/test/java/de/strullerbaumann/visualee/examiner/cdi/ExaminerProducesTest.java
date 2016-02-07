@@ -23,7 +23,10 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
-import static org.junit.Assert.*;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +83,7 @@ public class ExaminerProducesTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("DatabaseProducer");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("DatabaseProducer");
       sourceCode = "package org.agoncal.application.petstore.util;\n"
               + "import javax.enterprise.inject.Produces;\n"
               + "import javax.persistence.EntityManager;\n"
@@ -105,7 +108,7 @@ public class ExaminerProducesTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("LoggerProducer");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("LoggerProducer");
       sourceCode = "package de.dasd.dasdas.utils.logging;\n"
               + "import javax.enterprise.inject.Produces;\n"
               + "import javax.enterprise.inject.spi.InjectionPoint;\n"

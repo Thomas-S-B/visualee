@@ -22,6 +22,7 @@ package de.strullerbaumann.visualee.source.entity;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
+import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
@@ -100,4 +101,54 @@ public class JavaSourceTest {
       assertEquals(1, DependencyContainer.getInstance().getDependenciesOfType(DependencyType.EVENT).size());
       assertEquals(0, DependencyContainer.getInstance().getDependenciesOfType(DependencyType.EJB).size());
    }
+
+   @Test
+   public void testFindAndSetPackage() {
+      JavaSource javaSource = new JavaSource("TestClass");
+      javaSource.setSourceCode(TestDataProvider.getTestSourceCode());
+      javaSource.findAndSetPackage();
+
+      String expected = "de.strullerbaumann.visualee.resources";
+      String actual = javaSource.getPackagePath();
+
+      assertEquals(expected, actual);
+   }
+
+   @Test
+   public void testFindAndSetPackageHarder() {
+      JavaSource javaSource;
+      String sourceCode;
+
+      javaSource = new JavaSource("MyTestClass");
+      sourceCode = "package de.test1.test2.test3;\n"
+              + "public class MyTestClass {\n"
+              + "private Class<E> entityClass;\n"
+              + "}\n";
+      javaSource.setSourceCode(sourceCode);
+      javaSource.findAndSetPackage();
+      assertEquals("de.test1.test2.test3", javaSource.getPackagePath());
+
+      //Ignore token package which is not defining a package
+      javaSource = new JavaSource("MyTestClass");
+      sourceCode = "// package as a comment\n"
+              + "package de.test1.test2.test3.test4;\n"
+              + "public class MyTestClass {\n"
+              + "private Class<E> entityClass;\n"
+              + "}\n";
+      javaSource.setSourceCode(sourceCode);
+      javaSource.findAndSetPackage();
+      assertEquals("de.test1.test2.test3.test4", javaSource.getPackagePath());
+   }
+
+   @Test(expected = IllegalArgumentException.class)
+   public void testFindAndSetPackageInsufficientTokens() {
+      JavaSource javaSource;
+      String sourceCode;
+
+      javaSource = new JavaSource("MyTestClass");
+      sourceCode = "package";
+      javaSource.setSourceCode(sourceCode);
+      javaSource.findAndSetPackage();
+   }
+
 }

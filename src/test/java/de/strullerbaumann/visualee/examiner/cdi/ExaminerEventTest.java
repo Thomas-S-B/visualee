@@ -23,6 +23,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +75,7 @@ public class ExaminerEventTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("TunguskaGate");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("TunguskaGate");
       sourceCode = "@WebServlet(name = \"TunguskaGate\", urlPatterns = {\"/live/*\"}, asyncSupported = true)\n"
               + "public class TunguskaGate extends HttpServlet {\n"
               + "    @Inject @SnapshotDataCollector\n"
@@ -113,7 +114,7 @@ public class ExaminerEventTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("Events");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("Events");
       sourceCode = "     @Stateless\n"
               + "public class Events {\n"
               + "    @PersistenceContext\n"

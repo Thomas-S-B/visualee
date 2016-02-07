@@ -19,10 +19,10 @@ package de.strullerbaumann.visualee.examiner;
  * limitations under the License.
  * #L%
  */
-import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -36,23 +36,11 @@ public class JavaSourceInspectorTest {
    }
 
    @Test
-   public void testFindAndSetPackage() {
-      JavaSource javaSource = new JavaSource("TestClass");
-      javaSource.setSourceCode(TestDataProvider.getTestSourceCode());
-      Examiner.findAndSetPackage(javaSource);
-
-      String expected = "de.strullerbaumann.visualee.resources";
-      String actual = javaSource.getPackagePath();
-
-      assertEquals(expected, actual);
-   }
-
-   @Test
    public void testFindAndSetAttributesIgnoreComments() {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("Cocktail");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("Cocktail");
       sourceCode = "//@Entity\n"
               + "//@Access(AccessType.FIELD)\n"
               + "public class Cocktail implements Comparable<Cocktail>\n"
@@ -81,7 +69,7 @@ public class JavaSourceInspectorTest {
       JavaSource javaSource;
       String sourceCode;
 
-      javaSource = new JavaSource("CocktailModel");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("CocktailModel");
       sourceCode = "@Model\n"
               + "public class CocktailModel implements Serializable\n"
               + "{\n"
@@ -105,17 +93,17 @@ public class JavaSourceInspectorTest {
    @Test
    public void testSetGroupNrs() {
       JavaSourceContainer.getInstance().clear();
-      JavaSource javaSource1 = new JavaSource("JavaSource1");
+      JavaSource javaSource1 = JavaSourceFactory.getInstance().newJavaSource("JavaSource1");
       javaSource1.setName("TestClass1");
       javaSource1.setPackagePath("package de.strullerbaumann.visualee.test.1;");
       JavaSourceContainer.getInstance().add(javaSource1);
 
-      JavaSource javaSource2 = new JavaSource("JavaSource2");
+      JavaSource javaSource2 = JavaSourceFactory.getInstance().newJavaSource("JavaSource2");
       javaSource2.setName("TestClass2");
       javaSource2.setPackagePath("package de.strullerbaumann.visualee.test.2;");
       JavaSourceContainer.getInstance().add(javaSource2);
 
-      JavaSource javaSource3 = new JavaSource("JavaSource3");
+      JavaSource javaSource3 = JavaSourceFactory.getInstance().newJavaSource("JavaSource3");
       javaSource3.setName("TestClass3");
       javaSource3.setPackagePath("package de.strullerbaumann.visualee.test.1;");
       JavaSourceContainer.getInstance().add(javaSource3);

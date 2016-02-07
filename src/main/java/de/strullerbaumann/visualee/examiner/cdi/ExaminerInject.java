@@ -40,7 +40,7 @@ public class ExaminerInject extends Examiner {
    @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
-      if (token.indexOf("@Inject") > -1) {
+      if (token.contains("@Inject")) {
          type = DependencyType.INJECT;
       }
       return type;
@@ -55,7 +55,7 @@ public class ExaminerInject extends Examiner {
          token = token.substring(token.indexOf('(') + 1);
       }
       String className = jumpOverJavaToken(token, scanner);
-      if (className.indexOf("Instance<") < 0 && className.indexOf("Event<") < 0) {
+      if (!className.contains("Instance<") && !className.contains("Event<")) {
          className = cleanupGeneric(className);
          createDependency(className, type, javaSource);
       }

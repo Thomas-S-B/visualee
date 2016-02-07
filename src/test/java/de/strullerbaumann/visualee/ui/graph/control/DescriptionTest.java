@@ -27,6 +27,7 @@ import de.strullerbaumann.visualee.examiner.cdi.ExaminerInject;
 import de.strullerbaumann.visualee.examiner.cdi.ExaminerProduces;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -46,9 +47,9 @@ public class DescriptionTest {
     */
    @Test
    public void testGenerateDescription() {
-      JavaSource javaSource1 = new JavaSource("TestJavaSource1");
-      JavaSource javaSource2 = new JavaSource("TestJavaSource2");
-      JavaSource javaSource3 = new JavaSource("TestJavaSource3");
+      JavaSource javaSource1 = JavaSourceFactory.getInstance().newJavaSource("TestJavaSource1");
+      JavaSource javaSource2 = JavaSourceFactory.getInstance().newJavaSource("TestJavaSource2");
+      JavaSource javaSource3 = JavaSourceFactory.getInstance().newJavaSource("TestJavaSource3");
       String testPackage = "//my/test/package/path";
 
       javaSource1.setPackagePath(testPackage);
@@ -73,7 +74,7 @@ public class DescriptionTest {
       String sourceCode;
 
       // Produces
-      javaSource = new JavaSource("Configurator");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("Configurator");
       sourceCode = "package org.lightfish.business.configuration.boundary;\n"
               + "import org.lightfish.business.configuration.entity.Configuration;\n"
               + "import java.util.Arrays;\n"

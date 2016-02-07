@@ -43,16 +43,16 @@ public class ExaminerJPA extends Examiner {
    @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
-      if (token.indexOf("@OneToOne") > -1) {
+      if (token.contains("@OneToOne")) {
          type = DependencyType.ONE_TO_ONE;
       }
-      if (token.indexOf("@OneToMany") > -1) {
+      if (token.contains("@OneToMany")) {
          type = DependencyType.ONE_TO_MANY;
       }
-      if (token.indexOf("@ManyToOne") > -1) {
+      if (token.contains("@ManyToOne")) {
          type = DependencyType.MANY_TO_ONE;
       }
-      if (token.indexOf("@ManyToMany") > -1) {
+      if (token.contains("@ManyToMany")) {
          type = DependencyType.MANY_TO_MANY;
       }
       return type;

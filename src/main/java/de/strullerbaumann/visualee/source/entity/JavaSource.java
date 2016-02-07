@@ -19,6 +19,7 @@ package de.strullerbaumann.visualee.source.entity;
  * limitations under the License.
  * #L%
  */
+import de.strullerbaumann.visualee.examiner.Examiner;
 import de.strullerbaumann.visualee.logging.LogProvider;
 import de.strullerbaumann.visualee.source.boundary.JavaSourceContainer;
 import java.io.IOException;
@@ -46,13 +47,14 @@ public class JavaSource {
    private String sourceCode;
    private String name;
 
-   public JavaSource(Path javaFile) {
+   protected JavaSource(Path javaFile) {
       this.javaFile = javaFile;
       this.name = javaFile.getFileName().toString().substring(0, javaFile.getFileName().toString().indexOf(".java"));
       sourceCode = "";
+      this.loadSourceCode();
    }
 
-   public JavaSource(String name) {
+   protected JavaSource(String name) {
       this.name = name;
       sourceCode = "Not available";
    }
@@ -118,6 +120,7 @@ public class JavaSource {
 
    public void setSourceCode(String sourceCode) {
       this.sourceCode = sourceCode;
+      findAndSetPackage();
    }
 
    @Override
@@ -125,10 +128,24 @@ public class JavaSource {
       return getName();
    }
 
+   /**
+    * Returns the fully classname with packagepath, e.g. java.util.List
+    *
+    * @return
+    */
    public String getFullClassName() {
+      if (packagePath == null) {
+         return name;
+      }
       return packagePath + "." + name;
    }
 
+   /**
+    * Returns only the classname without packagepath, e.g. returns List ans not
+    * java.util.List
+    *
+    * @return
+    */
    public String getName() {
       return name;
    }
@@ -137,7 +154,7 @@ public class JavaSource {
       this.name = name;
    }
 
-   public void loadSourceCode() {
+   private void loadSourceCode() {
       if (this.getJavaFile() == null) {
          return;
       }
@@ -149,11 +166,28 @@ public class JavaSource {
             loadedSourceCode.append(sourceCodeLine).append('\n');
          }
       } catch (IOException ex) {
-         LogProvider.getInstance().error("Problems (is encoding valid?) while reading " + this.getJavaFile(), ex);
+         LogProvider.getInstance().error("Problems (perhaps: is encoding valid?) while reading " + this.getJavaFile(), ex);
       } catch (UnsupportedCharsetException ex) {
          LogProvider.getInstance().error("Not valid encoding is configured in the pom.", ex);
       }
       setSourceCode(loadedSourceCode.toString());
+   }
+
+   void findAndSetPackage() {
+      Scanner scanner = Examiner.getSourceCodeScanner(getSourceCode());
+      while (scanner.hasNext()) {
+         String token = scanner.next();
+         if (getPackagePath() == null && token.equals("package")) {
+            if (!scanner.hasNext()) {
+               throw new IllegalArgumentException("Insufficient number of tokens to set package in " + this.getJavaFile());
+            }
+            token = scanner.next();
+            if (token.endsWith(";")) {
+               String foundPackagePath = token.substring(0, token.indexOf(';'));
+               setPackagePath(foundPackagePath);
+            }
+         }
+      }
    }
 
    @Override

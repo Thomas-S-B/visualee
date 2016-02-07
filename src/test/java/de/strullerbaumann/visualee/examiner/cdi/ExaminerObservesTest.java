@@ -23,6 +23,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyContainer;
 import de.strullerbaumann.visualee.dependency.entity.Dependency;
 import de.strullerbaumann.visualee.dependency.entity.DependencyType;
 import de.strullerbaumann.visualee.source.entity.JavaSource;
+import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
 import de.strullerbaumann.visualee.testdata.TestDataProvider;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -76,7 +77,7 @@ public class ExaminerObservesTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("SnapshotEscalator");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("SnapshotEscalator");
       sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
               + "List<Script> scripts = this.scripting.activeScripts();\n"
@@ -90,7 +91,6 @@ public class ExaminerObservesTest {
               + "throw new IllegalStateException(\"Exception during script evaluation: \" + e, e);\n"
               + "}\n"
               + "}\n";
-
 
       javaSource.setSourceCode(sourceCode);
       examiner.examine(javaSource);
@@ -108,7 +108,7 @@ public class ExaminerObservesTest {
       Dependency dependency2;
       String sourceCode;
 
-      javaSource = new JavaSource("SnapshotEscalator");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("SnapshotEscalator");
       sourceCode = TestDataProvider.getTestCompleteSourceCodeExample();
 
       javaSource.setSourceCode(sourceCode);
@@ -133,7 +133,7 @@ public class ExaminerObservesTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("SnapshotEscalator");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("SnapshotEscalator");
       sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "public void escalate(@Observes(notifyObserver=IF_EXISTS) @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
               + "}\n";
@@ -153,7 +153,7 @@ public class ExaminerObservesTest {
       Dependency dependency;
       String sourceCode;
 
-      javaSource = new JavaSource("SnapshotEscalator");
+      javaSource = JavaSourceFactory.getInstance().newJavaSource("SnapshotEscalator");
       sourceCode = TestDataProvider.getTestSourceCodeBeforeBody()
               + "public void escalate(@Observes(during=BEFORE_COMPLETION) @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
               + "}\n";

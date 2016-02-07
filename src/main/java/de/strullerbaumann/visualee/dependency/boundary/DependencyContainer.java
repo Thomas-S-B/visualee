@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public final class DependencyContainer {
 
-   private static final List<Dependency> dependencies = new ArrayList<>();
+   private static final List<Dependency> DEPENDENCIES = new ArrayList<>();
 
    private static class DependencyContainerHolder {
 
@@ -48,20 +48,20 @@ public final class DependencyContainer {
    }
 
    public void clear() {
-      dependencies.clear();
+      DEPENDENCIES.clear();
    }
 
    public void add(Dependency dependency) {
-      dependencies.add(dependency);
+      DEPENDENCIES.add(dependency);
    }
 
    public void addAll(List<Dependency> addDependencies) {
-      dependencies.addAll(addDependencies);
+      DEPENDENCIES.addAll(addDependencies);
    }
 
    public List<Dependency> getDependenciesOfType(DependencyType dependencyType) {
       List<Dependency> dependenciesOfType = new ArrayList<>();
-      for (Dependency dependency : dependencies) {
+      for (Dependency dependency : DEPENDENCIES) {
          if (dependency.getDependencyType().equals(dependencyType)) {
             dependenciesOfType.add(dependency);
          }
@@ -91,7 +91,7 @@ public final class DependencyContainer {
             }
          }
       } else {
-         for (Dependency dependency : dependencies) {
+         for (Dependency dependency : DEPENDENCIES) {
             if (filter == null || filter.contains(dependency.getDependencyType())) {
                filteredJavaSources.add(dependency.getJavaSourceFrom());
                filteredJavaSources.add(dependency.getJavaSourceTo());
@@ -113,7 +113,7 @@ public final class DependencyContainer {
 
    public List<Dependency> getDependencies(JavaSource javaSource) {
       List<Dependency> foundDependencies = new ArrayList<>();
-      for (Dependency d : dependencies) {
+      for (Dependency d : DEPENDENCIES) {
          if (d.getJavaSourceFrom().equals(javaSource)) {
             foundDependencies.add(d);
          }

@@ -39,7 +39,7 @@ public class ExaminerEJB extends Examiner {
    @Override
    protected DependencyType getTypeFromToken(String token) {
       DependencyType type = null;
-      if (token.indexOf("@EJB") > -1) {
+      if (token.contains("@EJB")) {
          type = DependencyType.EJB;
       }
       return type;

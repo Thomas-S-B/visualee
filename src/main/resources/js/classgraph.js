@@ -383,9 +383,9 @@ var initGraph = function (graphJSON, width, height) {
 
          d3.selectAll("path.link").style("opacity", function (o) {
             var linkOpacity = this.style.opacity;
-
             var sourceLinkIsVisible = false;
-            for (var i = 0; i < dVisible.length; i++) {
+            var max = dVisible.length;
+            for (var i = 0; i < max; i++) {
                if (o.source === dVisible[i]) {
                   sourceLinkIsVisible = true;
                   break;
@@ -393,7 +393,7 @@ var initGraph = function (graphJSON, width, height) {
             }
 
             var targetLinkIsVisible = false;
-            for (var i = 0; i < dVisible.length; i++) {
+            for (var i = 0; i < max; i++) {
                if (o.target === dVisible[i]) {
                   targetLinkIsVisible = true;
                   break;
@@ -409,14 +409,15 @@ var initGraph = function (graphJSON, width, height) {
          d3.selectAll("text.labeltext").style("opacity", function (o) {
             var textOpacity = this.style.opacity;
             var sourceLabelIsVisible = false;
-            for (var i = 0; i < dVisible.length; i++) {
+            var max = dVisible.length;
+            for (var i = 0; i < max; i++) {
                if (o.source === dVisible[i]) {
                   sourceLabelIsVisible = true;
                   break;
                }
             }
             var targetLabelIsVisible = false;
-            for (var i = 0; i < dVisible.length; i++) {
+            for (var i = 0; i < max; i++) {
                if (o.target === dVisible[i]) {
                   targetLabelIsVisible = true;
                   break;
@@ -563,4 +564,4 @@ var initGraph = function (graphJSON, width, height) {
       };
 
    });
-}
+};

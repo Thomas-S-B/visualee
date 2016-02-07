@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public final class JavaSourceInspector {
 
-   private static final List<Examiner> examiners = new ArrayList<>();
+   private static final List<Examiner> EXAMINERS = new ArrayList<>();
 
    private static class JavaSourceExaminerHolder {
 
@@ -48,18 +48,14 @@ public final class JavaSourceInspector {
    }
 
    public void registerExaminer(Examiner examiner) {
-      examiners.add(examiner);
+      EXAMINERS.add(examiner);
    }
 
    List<Examiner> getExaminers() {
-      return examiners;
+      return EXAMINERS;
    }
 
    public void examine() {
-      // Init javaSources
-      for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
-         Examiner.findAndSetPackage(javaSource);
-      }
       // Examine javaSources
       for (JavaSource javaSource : JavaSourceContainer.getInstance().getJavaSources()) {
          LogProvider.getInstance().debug("Examining: " + javaSource.getFullClassName());

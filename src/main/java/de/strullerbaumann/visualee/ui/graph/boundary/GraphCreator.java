@@ -53,42 +53,55 @@ public final class GraphCreator {
    private static String graphTemplate;
    private static final Map<String, List> GRAPHS = Collections.unmodifiableMap(new HashMap<String, List>() {
       {
-         put("graphOnlyCDIJPA", Arrays.asList("Only CDI/JPA relevant classes of ", new DependencyFilter().filterAllTypes()));
-         put("graphAllClasses", Arrays.asList("All classes of ", null));
-         put("graphEventObserverClasses", Arrays.asList("Event/Observer classes of ", new DependencyFilter()
-                 .addType(DependencyType.EVENT)
-                 .addType(DependencyType.OBSERVES)));
-         put("graphEJBClasses", Arrays.asList("Only EJB classes of ", new DependencyFilter()
-                 .addType(DependencyType.EJB)));
-         put("graphInstanceClasses", Arrays.asList("Only Instance classes of ", new DependencyFilter()
-                 .addType(DependencyType.INSTANCE)));
-         put("graphInjectClasses", Arrays.asList("Only Inject classes of ", new DependencyFilter()
-                 .addType(DependencyType.INJECT)));
-         put("graphProducesClasses", Arrays.asList("Only Produces classes of ", new DependencyFilter()
-                 .addType(DependencyType.PRODUCES)));
-         put("graphInstanceProducesClasses", Arrays.asList("Only Instance and Produces classes of ", new DependencyFilter()
-                 .addType(DependencyType.INSTANCE)
-                 .addType(DependencyType.PRODUCES)));
-         put("graphConnectedInjectProducesClasses", Arrays.asList("Only directly connected Inject and Produces classes of ", new DependencyFilter()
-                 .addType(DependencyType.PRODUCES)
-                 .addType(DependencyType.INJECT)
-                 .setDirectlyConnected(true)));
-         put("graphConnectedInjectInstanceProducesClasses", Arrays.asList("Only directly connected Inject, Instance and Produces classes of ", new DependencyFilter()
-                 .addType(DependencyType.PRODUCES)
-                 .addType(DependencyType.INJECT)
-                 .addType(DependencyType.INSTANCE)
-                 .setDirectlyConnected(true)));
-         put("graphConnectedInstanceProducesClasses", Arrays.asList("Only directly connected Instance and Produces classes of ", new DependencyFilter()
-                 .addType(DependencyType.PRODUCES)
-                 .addType(DependencyType.INSTANCE)
-                 .setDirectlyConnected(true)));
-         put("graphResourcesClasses", Arrays.asList("Only Resource classes of ", new DependencyFilter()
-                 .addType(DependencyType.RESOURCE)));
-         put("graphJPAClasses", Arrays.asList("Only JPA classes of ", new DependencyFilter()
-                 .addType(DependencyType.ONE_TO_ONE)
-                 .addType(DependencyType.ONE_TO_MANY)
-                 .addType(DependencyType.MANY_TO_ONE)
-                 .addType(DependencyType.MANY_TO_MANY)));
+         put("graphOnlyCDIJPA",
+                 Arrays.asList("Only CDI/JPA relevant classes of ", new DependencyFilter().filterAllTypes()));
+         put("graphAllClasses",
+                 Arrays.asList("All classes of ", null));
+         put("graphEventObserverClasses",
+                 Arrays.asList("Event/Observer classes of ", new DependencyFilter()
+                         .addType(DependencyType.EVENT)
+                         .addType(DependencyType.OBSERVES)));
+         put("graphEJBClasses",
+                 Arrays.asList("Only EJB classes of ", new DependencyFilter()
+                         .addType(DependencyType.EJB)));
+         put("graphInstanceClasses",
+                 Arrays.asList("Only Instance classes of ", new DependencyFilter()
+                         .addType(DependencyType.INSTANCE)));
+         put("graphInjectClasses",
+                 Arrays.asList("Only Inject classes of ", new DependencyFilter()
+                         .addType(DependencyType.INJECT)));
+         put("graphProducesClasses",
+                 Arrays.asList("Only Produces classes of ", new DependencyFilter()
+                         .addType(DependencyType.PRODUCES)));
+         put("graphInstanceProducesClasses",
+                 Arrays.asList("Only Instance and Produces classes of ", new DependencyFilter()
+                         .addType(DependencyType.INSTANCE)
+                         .addType(DependencyType.PRODUCES)));
+         put("graphConnectedInjectProducesClasses",
+                 Arrays.asList("Only directly connected Inject and Produces classes of ", new DependencyFilter()
+                         .addType(DependencyType.PRODUCES)
+                         .addType(DependencyType.INJECT)
+                         .setDirectlyConnected(true)));
+         put("graphConnectedInjectInstanceProducesClasses",
+                 Arrays.asList("Only directly connected Inject, Instance and Produces classes of ", new DependencyFilter()
+                         .addType(DependencyType.PRODUCES)
+                         .addType(DependencyType.INJECT)
+                         .addType(DependencyType.INSTANCE)
+                         .setDirectlyConnected(true)));
+         put("graphConnectedInstanceProducesClasses",
+                 Arrays.asList("Only directly connected Instance and Produces classes of ", new DependencyFilter()
+                         .addType(DependencyType.PRODUCES)
+                         .addType(DependencyType.INSTANCE)
+                         .setDirectlyConnected(true)));
+         put("graphResourcesClasses",
+                 Arrays.asList("Only Resource classes of ", new DependencyFilter()
+                         .addType(DependencyType.RESOURCE)));
+         put("graphJPAClasses",
+                 Arrays.asList("Only JPA classes of ", new DependencyFilter()
+                         .addType(DependencyType.ONE_TO_ONE)
+                         .addType(DependencyType.ONE_TO_MANY)
+                         .addType(DependencyType.MANY_TO_ONE)
+                         .addType(DependencyType.MANY_TO_MANY)));
       }
    });
 
