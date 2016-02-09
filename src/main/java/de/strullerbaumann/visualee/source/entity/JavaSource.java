@@ -110,7 +110,13 @@ public class JavaSource {
          }
       }
 
-      return sourceCodeWithoutComments.toString();
+      return cleanAllEqualsWithSpaces(sourceCodeWithoutComments.toString());
+   }
+
+   //Changes " = " to "="
+   //Necessary because tokenizer don't work properly.
+   public String cleanAllEqualsWithSpaces(String sourceCode) {
+      return sourceCode.replace(" =", "=").replace("= ", "=");
    }
 
    public String getEscapedSourceCode() {

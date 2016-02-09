@@ -74,7 +74,7 @@ public class JavaSourceTest {
               + "      //this is also a comment - give them a try: Gilad Hekselman - Split Life\n"
               + "      try {";
       String expected = "public void escalate(@Observes @Severity(Severity.Level.HEARTBEAT) Snapshot current) {\n"
-              + "      List<Script> scripts = this.scripting.activeScripts();\n"
+              + "      List<Script> scripts=this.scripting.activeScripts();\n"
               + "      try {\n";
 
       JavaSource javaSource = new JavaSource("TestSource");
