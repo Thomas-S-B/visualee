@@ -43,7 +43,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
+ * @author Thomas Struller-Baumann (contact at struller-baumann.de)
  */
 public class FilterConfigTest {
 
