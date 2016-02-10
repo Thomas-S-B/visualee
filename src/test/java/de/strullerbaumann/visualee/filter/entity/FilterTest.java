@@ -34,14 +34,13 @@ package de.strullerbaumann.visualee.filter.entity;
  * limitations under the License.
  * #L%
  */
-
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
  *
- * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
+ * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
  */
 public class FilterTest {
 

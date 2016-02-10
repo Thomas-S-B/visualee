@@ -34,7 +34,6 @@ package de.strullerbaumann.visualee.filter.entity;
  * limitations under the License.
  * #L%
  */
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,7 +42,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
+ * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
  */
 public class FilterConfigTest {
 

@@ -34,7 +34,6 @@ package de.strullerbaumann.visualee.source.entity;
  * limitations under the License.
  * #L%
  */
-
 import de.strullerbaumann.visualee.filter.boundary.FilterContainer;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -46,7 +45,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
+ * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
  */
 public class JavaSourceFactoryTest {
 

@@ -34,7 +34,6 @@ package de.strullerbaumann.visualee.filter.boundary;
  * limitations under the License.
  * #L%
  */
-
 import de.strullerbaumann.visualee.filter.entity.ClassFilter;
 import de.strullerbaumann.visualee.filter.entity.FilterConfig;
 import de.strullerbaumann.visualee.filter.entity.PackageFilter;
@@ -47,7 +46,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
+ * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
  */
 public class FilterConfiguratorTest {
 

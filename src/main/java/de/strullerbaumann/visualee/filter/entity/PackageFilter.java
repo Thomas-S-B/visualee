@@ -34,12 +34,11 @@ package de.strullerbaumann.visualee.filter.entity;
  * limitations under the License.
  * #L%
  */
-
 import de.strullerbaumann.visualee.source.entity.JavaSource;
 
 /**
  *
- * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
+ * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
  */
 public class PackageFilter extends Filter {
 
