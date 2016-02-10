@@ -23,7 +23,7 @@ import de.strullerbaumann.visualee.dependency.boundary.DependencyAnalyzer;
 
 /**
  *
- * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
+ * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public final class VisualEE {
 

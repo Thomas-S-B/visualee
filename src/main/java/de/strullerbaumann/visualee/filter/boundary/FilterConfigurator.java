@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  *
- * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
+ * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public final class FilterConfigurator {
 

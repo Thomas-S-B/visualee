@@ -28,7 +28,7 @@ import de.strullerbaumann.visualee.source.entity.JavaSourceFactory;
  */
 /**
  *
- * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
+ * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public final class TestDataProvider {
 
@@ -68,7 +68,7 @@ public final class TestDataProvider {
               + "\n"
               + "/**\n"
               + " *\n"
-              + " * @author Thomas Struller-Baumann (contact at struller-baumann.de>)\n"
+              + " * @author Thomas Struller-Baumann <thomas at struller-baumann.de>\n"
               + " */\n"
               + "public class JavaSourceExaminer {\n"
               + "\n";

@@ -42,7 +42,7 @@ import org.apache.maven.plugin.MojoExecutionException;
  *
  * @goal visualize
  * @phase process-sources
- * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
+ * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public class VisualEEMojo extends AbstractMojo {
 

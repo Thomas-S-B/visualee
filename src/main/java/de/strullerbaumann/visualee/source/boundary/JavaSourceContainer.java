@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
- * @author Thomas Struller-Baumann (contact at struller-baumann.de>)
+ * @author Thomas Struller-Baumann <thomas at struller-baumann.de>
  */
 public final class JavaSourceContainer {
 
