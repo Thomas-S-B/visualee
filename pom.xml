@@ -3,7 +3,7 @@
 
    <groupId>de.struller-baumann</groupId>
    <artifactId>visualee</artifactId>
-   <version>0.28-SNAPSHOT</version>
+   <version>0,27</version>
    <packaging>maven-plugin</packaging>
 
    <name>visualee</name>
@@ -163,7 +163,7 @@
       <connection>scm:git:git@github.com:Thomas-S-B/visualee.git</connection>
       <url>scm:git:git@github.com:Thomas-S-B/visualee.git</url>
       <developerConnection>scm:git:git@github.com:Thomas-S-B/visualee.git</developerConnection>
-      <tag>v0.27</tag>
+      <tag>0.27</tag>
    </scm>
 
    <properties>
