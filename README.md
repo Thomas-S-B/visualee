@@ -16,4 +16,4 @@ Why not using java-reflection?
 Early versions used java reflection to examine the java-classes, but i decided against it and prefer a simple scan of the source-files, because:
 - it's possible to visualize even not compilable code (useful at the beginning of developing or in emergency cases)
 - it's easier to implement visualee to other languages
-- much less trouble with plugin-configuration, because the classes must be loadable (cue: „absent code...“, implemenation of the EE-Satck must be included).
+- much less trouble with plugin-configuration, because the classes must be loadable (cue: „absent code...“, implemenation of the EE-Stack must be included).
